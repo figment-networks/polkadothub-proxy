@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package system;
+option go_package = "grpc/system/systempb";
+
+message Empty{}
+
+message System{
+
+}
+
+message GetRequest {
+  int64 height = 1;
+}
+
+message GetResponse {
+  System system = 1;
+}
+
+service SystemService {
+  rpc Get (Empty) returns (GetResponse) {}
+}

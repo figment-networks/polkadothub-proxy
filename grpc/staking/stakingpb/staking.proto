@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package staking;
+option go_package = "grpc/staking/stakingpb";
+
+message Stake {
+  string stash_account = 1;
+  string controller_account = 2;
+  int64 amount = 3;
+}
+
+message Validator {
+  int64 stash_account = 1;
+  int64 controller_account = 2;
+  int64 commission = 3;
+  int64 reward_points = 4;
+  int64 total_stake = 5;
+  int64 own_stake = 6;
+  repeated Stake stakers = 7;
+}
+
+message Staking {
+  int64 session = 1;
+  int64 era = 2;
+  int64 total_stake = 3;
+  int64 total_rewards = 4;
+  int64 total_reward_points = 5;
+  repeated Validator validators = 6;
+}
+
+message GetByHeightRequest {
+  int64 height = 1;
+}
+
+message GetByHeightResponse {
+  Staking staking = 1;
+}
+
+service StakingService {
+  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+}
+

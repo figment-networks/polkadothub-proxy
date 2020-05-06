@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package block;
+option go_package = "grpc/block/blockpb";
+
+message Header {
+  google.protobuf.Timestamp timestamp = 1;
+  string parent_hash = 2;
+  int64  number = 3;
+  string state_root = 4;
+  string extrinsics_root = 5;
+}
+
+message Extrinsic {
+  int64 extrinsic_index = 1;
+  bool is_signed_transaction = 2;
+  string signature = 3;
+  string signer = 4;
+  int64  nonce = 5;
+  string method = 6;
+  string section = 7;
+  string args = 8;
+}
+
+message Block {
+  Header header = 2;
+  repeated Extrinsic extrinsics = 3;
+}
+
+message GetByHeightRequest {
+  int64 height = 1;
+}
+
+message GetByHeightResponse {
+  Block block = 1;
+}
+
+service BlockService {
+  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+}
+

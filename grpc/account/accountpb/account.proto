@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package account;
+option go_package = "grpc/account/accountpb";
+
+message Account {
+  int64 nonce = 1;
+  int64 referendum_count = 2;
+  string free = 3;
+  string reserved = 4;
+  string misc_frozen = 5;
+  string fee_frozen = 6;
+}
+
+message AccountIdentity {
+  string deposit = 1;
+  string display_name = 2;
+  string legal_name = 3;
+  string web_name = 4;
+  string riot_name = 5;
+  string email_name = 6;
+  string twitter_name = 7;
+  string image = 8;
+}
+
+message GetIdentityRequest {
+  string address = 1;
+}
+
+message GetIdentityResponse {
+  AccountIdentity identity = 1;
+}
+
+message GetByHeightRequest {
+  int64 height = 1;
+  string address = 2;
+}
+
+message GetByHeightResponse {
+  Account account = 1;
+}
+
+service AccountService {
+  // Fixed queries
+  rpc GetIdentity (GetIdentityRequest) returns (GetIdentityResponse) {}
+  // Height queries
+  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+}

@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+
+  go-proto:
+    build:
+      context: ./
+      dockerfile: Dockerfile-go
+    volumes:
+      - ./:/app
+
+  proxy:
+    container_name: polkadothub-proxy
+    build: .
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      - PORT=50051
+      - NODE_URL=ws://host.docker.internal:9944

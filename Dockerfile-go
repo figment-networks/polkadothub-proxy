@@ -1,0 +1,17 @@
+FROM golang:1.13
+
+WORKDIR /app
+
+ENV HOME=/var/local
+ENV GO111MODULE=on
+ENV PB_REL=https://github.com/protocolbuffers/protobuf/releases
+ENV PATH="$PATH:$HOME/.local/bin"
+ENV PATH="$PATH:$(go env GOPATH)/bin"
+
+RUN apt-get update && apt-get install unzip
+
+RUN go get google.golang.org/grpc@v1.28.1
+RUN go get github.com/golang/protobuf/protoc-gen-go
+
+RUN curl -LO $PB_REL/download/v3.11.4/protoc-3.11.4-linux-x86_64.zip && unzip protoc-3.11.4-linux-x86_64.zip -d $HOME/.local
+RUN rm protoc-3.11.4-linux-x86_64.zip

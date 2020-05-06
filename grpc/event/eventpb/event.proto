@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package event;
+option go_package = "grpc/event/eventpb";
+
+message Event {
+  int64 index = 1;
+  string data = 2;
+  string phase = 3;
+  int64 extrinsicIndex = 4;
+}
+
+message GetByHeightRequest {
+  int64 height = 1;
+}
+
+message GetByHeightResponse {
+  repeated Event events = 1;
+}
+
+service EventService {
+  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+}
+
