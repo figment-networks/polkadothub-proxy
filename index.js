@@ -27,6 +27,7 @@ async function init() {
 
   const server = new grpc.Server();
   server.addService(blockProto.BlockService.service, {
+    getHead: blockHandlers.getHead(api),
     getByHeight: blockHandlers.getByHeight(api),
   });
   server.addService(transactionProto.TransactionService.service, {

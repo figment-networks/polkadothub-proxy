@@ -14,9 +14,13 @@ function main() {
 
   // Block
   let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   console.log('block: ', response.block);
-  // });
+  client.getByHeight({height: height}, function(err, response) {
+    console.log('block: ', response);
+  });
+
+  client.getHead({}, function(err, response) {
+    console.log('head: ', response);
+  });
 
   // // Transactions
   // client = new transactionProto.TransactionService('localhost:50051', grpc.credentials.createInsecure());
@@ -25,10 +29,10 @@ function main() {
   // });
 
   // // Events
-  client = new eventProto.EventService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function(err, response) {
-    console.log('events: ', response.events);
-  });
+  // client = new eventProto.EventService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   console.log('events: ', response.events);
+  // });
 
   // Staking
   // client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());

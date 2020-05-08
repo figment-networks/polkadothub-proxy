@@ -2,7 +2,7 @@ const toPb = (block, timestamp) => {
   return {
     block: {
       header: {
-        timestamp: {seconds: timestamp.toNumber() / 1000, nanos: 0},
+        time: {seconds: timestamp.toNumber() / 1000, nanos: 0},
         parentHash: block.header.parentHash.toString(),
         number: block.header.number.toNumber(),
         stateRoot: block.header.stateRoot.toString(),

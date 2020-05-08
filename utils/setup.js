@@ -14,7 +14,11 @@ const setupApiAtHeight = async (api, height) => {
   api.injectMetadata(metaDataAt);
   api.registerTypes(types);
 
-  return blockHash;
+  return {
+    chain,
+    specVersion: runtimeVersionAt.specVersion,
+    blockHash,
+  };
 }
 
 module.exports = {

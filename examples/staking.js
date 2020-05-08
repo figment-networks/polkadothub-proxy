@@ -12,7 +12,7 @@ async function init() {
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
 
-  const blockHash = await setupApiAtHeight(api, HEIGHT);
+  const {blockHash} = await setupApiAtHeight(api, HEIGHT);
 
   const sessionAt = await api.query.session.currentIndex.at(blockHash);
   console.log('current session #: ', sessionAt.toString());

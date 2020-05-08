@@ -6,7 +6,7 @@ package block;
 option go_package = "grpc/block/blockpb";
 
 message Header {
-  google.protobuf.Timestamp timestamp = 1;
+  google.protobuf.Timestamp time = 1;
   string parent_hash = 2;
   int64  number = 3;
   string state_root = 4;
@@ -29,15 +29,27 @@ message Block {
   repeated Extrinsic extrinsics = 3;
 }
 
+message GetHeadRequest {}
+
+message GetHeadResponse {
+  int64 height = 1;
+  google.protobuf.Timestamp time = 2;
+  int64 session = 3;
+  int64 era = 4;
+}
+
 message GetByHeightRequest {
   int64 height = 1;
 }
 
 message GetByHeightResponse {
-  Block block = 1;
+  string chain = 1;
+  string spec_version = 2;
+  Block block = 3;
 }
 
 service BlockService {
+  rpc GetHead (GetHeadRequest) returns (GetHeadResponse) {}
   rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
 }
 

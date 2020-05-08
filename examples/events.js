@@ -10,7 +10,7 @@ async function init() {
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
 
-  const blockHash = await setupApiAtHeight(api, HEIGHT);
+  const {blockHash} = await setupApiAtHeight(api, HEIGHT);
 
   // EVENTS
   const eventsAt = await api.query.system.events.at(blockHash);
