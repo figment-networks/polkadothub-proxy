@@ -98,7 +98,7 @@ type Validator struct {
 	unknownFields protoimpl.UnknownFields
 
 	StashAccount      int64    `protobuf:"varint,1,opt,name=stash_account,json=stashAccount,proto3" json:"stash_account,omitempty"`
-	ControllerAccount int64    `protobuf:"varint,2,opt,name=controller_account,json=controllerAccount,proto3" json:"controller_account,omitempty"`
+	ControllerAccount int64    `protobuf:"varint,2,opt,name=controller_account,json=controllerAccount,proto3" json:"controller_account,omitempty"` // should be a string?
 	Commission        int64    `protobuf:"varint,3,opt,name=commission,proto3" json:"commission,omitempty"`
 	RewardPoints      int64    `protobuf:"varint,4,opt,name=reward_points,json=rewardPoints,proto3" json:"reward_points,omitempty"`
 	TotalStake        int64    `protobuf:"varint,5,opt,name=total_stake,json=totalStake,proto3" json:"total_stake,omitempty"`

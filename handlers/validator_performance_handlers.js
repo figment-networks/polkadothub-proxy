@@ -1,40 +1,35 @@
+const SOME_OFFLINE_EVENT_SECTION = 'imOnline'
+const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
+
 /**
  * Get validator performance information by height
  */
 const getByHeight = (api) => async (call, callback) => {
   const height = call.request.height;
-
   const blockHash = await api.rpc.chain.getBlockHash(height);
 
-  const sessionAt = await api.query.session.currentIndex.at(blockHash);
-  console.log('current session #: ', sessionAt.toString());
+  const eventsAt = await api.query.system.events.at(blockHash);
+  const someOfflineEvent = eventsAt.map(record => record.event).find((event) => {
+    return event.section === SOME_OFFLINE_EVENT_SECTION && event.method === SOME_OFFLINE_EVENT_METHOD;
+  })
 
-  const validatorsAt = await api.query.session.validators.at(blockHash);
-  const validatorsData = [];
-  for (const [index, rawValidator] of validatorsAt.entries()) {
-    const validatorControllerAccount = rawValidator.toString();
-    const validator = {
-      controllerAccount: validatorControllerAccount,
-    };
-
-    // Get Validator online/offline state
-    const authoredBlocks = await api.query.imOnline.authoredBlocks.at(blockHash, sessionAt, rawValidator.toString());
-    if (authoredBlocks > 0) { // if validator authored a block, it was online during the whole session
-      validator.online = true
-    } else {
-      const receivedHeartbeats = await api.query.imOnline.receivedHeartbeats.at(blockHash, sessionAt, index);
-      validator.online = !!receivedHeartbeats.toHuman() // if validator sent a heartbeat, it was online
-    }
-
-    validatorsData.push(validator);
+  if (!someOfflineEvent) {
+    throw new Error(`No SomeOffline event was found at block height ${height}, is it last block in session?`)
   }
 
-  const response = {
-    validators: validatorsData,
-  };
+  const offlineValidatorsIds = validatorIdsFromEvent(someOfflineEvent);
 
+  const validatorsAt = await api.query.session.validators.at(blockHash);
+  const validatorsData = validatorsAt.map((validator) => ({
+    controllerAccount: validator.toString(),
+    online: !offlineValidatorsIds.includes(validator.toString())
+  }));
+
+  const response = {validators: validatorsData};
   callback(null, response);
 };
+
+const validatorIdsFromEvent = (event) => (event.data[0].map((offlineData) => offlineData[0].toString()));
 
 module.exports = {
   getByHeight,

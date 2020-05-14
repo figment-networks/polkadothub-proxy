@@ -11,7 +11,7 @@ message Stake {
 
 message Validator {
   int64 stash_account = 1;
-  int64 controller_account = 2;
+  int64 controller_account = 2; // should be a string?
   int64 commission = 3;
   int64 reward_points = 4;
   int64 total_stake = 5;
