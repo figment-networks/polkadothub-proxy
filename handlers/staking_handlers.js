@@ -7,6 +7,8 @@ const getByHeight = (api) => async (call, callback) => {
   const height = call.request.height;
 
   const blockHash = await api.rpc.chain.getBlockHash(height);
+  const resp = await api.rpc.chain.getBlock(blockHash);
+  const block = resp.block;
 
   const timestamp = await api.query.timestamp.now.at(blockHash);
   console.log('timestamp', timestamp.toNumber());
@@ -37,7 +39,7 @@ const getByHeight = (api) => async (call, callback) => {
 
   const validatorsAt = await api.query.session.validators.at(blockHash);
   const validatorsData = [];
-  for (const [index, rawValidator] of validatorsAt.entries()) {
+  for (const rawValidator of validatorsAt) {
     const validatorControllerAccount = rawValidator.toString();
     const validator = {
       controllerAccount: validatorControllerAccount,
@@ -70,16 +72,6 @@ const getByHeight = (api) => async (call, callback) => {
     // Get Validator prefs (commission)
     const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs(eraAt.toString(), validatorControllerAccount);
     validator.commission = erasValidatorPrefs.commission.toString();
-
-    // Get Validator online/offline state
-    // TODO: replace blockHash with a hash of last blockHash in a session, or it will show offline: false for first half of session
-    const authoredBlocks = await api.query.imOnline.authoredBlocks.at(blockHash, sessionAt, rawValidator.toString());
-    if (authoredBlocks > 0) { // if validator authored a block, it was online during the whole session
-      validator.online = true
-    } else {
-      const receivedHeartbeats = await api.query.imOnline.receivedHeartbeats.at(blockHash, sessionAt, index);
-      validator.online = !!receivedHeartbeats.toHuman() // if validator sent a heartbeat, it was online
-    }
 
     validatorsData.push(validator);
   }
