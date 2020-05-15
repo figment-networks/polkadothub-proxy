@@ -1,9 +1,11 @@
 const toPb = (rawEvent) => {
   const event = {
     data: rawEvent.event.data.toString(),
+    method: rawEvent.event.method,
+    section: rawEvent.event.section,
   }
 
-  console.log('RAW', rawEvent.event.toHuman());
+  console.log('RAW', rawEvent.event.method, rawEvent.event.section);
 
   if (rawEvent.phase.isApplyExtrinsic) {
     event.phase = 'applyExtrinsic';

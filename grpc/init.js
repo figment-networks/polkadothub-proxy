@@ -32,7 +32,7 @@ packageDefinition = protoLoader.loadSync('./grpc/account/accountpb/account.proto
 const accountProto = grpc.loadPackageDefinition(packageDefinition).account;
 
 // Validator Performance
-packageDefinition = protoLoader.loadSync('./grpc/validator_performance/validator_performancepb/validator_performance.proto', defaultOptions);
+packageDefinition = protoLoader.loadSync('./grpc/validatorperformance/validatorperformancepb/validator_performance.proto', defaultOptions);
 const validatorPerformanceProto = grpc.loadPackageDefinition(packageDefinition).validatorPerformance;
 
 module.exports = {

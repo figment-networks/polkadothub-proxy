@@ -7,15 +7,16 @@ const stakingMappers = require('../mappers/staking/staking_mappers');
 const getByHeight = (api) => async (call, callback) => {
   const height = call.request.height;
 
-  const {blockHash} = await setupApiAtHeight(api, height);
+  const {blockHash: prevBlockHash} = await setupApiAtHeight(api, height - 1);
+  const blockHash = await api.rpc.chain.getBlockHash(height);
 
   const timestamp = await api.query.timestamp.now.at(blockHash);
   console.log('timestamp', timestamp.toNumber());
 
-  const sessionAt = await api.query.session.currentIndex.at(blockHash);
+  const sessionAt = await api.query.session.currentIndex.at(prevBlockHash);
   console.log('current session #: ', sessionAt.toString());
 
-  const eraAt = await api.query.staking.currentEra.at(blockHash);
+  const eraAt = await api.query.staking.currentEra.at(prevBlockHash);
   console.log('currentEra: ', eraAt.toString());
 
   // ERA QUERIES
@@ -34,17 +35,17 @@ const getByHeight = (api) => async (call, callback) => {
   const validatorsAt = await api.query.session.validators.at(blockHash);
   const validatorsData = [];
   for (const rawValidator of validatorsAt) {
-    const validatorControllerAccount = rawValidator.toString();
+    const validatorStashAccount = rawValidator.toString();
     const validator = {
-      controllerAccount: validatorControllerAccount,
-      rewardPoints: (erasRewardPoints.individual.toJSON()[validatorControllerAccount] || '0').toString(),
+      stashAccount: validatorStashAccount,
+      rewardPoints: (erasRewardPoints.individual.toJSON()[validatorStashAccount] || '0').toString(),
       stakers: [],
     };
 
-    // Get validator stash account
-    const validatorStashAccount = await api.query.staking.bonded.at(blockHash, validatorControllerAccount);
-    if (!validatorStashAccount.isEmpty) {
-      validator.stashAccount = validatorStashAccount.toString();
+    // Get validator controller account
+    const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validatorStashAccount);
+    if (!validatorControllerAccount.isEmpty) {
+      validator.controllerAccount = validatorControllerAccount.toString();
     }
 
     // Get stakers for validator
@@ -53,10 +54,10 @@ const getByHeight = (api) => async (call, callback) => {
     validator.ownStake = erasStakers.own.toString();
 
     for (const stake of erasStakers.others) {
-      const nominatorControllerAccount = stake.who.toString();
+      const nominatorStashAccount = stake.who.toString();
 
       // Get nominator stash account
-      const nominatorStashAccount = await api.query.staking.bonded.at(blockHash, nominatorControllerAccount);
+      const nominatorControllerAccount = await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
 
       validator.stakers.push({
         stashAccount: nominatorStashAccount.toString(),

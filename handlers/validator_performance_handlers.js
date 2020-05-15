@@ -1,3 +1,4 @@
+const {setupApiAtHeight} = require('../utils/setup');
 const SOME_OFFLINE_EVENT_SECTION = 'imOnline'
 const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
 
@@ -6,7 +7,7 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
  */
 const getByHeight = (api) => async (call, callback) => {
   const height = call.request.height;
-  const blockHash = await api.rpc.chain.getBlockHash(height);
+  const {blockHash} = await setupApiAtHeight(api, height);
 
   const eventsAt = await api.query.system.events.at(blockHash);
   const someOfflineEvent = eventsAt.map(record => record.event).find((event) => {

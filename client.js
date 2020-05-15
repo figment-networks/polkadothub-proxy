@@ -10,7 +10,7 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 	2275243;
+  const height = 		2203538;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block
@@ -58,10 +58,10 @@ function main() {
 
 
   // Validator Performance
-  // client = new validatorPerformanceProto.ValidatorPerformanceService('localhost:50051', grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   console.log('validator performance: ', response);
-  // });
+  client = new validatorPerformanceProto.ValidatorPerformanceService('localhost:50051', grpc.credentials.createInsecure());
+  client.getByHeight({height: height}, function(err, response) {
+    console.log('validator performance: ', response);
+  });
 }
 
 main();

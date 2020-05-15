@@ -40,10 +40,10 @@ const getMetaByHeight = (api) => async (call, callback) => {
   }
 
   // Next BLOCK
-  const {session: nextSession, era: nextEra, chain, specVersion} = await getMeta(api, height + 1);
+  const {session: nextSession, era: nextEra, chain, specVersion} = await getMeta(api, height);
 
   // Current BLOCK
-  const {session: currentSession, era: currentEra} = await getMeta(api, height);
+  const {session: currentSession, era: currentEra} = await getMeta(api, height - 1);
 
   callback(null, {
     era: currentEra,
