@@ -3,6 +3,8 @@ const toPb = (rawEvent) => {
     data: rawEvent.event.data.toString(),
   }
 
+  console.log('RAW', rawEvent.event.toHuman());
+
   if (rawEvent.phase.isApplyExtrinsic) {
     event.phase = 'applyExtrinsic';
     event.extrinsicIndex = rawEvent.phase.asApplyExtrinsic.toNumber();

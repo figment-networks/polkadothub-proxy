@@ -9,17 +9,21 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 2003930;
+  const height = 	2275243;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block
   let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function(err, response) {
-    console.log('block: ', response);
-  });
+  // client.getByHeight({height: height}, function(err, response) {
+  //   console.log('block: ', response);
+  // });
 
-  client.getHead({}, function(err, response) {
-    console.log('head: ', response);
+  // client.getHead({}, function(err, response) {
+  //   console.log('head: ', response);
+  // });
+
+  client.getMetaByHeight({height: height}, function(err, response) {
+    console.log('block meta: ', response);
   });
 
   // // Transactions
@@ -29,15 +33,15 @@ function main() {
   // });
 
   // // Events
-  // client = new eventProto.EventService('localhost:50051', grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   console.log('events: ', response.events);
-  // });
+  client = new eventProto.EventService('localhost:50051', grpc.credentials.createInsecure());
+  client.getByHeight({height: height}, function(err, response) {
+    console.log('events: ', response.events);
+  });
 
   // Staking
   // client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
   // client.getByHeight({height: height}, function(err, response) {
-  //   console.log('staking: ', response);
+  //   console.log('staking: ', JSON.stringify(response.staking));
   // });
 
   // Account Identity

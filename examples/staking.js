@@ -6,13 +6,16 @@ const {setupApiAtHeight} = require('../utils/setup');
 const NODE_URL = 'ws://localhost:9944';
 const ADDR = 'DuRV4MSm54UoX3MpFe3P7rxjBFLfnKRThxG66s4n3yF8qbJ';
 const NOMINATOR = 'FVR7HagsWZKVKyHNNrLWn1vqtrCZCemnG7Dk1KLyUcwd9QJ';
-const HEIGHT = 2045010;
+const HEIGHT = 	2275840;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
 
   const {blockHash} = await setupApiAtHeight(api, HEIGHT);
+
+  const era = await api.query.staking.erasStartSessionIndex(1);
+  console.log('ERA: ', era.toString());
 
   const sessionAt = await api.query.session.currentIndex.at(blockHash);
   console.log('current session #: ', sessionAt.toString());
@@ -66,7 +69,7 @@ async function init() {
 
 
 
-  const erasStartSessionIndex = await api.query.staking.erasStartSessionIndex(eraAt.toString());
+  const erasStartSessionIndex = await api.query.staking.erasStartSessionIndex(1);
   console.log('erasStartSessionIndex: ', erasStartSessionIndex.toString());
 
 
