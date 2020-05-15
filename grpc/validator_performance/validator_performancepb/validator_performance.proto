@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package validatorPerformance;
+option go_package = "grpc/validator_performance/validator_performancepb";
+
+message Validator {
+  string controller_account = 1; // shall we rename to validator_id?
+  bool online = 2;
+}
+
+message GetByHeightRequest {
+  int64 height = 1;
+}
+
+message GetByHeightResponse {
+  repeated Validator validators = 1;
+}
+
+service ValidatorPerformanceService {
+  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+}
+
