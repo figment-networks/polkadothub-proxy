@@ -4,7 +4,7 @@ package validatorPerformance;
 option go_package = "grpc/validatorperformance/validatorperformancepb";
 
 message Validator {
-  string controller_account = 1; // shall we rename to validator_id?
+  string stash_account = 1;
   bool online = 2;
 }
 
