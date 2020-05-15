@@ -24,7 +24,7 @@ const getByHeight = (api) => async (call, callback) => {
 
   const validatorsAt = await api.query.session.validators.at(blockHash);
   const validatorsData = validatorsAt.map((validator) => ({
-    controllerAccount: validator.toString(),
+    stashAccount: validator.toString(),
     online: !offlineValidatorsIds.includes(validator.toString())
   }));
 
