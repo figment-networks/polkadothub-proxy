@@ -6,6 +6,7 @@ const {
   eventProto,
   stakingProto,
   accountProto,
+  validatorPerformanceProto,
 } = require('./grpc/init');
 
 function main() {
@@ -49,6 +50,13 @@ function main() {
   // Account
   // client.getByHeight({height, address}, function(err, response) {
   //   console.log('account: ', response.account);
+  // });
+
+
+  // Validator Performance
+  // client = new validatorPerformanceProto.ValidatorPerformanceService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   console.log('validator performance: ', response);
   // });
 }
 

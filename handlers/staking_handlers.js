@@ -43,7 +43,7 @@ const getByHeight = (api) => async (call, callback) => {
     const validatorControllerAccount = rawValidator.toString();
     const validator = {
       controllerAccount: validatorControllerAccount,
-      rewardPoints: erasRewardPoints.individual.toJSON()[validatorControllerAccount].toString(),
+      rewardPoints: (erasRewardPoints.individual.toJSON()[validatorControllerAccount] || '0').toString(),
       stakers: [],
     };
 

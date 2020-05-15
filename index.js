@@ -7,6 +7,7 @@ const {
   eventProto,
   stakingProto,
   accountProto,
+  validatorPerformanceProto,
 } = require('./grpc/init');
 
 const blockHandlers = require('./handlers/block_handlers');
@@ -14,6 +15,7 @@ const transactionHandlers = require('./handlers/transaction_handlers');
 const eventHandlers = require('./handlers/event_handlers');
 const stakingHandlers = require('./handlers/staking_handlers');
 const accountHandlers = require('./handlers/account_handlers');
+const validatorPerformanceHandlers = require('./handlers/validator_performance_handlers');
 
 const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
 const PORT = process.env.PORT || 50051
@@ -42,6 +44,9 @@ async function init() {
   server.addService(accountProto.AccountService.service, {
     getIdentity: accountHandlers.getIdentity(api),
     getByHeight: accountHandlers.getByHeight(api),
+  });
+  server.addService(validatorPerformanceProto.ValidatorPerformanceService.service, {
+    getByHeight: validatorPerformanceHandlers.getByHeight(api),
   });
   server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
   server.start();

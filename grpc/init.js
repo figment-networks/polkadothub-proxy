@@ -31,10 +31,15 @@ const stakingProto = grpc.loadPackageDefinition(packageDefinition).staking;
 packageDefinition = protoLoader.loadSync('./grpc/account/accountpb/account.proto', defaultOptions);
 const accountProto = grpc.loadPackageDefinition(packageDefinition).account;
 
+// Validator Performance
+packageDefinition = protoLoader.loadSync('./grpc/validator_performance/validator_performancepb/validator_performance.proto', defaultOptions);
+const validatorPerformanceProto = grpc.loadPackageDefinition(packageDefinition).validatorPerformance;
+
 module.exports = {
   blockProto,
   transactionProto,
   eventProto,
   stakingProto,
   accountProto,
+  validatorPerformanceProto,
 }
