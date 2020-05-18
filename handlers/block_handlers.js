@@ -25,7 +25,7 @@ const getHead = (api) => async (call, callback) => {
  * Get meta information for given height (session and era)
  */
 const getMetaByHeight = (api) => async (call, callback) => {
-  const height = parseInt(call.request.height, 10);
+  const height = call.request.height;
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
   const block = await api.rpc.chain.getBlock(lastFinalizedBlockHash);
@@ -42,7 +42,7 @@ const getMetaByHeight = (api) => async (call, callback) => {
   const {session: nextSession, era: nextEra, chain, specVersion} = await getMeta(api, height);
 
   // Current BLOCK
-  const {session: currentSession, era: currentEra} = await getMeta(api, height - 1);
+  const {session: currentSession, era: currentEra} = await getMeta(api, parseInt(height, 10) - 1);
 
   callback(null, {
     era: currentEra,

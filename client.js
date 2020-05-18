@@ -23,9 +23,9 @@ function main() {
   //   console.log('head: ', response);
   // });
 
-  // client.getMetaByHeight({height: height}, function(err, response) {
-  //   console.log('block meta: ', response);
-  // });
+  client.getMetaByHeight({height: height}, function(err, response) {
+    console.log('block meta: ', response);
+  });
 
   // // Transactions
   // client = new transactionProto.TransactionService('localhost:50051', grpc.credentials.createInsecure());
@@ -40,10 +40,10 @@ function main() {
   // });
 
   // Staking
-  client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function (err, response) {
-    console.log('staking: ', JSON.stringify(response.staking));
-  });
+  // client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function (err, response) {
+  //   console.log('staking: ', JSON.stringify(response.staking));
+  // });
 
   // Account Identity
   // client = new accountProto.AccountService('localhost:50051', grpc.credentials.createInsecure());
@@ -55,7 +55,6 @@ function main() {
   // client.getByHeight({height, address}, function(err, response) {
   //   console.log('account: ', response.account);
   // });
-
 
   // Validator Performance
   // client = new validatorPerformanceProto.ValidatorPerformanceService('localhost:50051', grpc.credentials.createInsecure());
