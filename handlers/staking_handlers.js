@@ -71,7 +71,6 @@ const getByHeight = (api) => async (call, callback) => {
     validator.commission = erasValidatorPrefs.commission.toString();
 
     validatorsData.push(validator);
-    break;
   }
 
   const response = {
