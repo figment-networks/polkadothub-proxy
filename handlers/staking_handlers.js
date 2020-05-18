@@ -48,7 +48,6 @@ const getByHeight = (api) => async (call, callback) => {
       validator.controllerAccount = validatorControllerAccount.toString();
     }
 
-
     // Get stakers for validator
     const erasStakers = await api.query.staking.erasStakers(eraAt.toString(), validatorStashAccount);
     validator.totalStake = erasStakers.total.toString();
@@ -85,8 +84,6 @@ const getByHeight = (api) => async (call, callback) => {
       validators: validatorsData,
     },
   };
-
-  console.log("Response", response.staking.validators);
 
   callback(null, response);
 };

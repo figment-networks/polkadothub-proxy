@@ -10,7 +10,7 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 		2203538;
+  const height = 2203538;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block
@@ -41,7 +41,7 @@ function main() {
 
   // Staking
   client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function(err, response) {
+  client.getByHeight({height: height}, function (err, response) {
     console.log('staking: ', JSON.stringify(response.staking));
   });
 

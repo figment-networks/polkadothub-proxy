@@ -5,8 +5,6 @@ const toPb = (rawEvent) => {
     section: rawEvent.event.section,
   }
 
-  console.log('RAW', rawEvent.event.method, rawEvent.event.section);
-
   if (rawEvent.phase.isApplyExtrinsic) {
     event.phase = 'applyExtrinsic';
     event.extrinsicIndex = rawEvent.phase.asApplyExtrinsic.toNumber();

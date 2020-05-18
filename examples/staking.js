@@ -6,7 +6,7 @@ const {setupApiAtHeight} = require('../utils/setup');
 const NODE_URL = 'ws://localhost:9944';
 const ADDR = 'DuRV4MSm54UoX3MpFe3P7rxjBFLfnKRThxG66s4n3yF8qbJ';
 const NOMINATOR = 'FVR7HagsWZKVKyHNNrLWn1vqtrCZCemnG7Dk1KLyUcwd9QJ';
-const HEIGHT = 	2275840;
+const HEIGHT = 2275840;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);
@@ -66,7 +66,6 @@ async function init() {
   // Validator slashes
   // const validatorSlashInEra = await api.query.staking.validatorSlashInEra(eraAt, ADDR);
   // console.log('validatorSlashInEra: ', validatorSlashInEra.toString());
-
 
 
   const erasStartSessionIndex = await api.query.staking.erasStartSessionIndex(1);
