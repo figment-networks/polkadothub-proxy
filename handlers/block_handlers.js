@@ -64,6 +64,7 @@ const getByHeight = (api) => async (call, callback) => {
 
   const blockResp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = blockResp.block;
+  const {author: authorStashAddress} = await api.derive.chain.getHeader(blockHash);
 
   const era = await api.query.staking.currentEra.at(blockHash);
   const session = await api.query.session.currentIndex.at(blockHash);
@@ -76,7 +77,7 @@ const getByHeight = (api) => async (call, callback) => {
     session: currentSession,
     chain: chain.toString(),
     specVersion: specVersion.toString(),
-    ...blockMappers.toPb(rawBlockAt, rawTimestampAt)
+    ...blockMappers.toPb(rawBlockAt, authorStashAddress, rawTimestampAt)
   });
 };
 
