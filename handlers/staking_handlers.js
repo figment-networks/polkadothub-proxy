@@ -48,26 +48,27 @@ const getByHeight = (api) => async (call, callback) => {
       validator.controllerAccount = validatorControllerAccount.toString();
     }
 
+
     // Get stakers for validator
-    const erasStakers = await api.query.staking.erasStakers(eraAt.toString(), validatorControllerAccount);
+    const erasStakers = await api.query.staking.erasStakers(eraAt.toString(), validatorStashAccount);
     validator.totalStake = erasStakers.total.toString();
     validator.ownStake = erasStakers.own.toString();
 
     for (const stake of erasStakers.others) {
-      const nominatorStashAccount = stake.who.toString();
+      const nominatorStashAccount = stake.who;
 
       // Get nominator stash account
       const nominatorControllerAccount = await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
 
       validator.stakers.push({
         stashAccount: nominatorStashAccount.toString(),
-        controllerAccount: nominatorControllerAccount,
+        controllerAccount: nominatorControllerAccount.toString(),
         stake: stake.value.toString(),
       })
     }
 
     // Get Validator prefs (commission)
-    const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs(eraAt.toString(), validatorControllerAccount);
+    const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs(eraAt.toString(), validatorStashAccount);
     validator.commission = erasValidatorPrefs.commission.toString();
 
     validatorsData.push(validator);

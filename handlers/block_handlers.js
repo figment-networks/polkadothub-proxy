@@ -26,7 +26,6 @@ const getHead = (api) => async (call, callback) => {
  */
 const getMetaByHeight = (api) => async (call, callback) => {
   const height = parseInt(call.request.height, 10);
-  console.log('GET META BY HEIGH', height);
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
   const block = await api.rpc.chain.getBlock(lastFinalizedBlockHash);
@@ -60,7 +59,6 @@ const getMetaByHeight = (api) => async (call, callback) => {
  */
 const getByHeight = (api) => async (call, callback) => {
   const height = parseInt(call.request.height, 10);
-  console.log('GET BY HEIGH', height);
 
   const {blockHash, chain, specVersion} = await setupApiAtHeight(api,height);
 
