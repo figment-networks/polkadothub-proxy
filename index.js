@@ -20,6 +20,21 @@ const validatorPerformanceHandlers = require('./handlers/validator_performance_h
 const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
 const PORT = process.env.PORT || 50051
 
+const wrapHandler = (fn, api) => {
+  return (call, callback) => {
+    fn(api)(call)
+      .then(result => {
+        callback(null, result)
+      })
+      .catch(e => {
+        callback({
+          code: grpc.status.UNKNOWN,
+          message: e.message
+        })
+      })
+  }
+}
+
 /**
  * Starts an RPC server
  */
@@ -31,7 +46,7 @@ async function init() {
   server.addService(blockProto.BlockService.service, {
     getHead: blockHandlers.getHead(api),
     getMetaByHeight: blockHandlers.getMetaByHeight(api),
-    getByHeight: blockHandlers.getByHeight(api),
+    getByHeight: wrapHandler(blockHandlers.getByHeight, api),
   });
   server.addService(transactionProto.TransactionService.service, {
     getByHeight: transactionHandlers.getByHeight(api),
