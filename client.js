@@ -10,14 +10,18 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 2203538;
+  const height = 111111111;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block
   let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   console.log('block: ', response);
-  // });
+  client.getByHeight({height: height}, function(err, response) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('block: ', response);
+    }
+  });
 
   // client.getHead({}, function(err, response) {
   //   console.log('head: ', response);
@@ -40,10 +44,10 @@ function main() {
   // });
 
   // Staking
-  client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function (err, response) {
-    console.log('staking: ', JSON.stringify(response.staking));
-  });
+  // client = new stakingProto.StakingService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function (err, response) {
+  //   console.log('staking: ', JSON.stringify(response.staking));
+  // });
 
   // Account Identity
   // client = new accountProto.AccountService('localhost:50051', grpc.credentials.createInsecure());
