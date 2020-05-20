@@ -33,7 +33,7 @@ const getMetaByHeight = async (api, call) => {
   const lastFinalizedHeight = block.block.header.number.toNumber();
 
   if (height === lastFinalizedHeight) {
-    throw new InvalidArgumentError('height is finalized')
+    throw new InvalidArgumentError('height is finalized');
   }
 
   // Next BLOCK
