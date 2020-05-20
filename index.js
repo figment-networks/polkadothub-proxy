@@ -20,6 +20,8 @@ const validatorPerformanceHandlers = require('./handlers/validator_performance_h
 const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
 const PORT = process.env.PORT || 50051
 
+// Wrap a handler with a method that passes api to it
+// and then calls an appropriate callback with or without error
 const wrapHandler = (fn, api) => {
   return (call, callback) => {
     fn(api)(call)
@@ -27,8 +29,9 @@ const wrapHandler = (fn, api) => {
         callback(null, result)
       })
       .catch(e => {
+        // TODO: add reporting with `error` and `call` here
         callback({
-          code: grpc.status.UNKNOWN,
+          code: e.code || grpc.status.UNKNOWN,
           message: e.message
         })
       })
@@ -44,8 +47,8 @@ async function init() {
 
   const server = new grpc.Server();
   server.addService(blockProto.BlockService.service, {
-    getHead: blockHandlers.getHead(api),
-    getMetaByHeight: blockHandlers.getMetaByHeight(api),
+    getHead: wrapHandler(blockHandlers.getHead, api),
+    getMetaByHeight: wrapHandler(blockHandlers.getMetaByHeight, api),
     getByHeight: wrapHandler(blockHandlers.getByHeight, api),
   });
   server.addService(transactionProto.TransactionService.service, {

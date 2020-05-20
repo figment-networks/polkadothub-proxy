@@ -1,10 +1,11 @@
+const {InvalidArgumentError} = require('../utils/errors');
 const {setupApiAtHeight} = require('../utils/setup');
 const blockMappers = require('../mappers/block/block_mappers');
 
 /**
  * Get current head information
  */
-const getHead = (api) => async (call, callback) => {
+const getHead = (api) => async (call) => {
   // No need to set metadata and types here since most recent are loaded automatically
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -13,18 +14,18 @@ const getHead = (api) => async (call, callback) => {
   const session = await api.query.session.currentIndex();
   const timestamp = await api.query.timestamp.now();
 
-  callback(null, {
+  return {
     height: block.block.header.number.toNumber(),
     time: {seconds: timestamp.toNumber() / 1000, nanos: 0},
     session: session.toNumber(),
     era: era.toString(),
-  });
+  };
 };
 
 /**
  * Get meta information for given height (session and era)
  */
-const getMetaByHeight = (api) => async (call, callback) => {
+const getMetaByHeight = (api) => async (call) => {
   const height = call.request.height;
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -32,10 +33,7 @@ const getMetaByHeight = (api) => async (call, callback) => {
   const lastFinalizedHeight = block.block.header.number.toNumber();
 
   if (height === lastFinalizedHeight) {
-    callback({
-      code: grpc.status.INVALID_ARGUMENT,
-      details: 'height is finalized'
-    });
+    throw new InvalidArgumentError('height is finalized')
   }
 
   // Next BLOCK
@@ -44,14 +42,14 @@ const getMetaByHeight = (api) => async (call, callback) => {
   // Current BLOCK
   const {session: currentSession, era: currentEra} = await getMeta(api, parseInt(height, 10) - 1);
 
-  callback(null, {
+  return {
     era: currentEra,
     session: currentSession,
     lastInEra: nextEra !== currentEra,
     lastInSession: nextSession !== currentSession,
     chain,
     specVersion,
-  });
+  };
 };
 
 /**
@@ -94,7 +92,7 @@ const getMeta = async (api, height) => {
     specVersion: specVersion.toString(),
     session: parseInt(session.toString(), 10),
     era: parseInt(era.toString(), 10),
-  }
+  };
 };
 
 module.exports = {
