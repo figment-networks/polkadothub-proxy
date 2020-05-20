@@ -5,7 +5,7 @@ const blockMappers = require('../mappers/block/block_mappers');
 /**
  * Get current head information
  */
-const getHead = (api) => async (call) => {
+const getHead = async (api, _call) => {
   // No need to set metadata and types here since most recent are loaded automatically
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -25,7 +25,7 @@ const getHead = (api) => async (call) => {
 /**
  * Get meta information for given height (session and era)
  */
-const getMetaByHeight = (api) => async (call) => {
+const getMetaByHeight = async (api, call) => {
   const height = call.request.height;
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -55,7 +55,7 @@ const getMetaByHeight = (api) => async (call) => {
 /**
  * Get block by height
  */
-const getByHeight = (api) => async (call) => {
+const getByHeight = async (api, call) => {
   const height = parseInt(call.request.height, 10);
 
   const {blockHash, chain, specVersion} = await setupApiAtHeight(api, height);

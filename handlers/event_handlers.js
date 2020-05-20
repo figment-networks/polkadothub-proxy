@@ -4,7 +4,7 @@ const eventMappers = require('../mappers/event/event_mappers');
 /**
  * Get events by height
  */
-const getByHeight = (api) => async (call, callback) => {
+const getByHeight = async (api, call) => {
   const height = call.request.height;
 
   const {blockHash} = await setupApiAtHeight(api, height);
@@ -19,7 +19,7 @@ const getByHeight = (api) => async (call, callback) => {
     });
   });
 
-  callback(null, {events});
+  return {events};
 };
 
 module.exports = {

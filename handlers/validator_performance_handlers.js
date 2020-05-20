@@ -1,3 +1,4 @@
+const {InvalidArgumentError} = require('../utils/errors');
 const {setupApiAtHeight} = require('../utils/setup');
 const IM_ONLINE_SECTION = 'imOnline'
 const ALL_GOOD_EVENT_METHOD = 'AllGood'
@@ -6,7 +7,7 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
 /**
  * Get validator performance information by height
  */
-const getByHeight = (api) => async (call, callback) => {
+const getByHeight = async (api, call) => {
   const height = call.request.height;
   const {blockHash} = await setupApiAtHeight(api, height);
 
@@ -17,8 +18,8 @@ const getByHeight = (api) => async (call, callback) => {
 
   if (!allGoodEvent) {
     const someOfflineEvent = findEvent(eventsAt, IM_ONLINE_SECTION, SOME_OFFLINE_EVENT_METHOD);
-    if (!someOfflineEvent) { // TODO: handle with gRPC
-      throw new Error(`No imOnline event was found at block height ${height}, is it last block in session?`)
+    if (!someOfflineEvent) {
+      throw new InvalidArgumentError(`No imOnline event was found at block height ${height}, is it last block in session?`)
     }
     offlineValidatorsIds = validatorIdsFromEvent(someOfflineEvent);
   }
@@ -30,7 +31,7 @@ const getByHeight = (api) => async (call, callback) => {
   }));
 
   const response = {validators: validatorsData};
-  callback(null, response);
+  return response;
 };
 
 const findEvent = (events, section, method) => (

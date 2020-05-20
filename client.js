@@ -10,7 +10,7 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 111111111;
+  const height = 11;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block

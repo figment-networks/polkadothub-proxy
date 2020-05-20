@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 50051
 // and then calls an appropriate callback with or without error
 const wrapHandler = (fn, api) => {
   return (call, callback) => {
-    fn(api)(call)
+    fn(api, call)
       .then(result => {
         callback(null, result)
       })
@@ -52,20 +52,20 @@ async function init() {
     getByHeight: wrapHandler(blockHandlers.getByHeight, api),
   });
   server.addService(transactionProto.TransactionService.service, {
-    getByHeight: transactionHandlers.getByHeight(api),
+    getByHeight: wrapHandler(transactionHandlers.getByHeight, api),
   });
   server.addService(eventProto.EventService.service, {
-    getByHeight: eventHandlers.getByHeight(api),
+    getByHeight: wrapHandler(eventHandlers.getByHeight, api),
   });
   server.addService(stakingProto.StakingService.service, {
-    getByHeight: stakingHandlers.getByHeight(api),
+    getByHeight: wrapHandler(stakingHandlers.getByHeight, api),
   });
   server.addService(accountProto.AccountService.service, {
-    getIdentity: accountHandlers.getIdentity(api),
-    getByHeight: accountHandlers.getByHeight(api),
+    getIdentity: wrapHandler(accountHandlers.getIdentity, api),
+    getByHeight: wrapHandler(accountHandlers.getByHeight, api),
   });
   server.addService(validatorPerformanceProto.ValidatorPerformanceService.service, {
-    getByHeight: validatorPerformanceHandlers.getByHeight(api),
+    getByHeight: wrapHandler(validatorPerformanceHandlers.getByHeight, api),
   });
   server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
   server.start();

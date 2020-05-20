@@ -3,7 +3,7 @@ const eventMappers = require('../mappers/event_mappers');
 /**
  * Implements the getBlockHash RPC method.
  */
-const get = (api) => async (call, callback) => {
+const get = async (api, call) => {
   // LIBRARY
   const libraryInfo = api.libraryInfo;
   console.log('library info:', libraryInfo);
@@ -60,7 +60,7 @@ const get = (api) => async (call, callback) => {
   const response = eventMappers.toPb(eventsAt);
 
 
-  callback(null, response);
+  return response;
 };
 
 module.exports = {
