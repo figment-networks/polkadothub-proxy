@@ -5,18 +5,18 @@ const accountMappers = require('../mappers/account/account_mappers');
 /**
  * Get identity by address
  */
-const getIdentity = (api) => async (call, callback) => {
+const getIdentity = async (api, call) => {
   const address = call.request.address;
 
   const rawIdentity = await api.query.identity.identityOf(address);
 
-  callback(null, identityMappers.toPb(rawIdentity));
+  return identityMappers.toPb(rawIdentity);
 }
 
 /**
  * Get account by height
  */
-const getByHeight = (api) => async (call, callback) => {
+const getByHeight = async (api, call) => {
   const height = call.request.height;
   const address = call.request.address;
 
@@ -25,7 +25,7 @@ const getByHeight = (api) => async (call, callback) => {
   const accountAt = await api.query.system.account.at(blockHash, address);
   const ledgerAt = await api.query.staking.ledger.at(blockHash, address);
 
-  callback(null, accountMappers.toPb(accountAt, ledgerAt));
+  return accountMappers.toPb(accountAt, ledgerAt);
 };
 
 module.exports = {

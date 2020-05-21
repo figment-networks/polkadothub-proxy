@@ -4,7 +4,7 @@ const transactionMappers = require('../mappers/transaction/transaction_mappers')
 /**
  * Get signed transactions by height
  */
-const getByHeight = (api) => async (call, callback) => {
+const getByHeight = async (api, call) => {
   const height = call.request.height;
 
   const blockHash = await setupApiAtHeight(api, height);
@@ -22,7 +22,7 @@ const getByHeight = (api) => async (call, callback) => {
     }
   });
 
-  callback(null, {transactions});
+  return {transactions};
 };
 
 module.exports = {

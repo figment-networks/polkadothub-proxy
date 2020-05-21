@@ -4,7 +4,7 @@ const stakingMappers = require('../mappers/staking/staking_mappers');
 /**
  * Get staking information by height
  */
-const getByHeight = (api) => async (call, callback) => {
+const getByHeight = async (api, call) => {
   const height = call.request.height;
 
   const {blockHash: prevBlockHash} = await setupApiAtHeight(api, height - 1);
@@ -84,7 +84,7 @@ const getByHeight = (api) => async (call, callback) => {
     },
   };
 
-  callback(null, response);
+  return response;
 };
 
 module.exports = {
