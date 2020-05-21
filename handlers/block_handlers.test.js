@@ -13,7 +13,7 @@ describe('integration', () => {
 
   describe('getHead', () => {
     call = {request: {}}
-    it('returns head', async () => {
+    it('returns head with appropriate keys', async () => {
       const response = await blockHandlers.getHead(api, call)
       const keys = Object.keys(response).sort();
       expect(keys).toEqual(['height', 'time', 'session', 'era'].sort());
@@ -21,13 +21,13 @@ describe('integration', () => {
   });
 
   describe('getByHeight', () => {
-    it('returns a block that matches snapshot', async () => {
+    it('returns a result that matches snapshot', async () => {
       expect(await blockHandlers.getByHeight(api, call)).toMatchSnapshot();
     });
   });
 
   describe('getMetaByHeight', () => {
-    it('returns meta that matches snapshot', async () => {
+    it('returns a result that matches snapshot', async () => {
       expect(await blockHandlers.getMetaByHeight(api, call)).toMatchSnapshot();
     });
   });

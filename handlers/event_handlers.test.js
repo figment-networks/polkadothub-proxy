@@ -1,4 +1,4 @@
-const validatorPerformanceHandlers = require('./validator_performance_handlers');
+const eventHandlers = require('./event_handlers');
 const {createApi} = require('../tests/shared');
 
 // These actually DO hit the API
@@ -13,7 +13,7 @@ describe('integration', () => {
 
   describe('getByHeight', () => {
     it('returns a result that matches snapshot', async () => {
-      expect(await validatorPerformanceHandlers.getByHeight(api, call)).toMatchSnapshot();
+      expect(await eventHandlers.getByHeight(api, call)).toMatchSnapshot();
     });
   });
 });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`integration getByHeight returns a block that matches snapshot 1`] = `
+exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "block": Object {
     "extrinsics": Array [],
@@ -22,7 +22,7 @@ Object {
 }
 `;
 
-exports[`integration getMetaByHeight returns meta that matches snapshot 1`] = `
+exports[`integration getMetaByHeight returns a result that matches snapshot 1`] = `
 Object {
   "chain": "Kusama",
   "era": 0,
