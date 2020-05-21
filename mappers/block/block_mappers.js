@@ -1,4 +1,4 @@
-const toPb = (block, timestamp) => {
+const toPb = (block, authorStashAddress, timestamp) => {
   return {
     block: {
       header: {
@@ -7,6 +7,7 @@ const toPb = (block, timestamp) => {
         height: block.header.number.toNumber(),
         stateRoot: block.header.stateRoot.toString(),
         extrinsicsRoot: block.header.extrinsicsRoot.toString(),
+        authorStashAddress: authorStashAddress.toString(),
       },
       extrinsics: block.extrinsics.map((rawExtrinsic, index) => {
         return {
