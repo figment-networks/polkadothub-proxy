@@ -1,6 +1,8 @@
 const toPb = (rawEvent) => {
   const event = {
     data: rawEvent.event.data.toString(),
+    method: rawEvent.event.method,
+    section: rawEvent.event.section,
   }
 
   if (rawEvent.phase.isApplyExtrinsic) {

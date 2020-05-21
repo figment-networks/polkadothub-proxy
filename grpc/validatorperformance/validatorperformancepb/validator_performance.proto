@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package validatorPerformance;
-option go_package = "grpc/validator_performance/validator_performancepb";
+option go_package = "grpc/validatorperformance/validatorperformancepb";
 
 message Validator {
   string stash_account = 1;

@@ -7,7 +7,9 @@ message Event {
   int64 index = 1;
   string data = 2;
   string phase = 3;
-  int64 extrinsicIndex = 4;
+  string method = 4;
+  string section = 5;
+  int64 extrinsicIndex = 6;
 }
 
 message GetByHeightRequest {

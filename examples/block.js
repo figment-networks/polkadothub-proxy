@@ -4,7 +4,7 @@ const {ApiPromise, WsProvider} = require('@polkadot/api');
 const {setupApiAtHeight} = require('../utils/setup');
 
 const NODE_URL = 'ws://localhost:9944';
-const HEIGHT = 1;
+const HEIGHT = 2275840;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);
@@ -15,7 +15,7 @@ async function init() {
   // BLOCK
   const resp = await api.rpc.chain.getBlock(blockHash);
   const block = resp.block;
-  console.log('block: ', block.extrinsics[0]);
+  console.log('block: ', block.toHuman());
 }
 
 init().then(res => {

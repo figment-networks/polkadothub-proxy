@@ -1,0 +1,54 @@
+{
+  "validators": [
+    {
+      "stakers": [
+        {
+          "stashAccount": "HycXScYYZGgNVkQ4GtiqchCeMiDsbx8MGk1pPpFaxhQKaP4",
+          "controllerAccount": "HycXScYYZGgNVkQ4GtiqchCeMiDsbx8MGk1pPpFaxhQKaP4",
+          "stake": "1170269585822964"
+        },
+        {
+          "stashAccount": "ESVGq7cFxjz376MmYFbg54WWsCi79fkb3WwT7i5ZZA1gwfk",
+          "controllerAccount": "Ff65mvwgfQJeCxjq59YZMUzg9HAR4mFVMapvYF4oFMzFP9j",
+          "stake": "2220747677315439"
+        },
+        {
+          "stashAccount": "EhzPBdqdL9bZe5qRR73VMAfPtNcp4AZmyMtGMr9w5X1Gau5",
+          "controllerAccount": "EhzPBdqdL9bZe5qRR73VMAfPtNcp4AZmyMtGMr9w5X1Gau5",
+          "stake": "143589267247516"
+        },
+        {
+          "stashAccount": "HLwKmFRDsCnTDddVJwyKfUUUkBMQBz8Zhsa8LbnrNYYgc41",
+          "controllerAccount": "FcUvcXANkPjCsRbJGjtsj3nwLyVoEuHcX5CFJy1ocuyFMTN",
+          "stake": "714447558638230"
+        },
+        {
+          "stashAccount": "ELharp1RuLgHUE6436sWSpW6XB2BqhaSq9L1Wexs83aodZ6",
+          "controllerAccount": "ELharp1RuLgHUE6436sWSpW6XB2BqhaSq9L1Wexs83aodZ6",
+          "stake": "1003196578171"
+        },
+        {
+          "stashAccount": "HhM97zfBvM1H7Mee3TDatCsGRNzdoaEodJdjty4bh32NcZb",
+          "controllerAccount": "HhM97zfBvM1H7Mee3TDatCsGRNzdoaEodJdjty4bh32NcZb",
+          "stake": "14055154563839786"
+        },
+        {
+          "stashAccount": "HgottFALkT7XvtyW48nXrTDe97Z4DcURb41ouDmdsiNaMCu",
+          "controllerAccount": "Hnz1i4ZcUpAQokFiFGKAzcE7ikYS1zaKJcotRREkGxuyFSQ",
+          "stake": "2397375448233768"
+        }
+      ],
+      "stashAccount": "G7eJUS1A7CdcRb2Y3zEDvfAJrM1QtacgG6mPD1RsPTJXxPQ",
+      "controllerAccount": "G7eJUS1A7CdcRb2Y3zEDvfAJrM1QtacgG6mPD1RsPTJXxPQ",
+      "commission": "0",
+      "rewardPoints": "260",
+      "totalStake": "21836148460947172",
+      "ownStake": "1133561163271298"
+    }
+  ],
+  "session": "3978",
+  "era": "781",
+  "totalStake": "5097408639603403347",
+  "totalRewardPayout": "349833079293365",
+  "totalRewardPoints": "71380"
+}
