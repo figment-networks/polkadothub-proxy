@@ -32,6 +32,12 @@ const getByHeight = async (api, call) => {
   const erasValidatorReward = await api.query.staking.erasValidatorReward(eraAt.toString());
   console.log('erasValidatorReward: ', erasValidatorReward.toString());
 
+  // Fetch session keys for validators. Most probably the query is `queuedKeys`,
+  // but there's a chance it should be `nextKeys`
+  // https://github.com/polkadot-js/api/blob/master/packages/api-derive/src/staking/query.ts#L108
+  // https://github.com/polkadot-js/api/issues/2288
+  const queuedKeys = await api.query.session.queuedKeys.at(blockHash);
+
   const validatorsAt = await api.query.session.validators.at(blockHash);
   const validatorsData = [];
   for (const rawValidator of validatorsAt) {
@@ -40,6 +46,7 @@ const getByHeight = async (api, call) => {
       stashAccount: validatorStashAccount,
       rewardPoints: (erasRewardPoints.individual.toJSON()[validatorStashAccount] || '0').toString(),
       stakers: [],
+      sessionKeys: validatorSessionKeys(queuedKeys, validatorStashAccount)
     };
 
     // Get validator controller account
@@ -84,6 +91,14 @@ const getByHeight = async (api, call) => {
     },
   };
 };
+
+const validatorSessionKeys = (queuedKeys, validatorStashAccount) => {
+  const keysRow = queuedKeys.map((keys) => keys.toHuman()).find((row) => {
+    const account = row[0];
+    return account.toString() === validatorStashAccount;
+  })
+  return keysRow ? keysRow[1] : [];
+}
 
 module.exports = {
   getByHeight,
