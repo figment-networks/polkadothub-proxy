@@ -73,7 +73,7 @@ const getByHeight = async (api, call) => {
     validatorsData.push(validator);
   }
 
-  const response = {
+  return {
     staking: {
       session: sessionAt.toString(),
       era: eraAt.toString(),
@@ -83,8 +83,6 @@ const getByHeight = async (api, call) => {
       validators: validatorsData,
     },
   };
-
-  return response;
 };
 
 module.exports = {
