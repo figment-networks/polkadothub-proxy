@@ -7,7 +7,7 @@ const transactionMappers = require('../mappers/transaction/transaction_mappers')
 const getByHeight = async (api, call) => {
   const height = call.request.height;
 
-  const blockHash = await setupApiAtHeight(api, height);
+  const {blockHash} = await setupApiAtHeight(api, height);
 
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;

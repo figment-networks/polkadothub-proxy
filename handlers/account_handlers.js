@@ -20,7 +20,7 @@ const getByHeight = async (api, call) => {
   const height = call.request.height;
   const address = call.request.address;
 
-  const blockHash = await setupApiAtHeight(api, height);
+  const {blockHash} = await setupApiAtHeight(api, height);
 
   const accountAt = await api.query.system.account.at(blockHash, address);
   const ledgerAt = await api.query.staking.ledger.at(blockHash, address);
