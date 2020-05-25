@@ -18,7 +18,8 @@
     "@polkadot/util": "^2.9.1",
     "google-protobuf": "^3.11.4",
     "grpc": "^1.24.2",
-    "grpc-tools": "^1.8.1"
+    "grpc-tools": "^1.8.1",
+    "rollbar": "^2.16.2"
   },
   "devDependencies": {
     "jest": "^26.0.1",

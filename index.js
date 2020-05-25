@@ -1,6 +1,7 @@
 const {ApiPromise, WsProvider} = require('@polkadot/api');
 const grpc = require('grpc');
 
+const {rollbar} = require('./utils/rollbar');
 const {
   blockProto,
   transactionProto,
@@ -29,7 +30,7 @@ const wrapHandler = (fn, api) => {
         callback(null, result)
       })
       .catch(e => {
-        // TODO: add reporting with `error` and `call` here
+        rollbar.error(e, {call})
         callback({
           code: e.code || grpc.status.UNKNOWN,
           message: e.message
