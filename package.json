@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "//": "// debug is enabled by default, but it's very verbose https://github.com/polkadot-js/common/issues/491#issuecomment-557938010",
-    "test": "NODE_ENV=test_disable_debug jest --watchAll",
-    "test:all": "NODE_ENV=test_disable_debug jest --forceExit --silent"
+    "//": "// remove `--silent` to display logs, otherwise it's very verbose https://github.com/polkadot-js/common/issues/491#issuecomment-557938010",
+    "test": "jest --watchAll --silent",
+    "test:all": "jest --forceExit --silent"
   },
   "author": "",
   "license": "ISC",

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration getByHeight returns a result that matches snapshot 1`] = `
+Object {
+  "account": Object {
+    "feeFrozen": "0",
+    "free": "0",
+    "miscFrozen": "0",
+    "nonce": 0,
+    "referendumCount": 0,
+    "reserved": "0",
+  },
+}
+`;
+
+exports[`integration getIdentity returns a result that matches snapshot 1`] = `
+Object {
+  "identity": Object {
+    "deposit": "10000000000000",
+    "displayName": "DragonStake 🐲",
+    "emailName": "dragonstake@protonmail.com",
+    "legalName": "DragonStake",
+    "riotName": "@derfredy:matrix.org",
+    "twitterName": "
+@DragonStake",
+    "webName": "https://dragonstake.io",
+  },
+}
+`;
