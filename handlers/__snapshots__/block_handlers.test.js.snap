@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration getByHeight returns a result that matches snapshot 1`] = `
+Object {
+  "block": Object {
+    "extrinsics": Array [],
+    "header": Object {
+      "extrinsicsRoot": "0x03170a2e7597b7b7e3d84c05391d139a62b157e78786d8c082f29dcf4c111314",
+      "height": 0,
+      "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "stateRoot": "0xb0006203c3a6e6bd2c6a17b1d4ae8ca49a31da0f4579da950b127774b44aef6b",
+      "time": Object {
+        "nanos": 0,
+        "seconds": 0,
+      },
+    },
+  },
+  "chain": "Kusama",
+  "era": 0,
+  "session": 0,
+  "specVersion": "1020",
+}
+`;
+
+exports[`integration getMetaByHeight returns a result that matches snapshot 1`] = `
+Object {
+  "chain": "Kusama",
+  "era": 0,
+  "lastInEra": false,
+  "lastInSession": false,
+  "session": 0,
+  "specVersion": "1020",
+}
+`;
