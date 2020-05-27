@@ -1,6 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`integration getByHeight returns a result that matches snapshot 1`] = `Object {}`;
+exports[`integration getByHeight returns a result that matches snapshot 1`] = `
+Object {
+  "account": Object {
+    "feeFrozen": "0",
+    "free": "0",
+    "miscFrozen": "0",
+    "nonce": 0,
+    "referendumCount": 0,
+    "reserved": "0",
+  },
+}
+`;
 
 exports[`integration getIdentity returns a result that matches snapshot 1`] = `
 Object {
