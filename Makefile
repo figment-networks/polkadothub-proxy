@@ -1,6 +1,7 @@
 .PHONY: grpc-go
 
 grpc-go:
+	@protoc grpc/chain/chainpb/chain.proto --go_out=plugins=grpc:.
 	@protoc grpc/block/blockpb/block.proto --go_out=plugins=grpc:.
 	@protoc grpc/event/eventpb/event.proto --go_out=plugins=grpc:.
 	@protoc grpc/staking/stakingpb/staking.proto --go_out=plugins=grpc:.

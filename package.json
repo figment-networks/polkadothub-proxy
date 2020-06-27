@@ -13,16 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.4",
-    "@polkadot/api": "^1.13.0-beta.12",
-    "@polkadot/types-known": "^1.12.2",
-    "@polkadot/util": "^2.9.1",
+    "@polkadot/api": "^1.21.1",
+    "@polkadot/types-known": "^1.21.1",
+    "@polkadot/util": "^2.15.1",
     "google-protobuf": "^3.11.4",
     "grpc": "^1.24.2",
     "grpc-tools": "^1.8.1",
     "rollbar": "^2.16.2"
   },
   "devDependencies": {
-    "jest": "^26.0.1",
+    "jest": "^25.2.2",
     "nodemon": "^2.0.3"
   }
 }

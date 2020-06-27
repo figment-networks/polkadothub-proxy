@@ -11,8 +11,12 @@ const defaultOptions = {
   oneofs: true
 };
 
+// Chain
+let packageDefinition = protoLoader.loadSync('./grpc/chain/chainpb/chain.proto', defaultOptions);
+const chainProto = grpc.loadPackageDefinition(packageDefinition).chain;
+
 // Block
-let packageDefinition = protoLoader.loadSync('./grpc/block/blockpb/block.proto', defaultOptions);
+packageDefinition = protoLoader.loadSync('./grpc/block/blockpb/block.proto', defaultOptions);
 const blockProto = grpc.loadPackageDefinition(packageDefinition).block;
 
 // Transactions
@@ -36,6 +40,7 @@ packageDefinition = protoLoader.loadSync('./grpc/validatorperformance/validatorp
 const validatorPerformanceProto = grpc.loadPackageDefinition(packageDefinition).validatorPerformance;
 
 module.exports = {
+  chainProto,
   blockProto,
   transactionProto,
   eventProto,
