@@ -14,32 +14,3 @@ Object {
   },
 }
 `;
-
-exports[`integration getStatus returns a result that matches snapshot 1`] = `
-Object {
-  "chainName": "Kusama",
-  "chainType": Object {
-    "Live": null,
-  },
-  "clientInfo": "@polkadot/api v1.21.1",
-  "genesisHash": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
-  "nodeHealth": Object {
-    "isSyncing": false,
-    "peers": 50,
-    "shouldHavePeers": true,
-  },
-  "nodeLocalPeerUid": "12D3KooWS9kZyq9RYZDsqaiGzJUQswqeJgJVHvDoh7Mwtj8R4pvN",
-  "nodeName": "Parity Polkadot",
-  "nodeProperties": Object {
-    "ss58Format": 2,
-    "tokenDecimals": 12,
-    "tokenSymbol": "KSM",
-  },
-  "nodeRoles": Array [
-    Object {
-      "Full": null,
-    },
-  ],
-  "nodeVersion": "0.8.8-b2c9c149-x86_64-linux-gnu",
-}
-`;

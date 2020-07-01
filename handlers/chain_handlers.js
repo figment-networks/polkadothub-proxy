@@ -39,7 +39,6 @@ const getStatus = async (api, _call) => {
   const nodeVersion = await api.rpc.system.version();
   const nodeLocalPeerUid = await api.rpc.system.localPeerId();
   const nodeProperties = await api.rpc.system.properties();
-  console.log('Node specific properties:', nodeProperties.toHuman());
 
   // RUNTIME
   const genesisHash = api.genesisHash.toHex();
