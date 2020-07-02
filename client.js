@@ -13,34 +13,43 @@ const {
 function main() {
   const height = 2003930;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
+  let client;
 
   // Chain
-  let client = new chainProto.ChainService('localhost:50051', grpc.credentials.createInsecure());
-  client.getHead({}, function(err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('head: ', response);
-    }
-  });
+  // client = new chainProto.ChainService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getHead({}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('head: ', response);
+  //   }
+  // });
 
-  client.getMetaByHeight({height: height}, function (err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('block meta: ', response);
-    }
-  });
+  // client.getMetaByHeight({height: 176}, function (err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block meta: ', response);
+  //   }
+  // });
+
+  // client.getMetaByHeight({height: 174}, function (err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block meta: ', response);
+  //   }
+  // });
 
   // Block
-  client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function(err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('block: ', response);
-    }
-  });
+  // client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block: ', response);
+  //   }
+  // });
 
   // Transactions
   // client = new transactionProto.TransactionService('localhost:50051', grpc.credentials.createInsecure());
