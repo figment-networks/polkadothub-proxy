@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration getMetaByHeight returns a result that matches snapshot 1`] = `
+Object {
+  "chain": "Kusama",
+  "era": 0,
+  "lastInEra": false,
+  "lastInSession": false,
+  "session": 0,
+  "specVersion": "1020",
+  "time": Object {
+    "nanos": 0,
+    "seconds": 0,
+  },
+}
+`;
