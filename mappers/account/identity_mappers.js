@@ -1,6 +1,10 @@
 const {hexToString} = require('@polkadot/util');
 
 const toPb = (rawIdentity) => {
+  if (rawIdentity.isEmpty) {
+    return {identity: null};
+  }
+
   const unwrappedIdentity = rawIdentity.unwrap();
 
   const identity = {

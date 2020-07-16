@@ -4,7 +4,7 @@ const {ApiPromise, WsProvider} = require('@polkadot/api');
 const {setupApiAtHeight} = require('../utils/setup');
 
 const NODE_URL = 'ws://localhost:9944';
-const HEIGHT = 2223540;
+const HEIGHT = 3089836;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);
@@ -14,6 +14,22 @@ async function init() {
 
   // EVENTS
   const eventsAt = await api.query.system.events.at(blockHash);
+
+  eventsAt.forEach((record) => {
+    // Extract the phase, event and the event types
+    const { event, phase } = record;
+    const types = event.typeDef;
+
+    // Show what we are busy with
+    console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
+    console.log(`\t\t${event.meta.documentation.toString()}`);
+
+    // Loop through each of the parameters, displaying the type and data
+    event.data.forEach((data, index) => {
+      console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
+    });
+  });
+
   console.log('eventsAt: ', eventsAt.toHuman());
 }
 

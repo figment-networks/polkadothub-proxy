@@ -1,8 +1,12 @@
 const toPb = (rawEvent) => {
+  const types = rawEvent.event.typeDef;
+  const eventData = getEventData(rawEvent, types);
+
   const event = {
-    data: rawEvent.event.data.toString(),
+    data: eventData,
     method: rawEvent.event.method,
     section: rawEvent.event.section,
+    description: rawEvent.event.meta.documentation.toString(),
   }
 
   if (rawEvent.phase.isApplyExtrinsic) {
@@ -17,6 +21,17 @@ const toPb = (rawEvent) => {
   }
 
   return event;
+}
+
+function getEventData(rawEvent, types) {
+  const eventData = [];
+  rawEvent.event.data.forEach((data, index) => {
+    eventData.push({
+      name: types[index].type,
+      value: data.toString(),
+    })
+  });
+  return eventData;
 }
 
 module.exports = {
