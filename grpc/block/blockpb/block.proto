@@ -32,15 +32,6 @@ message Block {
   repeated Extrinsic extrinsics = 3;
 }
 
-message GetHeadRequest {}
-
-message GetHeadResponse {
-  int64 height = 1;
-  google.protobuf.Timestamp time = 2;
-  int64 session = 3;
-  int64 era = 4;
-}
-
 message GetByHeightRequest {
   int64 height = 1;
 }
@@ -53,22 +44,7 @@ message GetByHeightResponse {
   Block block = 7;
 }
 
-message GetMetaByHeightRequest {
-  int64 height = 1;
-}
-
-message GetMetaByHeightResponse {
-  int64 session = 1;
-  int64 era = 2;
-  bool last_in_session = 3;
-  bool last_in_era = 4;
-  string chain = 5;
-  string spec_version = 6;
-}
-
 service BlockService {
-  rpc GetHead (GetHeadRequest) returns (GetHeadResponse) {}
-  rpc GetMetaByHeight (GetMetaByHeightRequest) returns (GetMetaByHeightResponse) {}
   rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
 }
 

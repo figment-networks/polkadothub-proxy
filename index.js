@@ -3,6 +3,7 @@ const grpc = require('grpc');
 
 const {rollbar} = require('./utils/rollbar');
 const {
+  chainProto,
   blockProto,
   transactionProto,
   eventProto,
@@ -11,6 +12,7 @@ const {
   validatorPerformanceProto,
 } = require('./grpc/init');
 
+const chainHandlers = require('./handlers/chain_handlers');
 const blockHandlers = require('./handlers/block_handlers');
 const transactionHandlers = require('./handlers/transaction_handlers');
 const eventHandlers = require('./handlers/event_handlers');
@@ -47,6 +49,11 @@ async function init() {
   const api = await ApiPromise.create({provider: wsProvider});
 
   const server = new grpc.Server();
+  server.addService(chainProto.ChainService.service, {
+    getHead: wrapHandler(chainHandlers.getHead, api),
+    getStatus: wrapHandler(chainHandlers.getStatus, api),
+    getMetaByHeight: wrapHandler(chainHandlers.getMetaByHeight, api),
+  });
   server.addService(blockProto.BlockService.service, {
     getHead: wrapHandler(blockHandlers.getHead, api),
     getMetaByHeight: wrapHandler(blockHandlers.getMetaByHeight, api),

@@ -18,6 +18,9 @@ async function init() {
   const chain = await api.rpc.system.chain();
   console.log('chain name: ', chain.toString());
 
+  const chainType = await api.rpc.system.chainType();
+  console.log('chain type: ', chainType.toString());
+
   // NETWORK
   // const networkState = await api.rpc.system.networkState();
   // console.log('Network state: ', networkState.toString());
@@ -31,6 +34,8 @@ async function init() {
   console.log('node roles: ', nodeRoles.toString());
   const nodeVersion = await api.rpc.system.version();
   console.log('node version: ', nodeVersion.toString());
+  const localPeerId = await api.rpc.system.localPeerId();
+  console.log('local peer id: ', localPeerId.toString());
   const nodeProperties = await api.rpc.system.properties();
   if (nodeProperties.size > 0) {
     console.log('Node specific properties:');
@@ -46,7 +51,7 @@ async function init() {
   console.log('genesis hash:', genesisHash);
 
   const runtimeVersion = api.runtimeVersion;
-  // console.log('runtime version', runtimeVersion.toString());
+  console.log('runtime version', runtimeVersion.toString());
 
   const runtimeMetadata = api.runtimeMetadata;
   // console.log('runtime metadata', runtimeMetadata.toString());
