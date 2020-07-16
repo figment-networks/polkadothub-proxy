@@ -1,24 +1,17 @@
-const toPb = (block, timestamp) => {
+const transactionMappers = require('../transaction/transaction_mappers');
+
+const toPb = (rawBlock, rawTimestamp, rawEvents) => {
   return {
     block: {
       header: {
-        time: {seconds: timestamp.toNumber() / 1000, nanos: 0},
-        parentHash: block.header.parentHash.toString(),
-        height: block.header.number.toNumber(),
-        stateRoot: block.header.stateRoot.toString(),
-        extrinsicsRoot: block.header.extrinsicsRoot.toString(),
+        time: {seconds: rawTimestamp.toNumber() / 1000, nanos: 0},
+        parentHash: rawBlock.header.parentHash.toString(),
+        height: rawBlock.header.number.toNumber(),
+        stateRoot: rawBlock.header.stateRoot.toString(),
+        extrinsicsRoot: rawBlock.header.extrinsicsRoot.toString(),
       },
-      extrinsics: block.extrinsics.map((rawExtrinsic, index) => {
-        return {
-          extrinsicIndex: index,
-          isSignedTransaction: rawExtrinsic.toHuman().isSigned,
-          signature: rawExtrinsic.signature.toString(),
-          signer: rawExtrinsic.signer.toString(),
-          nonce: rawExtrinsic.nonce.toNumber(),
-          method: rawExtrinsic.toHuman().method.method.toString(),
-          section: rawExtrinsic.toHuman().method.section.toString(),
-          args: rawExtrinsic.method.args.toString(),
-        }
+      extrinsics: rawBlock.extrinsics.map((rawExtrinsic, index) => {
+        return transactionMappers.toPb(index, rawExtrinsic, rawEvents)
       }),
     }
   };

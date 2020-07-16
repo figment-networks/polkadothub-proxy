@@ -7,21 +7,24 @@ option go_package = "grpc/block/blockpb";
 
 message Header {
   google.protobuf.Timestamp time = 1;
-  string parent_hash = 2;
-  int64  height = 3;
-  string state_root = 4;
-  string extrinsics_root = 5;
+  string block_hash = 2;
+  string parent_hash = 3;
+  int64  height = 4;
+  string state_root = 5;
+  string extrinsics_root = 6;
 }
 
 message Extrinsic {
   int64 extrinsic_index = 1;
-  bool is_signed_transaction = 2;
-  string signature = 3;
-  string signer = 4;
-  int64  nonce = 5;
-  string method = 6;
-  string section = 7;
-  string args = 8;
+  string hash = 2;
+  bool is_signed_transaction = 3;
+  string signature = 4;
+  string signer = 5;
+  int64  nonce = 6;
+  string method = 7;
+  string section = 8;
+  string args = 9;
+  bool is_success = 10;
 }
 
 message Block {

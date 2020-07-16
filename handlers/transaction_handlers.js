@@ -12,13 +12,12 @@ const getByHeight = async (api, call) => {
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;
 
+  const rawEventsAt = await api.query.system.events.at(blockHash);
+
   const transactions = [];
   rawBlockAt.extrinsics.forEach((rawExtrinsic, index) => {
     if (rawExtrinsic.toHuman().isSigned) {
-      transactions.push({
-        extrinsicIndex: index,
-        ...transactionMappers.toPb(rawExtrinsic),
-      });
+      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawEventsAt));
     }
   });
 

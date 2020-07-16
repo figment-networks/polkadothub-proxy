@@ -14,14 +14,14 @@ function main() {
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
 
   // Block
-  let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
-  client.getByHeight({height: height}, function(err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('block: ', response);
-    }
-  });
+  // let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block: ', response);
+  //   }
+  // });
 
   // client.getHead({}, function(err, response) {
   //   if (err) {
@@ -31,13 +31,39 @@ function main() {
   //   }
   // });
 
-  client.getMetaByHeight({height: height}, function (err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('block meta: ', response);
-    }
-  });
+  // client.getMetaByHeight({height: height}, function (err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block meta: ', response);
+  //   }
+  // })
+
+  // client.getMetaByHeight({height: 176}, function (err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block meta: ', response);
+  //   }
+  // });
+
+  // client.getMetaByHeight({height: 174}, function (err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block meta: ', response);
+  //   }
+  // });
+
+  // Block
+  // client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('block: ', response.block.extrinsics);
+  //   }
+  // });
 
   // Transactions
   // client = new transactionProto.TransactionService('localhost:50051', grpc.credentials.createInsecure());
