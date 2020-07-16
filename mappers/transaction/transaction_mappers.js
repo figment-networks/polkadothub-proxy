@@ -1,15 +1,7 @@
 const eventMappers = require('../event/event_mappers');
 
 const toPb = (index, rawExtrinsic, rawEvents) => {
-  let success = false;
-  for (let rawEvent of rawEvents) {
-    const event = eventMappers.toPb(rawEvent);
-
-    if (event.extrinsicIndex === index && event.section === 'system' && event.method === 'ExtrinsicSuccess') {
-      success = true;
-      break;
-    }
-  }
+  const success = getSuccess(rawEvents, index);
 
   return {
     extrinsicIndex: index,
@@ -23,6 +15,19 @@ const toPb = (index, rawExtrinsic, rawEvents) => {
     args: rawExtrinsic.method.args.toString(),
     isSuccess: success,
   };
+}
+
+function getSuccess(rawEvents, index) {
+  let success = false;
+  for (let rawEvent of rawEvents) {
+    const event = eventMappers.toPb(rawEvent);
+
+    if (event.extrinsicIndex === index && event.section === 'system' && event.method === 'ExtrinsicSuccess') {
+      success = true;
+      break;
+    }
+  }
+  return success;
 }
 
 module.exports = {
