@@ -3,13 +3,19 @@ syntax = "proto3";
 package event;
 option go_package = "grpc/event/eventpb";
 
+message EventData {
+  string name = 1;
+  string value = 2;
+}
+
 message Event {
   int64 index = 1;
-  string data = 2;
+  repeated EventData data = 2;
   string phase = 3;
   string method = 4;
   string section = 5;
-  int64 extrinsicIndex = 6;
+  string description = 6;
+  int64 extrinsicIndex = 7;
 }
 
 message GetByHeightRequest {

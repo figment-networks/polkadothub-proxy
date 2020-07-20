@@ -18,12 +18,16 @@ const getByHeight = async (api, call) => {
   const currentSession = parseInt(session.toString(), 10);
   const currentEra = parseInt(era.toString(), 10);
 
+  const rawEventsAt = await api.query.system.events.at(blockHash);
+
   return {
     era: currentEra,
     session: currentSession,
     chain: chain.toString(),
     specVersion: specVersion.toString(),
-    ...blockMappers.toPb(rawBlockAt, rawTimestampAt)
+    blockHash: blockHash.toString(),
+
+    ...blockMappers.toPb(rawBlockAt, rawTimestampAt, rawEventsAt)
   };
 };
 

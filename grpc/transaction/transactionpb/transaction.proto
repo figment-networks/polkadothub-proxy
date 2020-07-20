@@ -5,12 +5,15 @@ option go_package = "grpc/transaction/transactionpb";
 
 message Transaction {
   int64 extrinsic_index = 1;
-  string signature = 2;
-  string signer = 3;
-  int64  nonce = 4;
-  string method = 5;
-  string section = 6;
-  string args = 7;
+  string hash = 2;
+  string time = 3;
+  string signature = 4;
+  string signer = 5;
+  int64  nonce = 6;
+  string method = 7;
+  string section = 8;
+  string args = 9;
+  bool is_success = 10;
 }
 
 message GetByHeightRequest {

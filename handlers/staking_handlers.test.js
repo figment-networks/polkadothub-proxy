@@ -8,6 +8,6 @@ describe('integration', () => {
   describe('getByHeight', () => {
     it('returns a result that matches snapshot', async () => {
       expect(await stakingHandlers.getByHeight(await createApi(), call)).toMatchSnapshot();
-    }, 110000); // these take a really long time, usually around 80s
+    }, 300000); // these take a really long time, usually around 80s
   });
 });
