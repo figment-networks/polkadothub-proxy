@@ -17,14 +17,15 @@ message Header {
 message Extrinsic {
   int64 extrinsic_index = 1;
   string hash = 2;
-  bool is_signed_transaction = 3;
-  string signature = 4;
-  string signer = 5;
-  int64  nonce = 6;
-  string method = 7;
-  string section = 8;
-  string args = 9;
-  bool is_success = 10;
+  string time = 3;
+  bool is_signed_transaction = 4;
+  string signature = 5;
+  string signer = 6;
+  int64  nonce = 7;
+  string method = 8;
+  string section = 9;
+  string args = 10;
+  bool is_success = 11;
 }
 
 message Block {

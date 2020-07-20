@@ -11,7 +11,7 @@ const toPb = (rawBlock, rawTimestamp, rawEvents) => {
         extrinsicsRoot: rawBlock.header.extrinsicsRoot.toString(),
       },
       extrinsics: rawBlock.extrinsics.map((rawExtrinsic, index) => {
-        return transactionMappers.toPb(index, rawExtrinsic, rawEvents)
+        return transactionMappers.toPb(index, rawExtrinsic, rawTimestamp, rawEvents)
       }),
     }
   };

@@ -14,6 +14,10 @@ Object {
       "section": "utility",
       "signature": "0x54cb9be9b44a25b2493512ab9d413c0a6388f6bc4b607693b99d6e5230efc923669e7d4dd621d48dc67301b0380690f9d4994213e0e7d7b88cb3adcafdbe8582",
       "signer": "HA4FRTrk4n5f2gvsfNLYY4b9Tw5eincNBXpxpSV21qGVXvB",
+      "time": Object {
+        "nanos": 0,
+        "seconds": 1587626346,
+      },
     },
   ],
 }
