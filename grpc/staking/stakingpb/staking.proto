@@ -16,8 +16,9 @@ message Validator {
   int64 reward_points = 4;
   int64 total_stake = 5;
   int64 own_stake = 6;
-  repeated Stake stakers = 7;
-  repeated string session_keys = 8;
+  int64 stakers_stake = 7;
+  repeated Stake stakers = 8;
+  repeated string session_keys = 9;
 }
 
 message Staking {
