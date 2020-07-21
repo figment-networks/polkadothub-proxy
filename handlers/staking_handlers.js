@@ -10,27 +10,21 @@ const getByHeight = async (api, call) => {
   const {blockHash: prevBlockHash} = await setupApiAtHeight(api, height - 1);
   const blockHash = await api.rpc.chain.getBlockHash(height);
 
-  const timestamp = await api.query.timestamp.now.at(blockHash);
-  console.log('timestamp', timestamp.toNumber());
-
   const sessionAt = await api.query.session.currentIndex.at(prevBlockHash);
-  console.log('current session #: ', sessionAt.toString());
-
-  const eraAt = await api.query.staking.currentEra.at(prevBlockHash);
-  console.log('currentEra: ', eraAt.toString());
+  const eraAtRaw = await api.query.staking.activeEra.at(blockHash);
+  if (!eraAtRaw.isSome) {
+    throw new Error('active era not found.')
+  }
+  const eraAt = eraAtRaw.unwrap().index;
 
   // ERA QUERIES
-  const erasRewardPoints = await api.query.staking.erasRewardPoints(eraAt.toString());
-  console.log('erasRewardPoints: ', erasRewardPoints.toString());
-
-  const erasTotalStake = await api.query.staking.erasTotalStake(eraAt.toString());
-  console.log('erasTotalStake: ', erasTotalStake.toString());
+  const erasRewardPoints = await api.query.staking.erasRewardPoints.at(blockHash, eraAt);
+  const erasTotalStake = await api.query.staking.erasTotalStake.at(blockHash, eraAt);
 
   // Validator reward for era
   // The total validator era payout for the last HISTORY_DEPTH eras.
   // Eras that haven't finished yet or has been removed doesn't have reward.
-  const erasValidatorReward = await api.query.staking.erasValidatorReward(eraAt.toString());
-  console.log('erasValidatorReward: ', erasValidatorReward.toString());
+  const erasValidatorReward = await api.query.staking.erasValidatorReward.at(blockHash, eraAt);
 
   // Fetch session keys for validators. Most probably the query is `queuedKeys`,
   // but there's a chance it should be `nextKeys`
@@ -56,9 +50,10 @@ const getByHeight = async (api, call) => {
     }
 
     // Get stakers for validator
-    const erasStakers = await api.query.staking.erasStakers(eraAt.toString(), validatorStashAccount);
+    const erasStakers = await api.query.staking.erasStakers.at(blockHash, eraAt, validatorStashAccount);
     validator.totalStake = erasStakers.total.toString();
     validator.ownStake = erasStakers.own.toString();
+    validator.stakersStake = erasStakers.total - erasStakers.own;
 
     for (const stake of erasStakers.others) {
       const nominatorStashAccount = stake.who;
@@ -74,7 +69,7 @@ const getByHeight = async (api, call) => {
     }
 
     // Get Validator prefs (commission)
-    const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs(eraAt.toString(), validatorStashAccount);
+    const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs.at(blockHash, eraAt, validatorStashAccount);
     validator.commission = erasValidatorPrefs.commission.toString();
 
     validatorsData.push(validator);
@@ -83,7 +78,7 @@ const getByHeight = async (api, call) => {
   return {
     staking: {
       session: sessionAt.toString(),
-      era: eraAt.toString(),
+      era: eraAt,
       totalStake: erasTotalStake.toString(),
       totalRewardPayout: (erasValidatorReward.isEmpty ? '0' : erasValidatorReward).toString(),
       totalRewardPoints: erasRewardPoints.total.toString(),

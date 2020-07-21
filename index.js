@@ -20,8 +20,9 @@ const stakingHandlers = require('./handlers/staking_handlers');
 const accountHandlers = require('./handlers/account_handlers');
 const validatorPerformanceHandlers = require('./handlers/validator_performance_handlers');
 
-const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
+const HOST = process.env.HOST || "0.0.0.0"
 const PORT = process.env.PORT || 50051
+const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
 
 // Wrap a handler with a method that passes api to it
 // and then calls an appropriate callback with or without error
@@ -55,8 +56,6 @@ async function init() {
     getMetaByHeight: wrapHandler(chainHandlers.getMetaByHeight, api),
   });
   server.addService(blockProto.BlockService.service, {
-    getHead: wrapHandler(blockHandlers.getHead, api),
-    getMetaByHeight: wrapHandler(blockHandlers.getMetaByHeight, api),
     getByHeight: wrapHandler(blockHandlers.getByHeight, api),
   });
   server.addService(transactionProto.TransactionService.service, {
@@ -75,12 +74,12 @@ async function init() {
   server.addService(validatorPerformanceProto.ValidatorPerformanceService.service, {
     getByHeight: wrapHandler(validatorPerformanceHandlers.getByHeight, api),
   });
-  server.bind(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure());
+  server.bind(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure());
   server.start();
 }
 
 init().then(resp => {
-  console.log('Server started');
+  console.log(`Server started at ${HOST}:${PORT}`);
 }).catch(err => {
   console.log('ERR:', err);
 });

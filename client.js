@@ -11,7 +11,7 @@ const {
 } = require('./grpc/init');
 
 function main() {
-  const height = 2003930;
+  const height = 2278812;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
   let client;
 

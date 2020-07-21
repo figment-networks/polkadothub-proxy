@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "//": "// remove `--silent` to display logs, otherwise it's very verbose https://github.com/polkadot-js/common/issues/491#issuecomment-557938010",
     "test": "jest --watchAll --silent",
     "test:all": "jest --forceExit --silent"
   },
-  "author": "",
+  "author": "FigmentNetworks",
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.4",

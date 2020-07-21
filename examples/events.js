@@ -4,7 +4,7 @@ const {ApiPromise, WsProvider} = require('@polkadot/api');
 const {setupApiAtHeight} = require('../utils/setup');
 
 const NODE_URL = 'ws://localhost:9944';
-const HEIGHT = 3089836;
+const HEIGHT = 2278813;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);

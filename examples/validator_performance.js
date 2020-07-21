@@ -5,7 +5,7 @@ const {setupApiAtHeight} = require('../utils/setup');
 
 const NODE_URL = 'ws://localhost:9944';
 const ADDR = 'DGiLC1uvohfgHiirDtsr5HJRYXUFy9NdXj6YC6azcaRpvJZ';
-const HEIGHT = 1805382;
+const HEIGHT = 2197577;
 
 async function init() {
   const wsProvider = new WsProvider(NODE_URL);
