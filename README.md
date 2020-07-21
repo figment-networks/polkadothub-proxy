@@ -1,7 +1,7 @@
 # Polkadothub Proxy
 
 ## Description
-This is a proxy for Polkadot node which uses polkadot-js as a client. This API uses gRPC to communicate with clients.
+This is a proxy for Polkadot node which uses polkadot-js as a client. Under the hood, it uses gRPC to communicate with users of this proxy.
 
 ## Usage (without Docker)
 ### Install packages
