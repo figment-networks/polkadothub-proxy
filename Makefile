@@ -1,4 +1,12 @@
-.PHONY: grpc-go
+.PHONY: grpc-go docker
+
+docker:
+	docker build -t polkadothub-proxy -f Dockerfile .
+
+docker-release:
+	docker build -t polkadothub-proxy --no-cache .
+	docker tag polkadothub-proxy:latest figmentnetworks/polkadothub-proxy:dev
+	docker push figmentnetworks/polkadothub-proxy:dev
 
 grpc-go:
 	@protoc grpc/account/accountpb/account.proto --go_out=plugins=grpc:.
