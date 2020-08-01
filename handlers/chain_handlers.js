@@ -1,10 +1,10 @@
 const {InvalidArgumentError} = require('../utils/errors');
-const {setupApiAtHeight} = require('../utils/setup');
+const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 
 /**
  * Get current head information
  */
-const getHead = async (api, _call) => {
+const getHead = async (api, _call, context) => {
   // No need to set metadata and types here since most recent are loaded automatically
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -24,7 +24,7 @@ const getHead = async (api, _call) => {
 /**
  * Get status information
  */
-const getStatus = async (api, _call) => {
+const getStatus = async (api, _call, context) => {
   // CLIENT
   const clientInfo = api.libraryInfo;
 
@@ -60,7 +60,7 @@ const getStatus = async (api, _call) => {
 /**
  * Get meta information for given height (session and era)
  */
-const getMetaByHeight = async (api, call) => {
+const getMetaByHeight = async (api, call, context) => {
   const height = call.request.height;
 
   const lastFinalizedBlockHash = await api.rpc.chain.getFinalizedHead();
@@ -71,21 +71,37 @@ const getMetaByHeight = async (api, call) => {
     throw new InvalidArgumentError('height is finalized');
   }
 
-  // Next BLOCK
-  const {session: nextSession, era: nextEra, chain, specVersion} = await getMeta(api, height);
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  const prevHeightMetadata = context.prevHeightMetadata ? context.prevHeightMetadata : await fetchMetadataAtHeight(api, height - 1);
 
-  // Current BLOCK
-  const {blockHash, session: currentSession, era: currentEra} = await getMeta(api, parseInt(height, 10) - 1);
-  const rawTimestampAt = await api.query.timestamp.now.at(blockHash);
+  // Current height
+  injectMetadata(api, currHeightMetadata);
+
+  const {blockHash} = currHeightMetadata;
+  const rawCurrentEra = await api.query.staking.currentEra.at(blockHash);
+  const currentEra = parseInt(rawCurrentEra.toString(), 10);
+  const rawCurrentSession = await api.query.session.currentIndex.at(blockHash);
+  const currentSession = parseInt(rawCurrentSession.toString(), 10);
+
+  // Previous height
+  injectMetadata(api, prevHeightMetadata);
+
+  const {chain, specVersion, blockHash: prevBlockHash} = prevHeightMetadata;
+
+  const rawPrevEra = await api.query.staking.currentEra.at(prevBlockHash);
+  const prevEra = parseInt(rawPrevEra.toString(), 10);
+  const rawPrevSession = await api.query.session.currentIndex.at(prevBlockHash);
+  const prevSession = parseInt(rawPrevSession.toString(), 10);
+  const rawTimestampAt = await api.query.timestamp.now.at(prevBlockHash);
 
   return {
     time: {seconds: rawTimestampAt.toNumber() / 1000, nanos: 0},
-    era: currentEra,
-    session: currentSession,
-    lastInEra: nextEra !== currentEra,
-    lastInSession: nextSession !== currentSession,
-    chain,
-    specVersion,
+    era: prevEra,
+    session: prevSession,
+    lastInEra: prevEra !== currentEra,
+    lastInSession: prevSession !== currentSession,
+    chain: chain.toString(),
+    specVersion: specVersion.toString(),
   };
 };
 
@@ -93,7 +109,10 @@ const getMetaByHeight = async (api, call) => {
  * Return session and era for given height
  */
 const getMeta = async (api, height) => {
-  let {blockHash, chain, specVersion} = await setupApiAtHeight(api, height);
+  const data = await fetchMetadataAtHeight(api, height);
+  injectMetadata(api, data);
+
+  let {blockHash, chain, specVersion} = data;
 
   let era = await api.query.staking.currentEra.at(blockHash);
   let session = await api.query.session.currentIndex.at(blockHash);

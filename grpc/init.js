@@ -8,11 +8,18 @@ const defaultOptions = {
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true
+  oneofs: true,
+  includeDirs: ['./'],
 };
 
+let packageDefinition;
+
+// Height
+packageDefinition = protoLoader.loadSync('./grpc/height/heightpb/height.proto', defaultOptions);
+const heightProto = grpc.loadPackageDefinition(packageDefinition).height;
+
 // Chain
-let packageDefinition = protoLoader.loadSync('./grpc/chain/chainpb/chain.proto', defaultOptions);
+packageDefinition = protoLoader.loadSync('./grpc/chain/chainpb/chain.proto', defaultOptions);
 const chainProto = grpc.loadPackageDefinition(packageDefinition).chain;
 
 // Block
@@ -40,6 +47,7 @@ packageDefinition = protoLoader.loadSync('./grpc/validatorperformance/validatorp
 const validatorPerformanceProto = grpc.loadPackageDefinition(packageDefinition).validatorPerformance;
 
 module.exports = {
+  heightProto,
   chainProto,
   blockProto,
   transactionProto,

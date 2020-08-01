@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package transaction;
-option go_package = "grpc/transaction/transactionpb";
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/transaction/transactionpb";
 
 message Transaction {
   int64 extrinsic_index = 1;

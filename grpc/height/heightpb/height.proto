@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package height;
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/height/heightpb";
+
+import "grpc/chain/chainpb/chain.proto";
+import "grpc/block/blockpb/block.proto";
+import "grpc/staking/stakingpb/staking.proto";
+import "grpc/validatorperformance/validatorperformancepb/validator_performance.proto";
+import "grpc/event/eventpb/event.proto";
+
+message GetAllRequest {
+  int64 height = 1;
+}
+
+message GetAllResponse {
+  chain.GetMetaByHeightResponse chain = 1;
+  block.GetByHeightResponse block = 2;
+  staking.GetByHeightResponse staking = 3;
+  event.GetByHeightResponse event = 4;
+  validatorPerformance.GetByHeightResponse validator_performance = 5;
+}
+
+service HeightService {
+  rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
+}
+

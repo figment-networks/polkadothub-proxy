@@ -1,19 +1,29 @@
-const {setupApiAtHeight} = require('../utils/setup');
+const {InvalidArgumentError} = require('../utils/errors');
+const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const stakingMappers = require('../mappers/staking/staking_mappers');
 
 /**
  * Get staking information by height
  */
-const getByHeight = async (api, call) => {
+const getByHeight = async (api, call, context) => {
   const height = call.request.height;
 
-  const {blockHash: prevBlockHash} = await setupApiAtHeight(api, height - 1);
-  const blockHash = await api.rpc.chain.getBlockHash(height);
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  const prevHeightMetadata = context.prevHeightMetadata ? context.prevHeightMetadata : await fetchMetadataAtHeight(api, height - 1);
 
+  const {blockHash} = currHeightMetadata;
+  const {blockHash: prevBlockHash} = prevHeightMetadata;
+
+  // previous height calls
+  injectMetadata(api, prevHeightMetadata);
   const sessionAt = await api.query.session.currentIndex.at(prevBlockHash);
+
+  // current height calls
+  injectMetadata(api, currHeightMetadata);
+
   const eraAtRaw = await api.query.staking.activeEra.at(blockHash);
   if (!eraAtRaw.isSome) {
-    throw new Error('active era not found.')
+    throw new InvalidArgumentError('active era not found.')
   }
   const eraAt = eraAtRaw.unwrap().index;
 

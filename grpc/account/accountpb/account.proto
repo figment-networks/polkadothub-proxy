@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package account;
-option go_package = "grpc/account/accountpb";
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/account/accountpb";
 
 message Account {
   int64 nonce = 1;

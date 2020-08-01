@@ -1,13 +1,16 @@
-const {setupApiAtHeight} = require('../utils/setup');
+const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const blockMappers = require('../mappers/block/block_mappers');
 
 /**
  * Get block by height
  */
-const getByHeight = async (api, call) => {
-  const height = parseInt(call.request.height, 10);
+const getByHeight = async (api, call, context) => {
+  const height = call.request.height;
 
-  const {blockHash, chain, specVersion} = await setupApiAtHeight(api, height);
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  injectMetadata(api, currHeightMetadata);
+
+  const {blockHash, chain, specVersion} = currHeightMetadata;
 
   const blockResp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = blockResp.block;

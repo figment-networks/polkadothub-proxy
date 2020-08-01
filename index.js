@@ -2,7 +2,9 @@ const {ApiPromise, WsProvider} = require('@polkadot/api');
 const grpc = require('grpc');
 
 const {rollbar} = require('./utils/rollbar');
+
 const {
+  heightProto,
   chainProto,
   blockProto,
   transactionProto,
@@ -12,6 +14,7 @@ const {
   validatorPerformanceProto,
 } = require('./grpc/init');
 
+const heightHandlers = require('./handlers/height_handlers');
 const chainHandlers = require('./handlers/chain_handlers');
 const blockHandlers = require('./handlers/block_handlers');
 const transactionHandlers = require('./handlers/transaction_handlers');
@@ -28,7 +31,9 @@ const NODE_URL = process.env.NODE_URL || 'ws://localhost:9944';
 // and then calls an appropriate callback with or without error
 const wrapHandler = (fn, api) => {
   return (call, callback) => {
-    fn(api, call)
+    let context = {};
+
+    fn(api, call, context)
       .then(result => {
         callback(null, result)
       })
@@ -50,6 +55,9 @@ async function init() {
   const api = await ApiPromise.create({provider: wsProvider});
 
   const server = new grpc.Server();
+  server.addService(heightProto.HeightService.service, {
+    getAll: wrapHandler(heightHandlers.getAll, api),
+  });
   server.addService(chainProto.ChainService.service, {
     getHead: wrapHandler(chainHandlers.getHead, api),
     getStatus: wrapHandler(chainHandlers.getStatus, api),
