@@ -4,28 +4,60 @@ exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "events": Array [
     Object {
-      "data": "[[[\\"EDcqtP9vMNrk7PHEbSw1TVgccE3s2mG1xPnbvsQrJ8CWvD2\\",{\\"total\\":\\"0x0000000000000000003cb607bbb46566\\",\\"own\\":428192307900,\\"others\\":[{\\"who\\":\\"DSELWxqt4g3THNfg7TAHhU69eQJo8N2kBbAMuaF636eZCX2\\",\\"value\\":\\"0x0000000000000000003cb5a409744aaa\\"}]}],[\\"EMa2d6yYb3CPxyArDCzsMfngnDKUbRL6QdogfYAPKZmmN1E\\",{\\"total\\":\\"0x0000000000000000003cbc2fa0148b9b\\",\\"own\\":150000000000,\\"others\\":[{\\"who\\":\\"GqPDeJBexSsvEq6gBzrnMCn7KNYbzn9bX9ePCjEDN3EikoV\\",\\"value\\":494995783246335},{\\"who\\":\\"JEcacANpAxTKvrwYCgYRCUVA92sQBvWyCSLY85cQb9TNMJd\\",\\"value\\":3048594856434411},{\\"who\\":\\"DczLnbiH1PAFTegXu1GCp6Py9gujWDoYUPiXVgJYEApp4iY\\",\\"value\\":804220776711627},{\\"who\\":\\"HhM97zfBvM1H7Mee3TDatCsGRNzdoaEodJdjty4bh32NcZb\\",\\"value\\":\\"0x0000000000000000002d49bcf85bece6\\"}]}]]]",
+      "data": Array [
+        Object {
+          "name": "Vec<IdentificationTuple>",
+          "value": "[[\\"EDcqtP9vMNrk7PHEbSw1TVgccE3s2mG1xPnbvsQrJ8CWvD2\\",{\\"total\\":\\"0x0000000000000000003cb607bbb46566\\",\\"own\\":428192307900,\\"others\\":[{\\"who\\":\\"DSELWxqt4g3THNfg7TAHhU69eQJo8N2kBbAMuaF636eZCX2\\",\\"value\\":\\"0x0000000000000000003cb5a409744aaa\\"}]}], [\\"EMa2d6yYb3CPxyArDCzsMfngnDKUbRL6QdogfYAPKZmmN1E\\",{\\"total\\":\\"0x0000000000000000003cbc2fa0148b9b\\",\\"own\\":150000000000,\\"others\\":[{\\"who\\":\\"GqPDeJBexSsvEq6gBzrnMCn7KNYbzn9bX9ePCjEDN3EikoV\\",\\"value\\":494995783246335},{\\"who\\":\\"JEcacANpAxTKvrwYCgYRCUVA92sQBvWyCSLY85cQb9TNMJd\\",\\"value\\":3048594856434411},{\\"who\\":\\"DczLnbiH1PAFTegXu1GCp6Py9gujWDoYUPiXVgJYEApp4iY\\",\\"value\\":804220776711627},{\\"who\\":\\"HhM97zfBvM1H7Mee3TDatCsGRNzdoaEodJdjty4bh32NcZb\\",\\"value\\":\\"0x0000000000000000002d49bcf85bece6\\"}]}]]",
+        },
+      ],
+      "description": "[ At the end of the session, at least once validator was found to be offline.]",
       "index": 0,
       "method": "SomeOffline",
       "phase": "initialization",
       "section": "imOnline",
     },
     Object {
-      "data": "[\\"0x696d2d6f6e6c696e653a6f66666c696e\\",\\"0x060f0000\\",true]",
+      "data": Array [
+        Object {
+          "name": "Kind",
+          "value": "0x696d2d6f6e6c696e653a6f66666c696e",
+        },
+        Object {
+          "name": "OpaqueTimeSlot",
+          "value": "0x060f0000",
+        },
+        Object {
+          "name": "bool",
+          "value": "true",
+        },
+      ],
+      "description": "[ There is an offence reported of the given \`kind\` happened at the \`session_index\` and,  (kind-specific) time slot. This event is not deposited for duplicate slashes. last,  element indicates of the offence was applied (true) or queued (false).]",
       "index": 1,
       "method": "Offence",
       "phase": "initialization",
       "section": "offences",
     },
     Object {
-      "data": "[3847]",
+      "data": Array [
+        Object {
+          "name": "SessionIndex",
+          "value": "3847",
+        },
+      ],
+      "description": "[ New session has happened. Note that the argument is the session index, not the block,  number as the type might suggest.]",
       "index": 2,
       "method": "NewSession",
       "phase": "initialization",
       "section": "session",
     },
     Object {
-      "data": "[{\\"weight\\":10000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}]",
+      "data": Array [
+        Object {
+          "name": "DispatchInfo",
+          "value": "{\\"weight\\":10000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}",
+        },
+      ],
+      "description": "[ An extrinsic completed successfully.]",
       "extrinsicIndex": 0,
       "index": 3,
       "method": "ExtrinsicSuccess",
@@ -33,7 +65,13 @@ Object {
       "section": "system",
     },
     Object {
-      "data": "[{\\"weight\\":10000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}]",
+      "data": Array [
+        Object {
+          "name": "DispatchInfo",
+          "value": "{\\"weight\\":10000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}",
+        },
+      ],
+      "description": "[ An extrinsic completed successfully.]",
       "extrinsicIndex": 1,
       "index": 4,
       "method": "ExtrinsicSuccess",
@@ -41,7 +79,13 @@ Object {
       "section": "system",
     },
     Object {
-      "data": "[{\\"weight\\":1000000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}]",
+      "data": Array [
+        Object {
+          "name": "DispatchInfo",
+          "value": "{\\"weight\\":1000000000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"No\\"}",
+        },
+      ],
+      "description": "[ An extrinsic completed successfully.]",
       "extrinsicIndex": 2,
       "index": 5,
       "method": "ExtrinsicSuccess",
