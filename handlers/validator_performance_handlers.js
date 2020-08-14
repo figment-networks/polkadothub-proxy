@@ -1,5 +1,6 @@
+const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const {InvalidArgumentError} = require('../utils/errors');
-const {setupApiAtHeight} = require('../utils/setup');
+
 const IM_ONLINE_SECTION = 'imOnline'
 const ALL_GOOD_EVENT_METHOD = 'AllGood'
 const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
@@ -7,9 +8,13 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
 /**
  * Get validator performance information by height
  */
-const getByHeight = async (api, call) => {
+const getByHeight = async (api, call, context) => {
   const height = call.request.height;
-  const {blockHash} = await setupApiAtHeight(api, height);
+
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  injectMetadata(api, currHeightMetadata);
+
+  const {blockHash} = currHeightMetadata;
 
   const eventsAt = await api.query.system.events.at(blockHash);
 
@@ -30,8 +35,7 @@ const getByHeight = async (api, call) => {
     online: !offlineValidatorsIds.includes(validator.toString())
   }));
 
-  const response = {validators: validatorsData};
-  return response;
+  return {validators: validatorsData};
 };
 
 const findEvent = (events, section, method) => (

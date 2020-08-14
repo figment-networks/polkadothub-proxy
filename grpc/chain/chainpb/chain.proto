@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package chain;
-option go_package = "grpc/chain/chainpb";
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/chain/chainpb";
 
 import "google/protobuf/timestamp.proto";
 

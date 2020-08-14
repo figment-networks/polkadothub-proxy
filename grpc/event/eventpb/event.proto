@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package event;
-option go_package = "grpc/event/eventpb";
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/event/eventpb";
 
 message EventData {
   string name = 1;

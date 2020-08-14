@@ -1,13 +1,16 @@
-const {setupApiAtHeight} = require('../utils/setup');
+const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const transactionMappers = require('../mappers/transaction/transaction_mappers');
 
 /**
  * Get signed transactions by height
  */
-const getByHeight = async (api, call) => {
+const getByHeight = async (api, call, context) => {
   const height = call.request.height;
 
-  const {blockHash} = await setupApiAtHeight(api, height);
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  injectMetadata(api, currHeightMetadata);
+
+  const {blockHash} = currHeightMetadata;
 
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;

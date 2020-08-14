@@ -1,6 +1,7 @@
 const grpc = require('grpc');
 
 const {
+  heightProto,
   chainProto,
   blockProto,
   transactionProto,
@@ -15,8 +16,18 @@ function main() {
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
   let client;
 
+  // Height
+  // client = new heightProto.HeightService('localhost:50051', grpc.credentials.createInsecure());
+  // client.getAll({height: height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('response: ', response);
+  //   }
+  // });
+
   // Block
-  // let client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
+  // client = new blockProto.BlockService('localhost:50051', grpc.credentials.createInsecure());
   // client.getByHeight({height: height}, function(err, response) {
   //   if (err) {
   //     console.error(err)
