@@ -14,7 +14,8 @@ message Transaction {
   string section = 8;
   string args = 9;
   bool is_success = 10;
-  string fee = 11;
+  string partialFee = 11;
+  string tip = 12;
 }
 
 message GetByHeightRequest {
