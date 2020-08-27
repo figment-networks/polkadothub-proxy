@@ -32,7 +32,6 @@ const fetchMetadataAtHeight = async (api, height) => {
       chain,
       specVersion: runtimeVersionAt.specVersion,
       startedAtHeight: height,
-      startedAtBlockHash: blockHash,
       metadata,
       types,
     };
@@ -48,10 +47,10 @@ const fetchMetadataAtHeight = async (api, height) => {
 
 // Return
 const getBlockHash = async (api, height) => {
-  if (height) {
-    return await api.rpc.chain.getBlockHash(height);
-  } else {
+  if (!height || height === 0) {
     return await api.rpc.chain.getFinalizedHead();
+  } else {
+    return await api.rpc.chain.getBlockHash(height);
   }
 }
 
