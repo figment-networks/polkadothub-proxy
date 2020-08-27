@@ -37,19 +37,15 @@ const getPartialFee = (rawExtrinsic, rawEventsForExtrinsic, calcFee) => {
   );
 
   if (calcFee && completedRawEvent) {
-    try {
-      const completedEvent =  eventMappers.toPb(completedRawEvent);
-      const weightInfo = completedEvent.data.find(({name}) => name == "DispatchInfo")
-      const weight = JSON.parse(weightInfo.value).weight;
-      const partialFee = calcFee.calc_fee(
-        BigInt(weight.toString()),
-        rawExtrinsic.encodedLength
-      );
+    const completedEvent =  eventMappers.toPb(completedRawEvent);
+    const weightInfo = completedEvent.data.find(({name}) => name == 'DispatchInfo')
+    const weight = JSON.parse(weightInfo.value).weight;
+    const partialFee = calcFee.calc_fee(
+      BigInt(weight.toString()),
+      rawExtrinsic.encodedLength
+    );
 
-      fee = partialFee
-    } catch(err) {
-      console.log("cannot calculate fee", err)
-    }
+    fee = partialFee
   }
 
   return fee

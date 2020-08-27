@@ -2,8 +2,7 @@ const {CalcFee} = require('@substrate/calc');
 
 // createCalcFee returns a method to calculate a partial fee
 // it is called "partial fee" because the total fee would include the tip field
-const createCalcFee = async(api, block) => {
-    const { parentHash } = block.header;
+const createCalcFee = async(api, parentHash) => {
     const perByte = api.consts.transactionPayment.transactionByteFee;
     const extrinsicBaseWeight = api.consts.system.extrinsicBaseWeight;
     const multiplier = await api.query.transactionPayment.nextFeeMultiplier.at(

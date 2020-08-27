@@ -19,17 +19,16 @@ const getByHeight = async (api, call, context = {}) => {
   const [rawTimestampAt, rawEventsAt, calcFee] = await Promise.all([
     api.query.timestamp.now.at(blockHash),
     api.query.system.events.at(blockHash),
-    createCalcFee(api, rawBlockAt),
+    createCalcFee(api, rawBlockAt.header.parentHash),
   ]);
 
   const transactions = [];
 
   rawBlockAt.extrinsics.forEach(async (rawExtrinsic, index) => {
     if (!rawExtrinsic.toHuman().isSigned) {
-      return
+      const rawEventsForExtrinsic = rawEventsAt.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
+      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, calcFee));
     }
-    const rawEventsForExtrinsic = rawEventsAt.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
-    transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, calcFee));
   });
 
   return {transactions};

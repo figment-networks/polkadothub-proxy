@@ -20,7 +20,7 @@ const getByHeight = async (api, call, context = {}) => {
   ]); 
 
   const rawBlockAt = blockResp.block;
-  const calcFee = await createCalcFee(api, rawBlockAt);
+  const calcFee = await createCalcFee(api, rawBlockAt.header.parentHash);
 
   return blockMappers.toPb(blockHash, rawBlockAt, rawTimestampAt, rawEventsAt, calcFee);
 };
