@@ -21,7 +21,7 @@
     "rollbar": "^2.16.2"
   },
   "devDependencies": {
-    "jest": "^25.2.2",
-    "nodemon": "^2.0.3"
+    "jest": "^25.5.4",
+    "nodemon": "^2.0.4"
   }
 }

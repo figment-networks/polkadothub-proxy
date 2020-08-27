@@ -19,8 +19,11 @@ const fetchMetadataAtHeight = async (api, height) => {
   } else {
     console.log(`Cache missed. Getting metadata for ${runtimeVersionAt.specVersion}.`)
 
-    const metadata = await api.rpc.state.getMetadata(blockHash);
-    const chain = await api.rpc.system.chain();
+    const [metadata, chain] = await Promise.all([
+      api.rpc.state.getMetadata(blockHash),
+      api.rpc.system.chain(),
+    ])
+
     const types = getSpecTypes(api.registry, chain, runtimeVersionAt.specName, runtimeVersionAt.specVersion);
 
     if (metadataCache.itemIds.length >= MAX_ITEMS_IN_CACHE) {

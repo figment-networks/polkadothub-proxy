@@ -2,6 +2,7 @@ FROM node:10.13.0-alpine AS appbuild
 WORKDIR /usr/src/app
 COPY package*.json ./
 COPY index.js ./
+COPY vendor ./vendor
 COPY grpc  ./grpc/
 COPY handlers ./handlers/
 COPY mappers ./mappers/

@@ -1,6 +1,6 @@
 const transactionMappers = require('../transaction/transaction_mappers');
 
-const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents) => {
+const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents, calcFee) => {
   return {
     block: {
       blockHash: blockHash.toString(),
@@ -12,7 +12,8 @@ const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents) => {
         extrinsicsRoot: rawBlock.header.extrinsicsRoot.toString(),
       },
       extrinsics: rawBlock.extrinsics.map((rawExtrinsic, index) => {
-        return transactionMappers.toPb(index, rawExtrinsic, rawTimestamp, rawEvents)
+        const rawEventsForExtrinsic = rawEvents.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
+        return transactionMappers.toPb(index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
       }),
     }
   };

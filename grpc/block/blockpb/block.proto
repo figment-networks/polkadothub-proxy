@@ -25,6 +25,8 @@ message Extrinsic {
   string section = 9;
   string args = 10;
   bool is_success = 11;
+  string partial_fee = 12;
+  string tip = 13;
 }
 
 message Block {

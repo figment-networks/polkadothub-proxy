@@ -3,8 +3,11 @@
 ## Description
 This is a proxy for Polkadot node which uses polkadot-js as a client. Under the hood, it uses gRPC to communicate with users of this proxy.
 
+
 ## Usage (without Docker)
+
 ### Install packages
+
 ```bash
 npm install
 ```
@@ -12,6 +15,23 @@ npm install
 ### Start proxy
 ```bash
 node index
+```
+
+### Update vendor
+
+Make sure your machine has an
+[up-to-date version of `rustup`](https://www.rust-lang.org/tools/install) installed to manage Rust dependencies.
+
+Install `wasm-pack`:
+
+```bash
+cargo install wasm-pack
+```
+
+Update `VERSION` in `build-substrate-wasm` then run script:
+
+```bash
+./build-substrate-wasm
 ```
 
 ## Usage (with Docker)

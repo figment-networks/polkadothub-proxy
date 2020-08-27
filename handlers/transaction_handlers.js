@@ -1,4 +1,5 @@
 const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
+const {createCalcFee} = require("../utils/calc");
 const transactionMappers = require('../mappers/transaction/transaction_mappers');
 
 /**
@@ -15,13 +16,18 @@ const getByHeight = async (api, call, context = {}) => {
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;
 
-  const rawTimestampAt = await api.query.timestamp.now.at(blockHash);
-  const rawEventsAt = await api.query.system.events.at(blockHash);
+  const [rawTimestampAt, rawEventsAt, calcFee] = await Promise.all([
+    api.query.timestamp.now.at(blockHash),
+    api.query.system.events.at(blockHash),
+    createCalcFee(api, rawBlockAt.header.parentHash),
+  ]);
 
   const transactions = [];
-  rawBlockAt.extrinsics.forEach((rawExtrinsic, index) => {
+
+  rawBlockAt.extrinsics.forEach(async (rawExtrinsic, index) => {
     if (rawExtrinsic.toHuman().isSigned) {
-      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsAt));
+      const rawEventsForExtrinsic = rawEventsAt.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
+      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, calcFee));
     }
   });
 

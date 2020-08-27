@@ -1,7 +1,11 @@
 const eventMappers = require('../event/event_mappers');
 
-const toPb = (index, rawExtrinsic, rawTimestamp, rawEvents) => {
-  const success = getSuccess(rawEvents, index);
+const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee) => {
+  const successEvent = rawEventsForExtrinsic.find(({event}) =>
+    event.section === 'system' && event.method === 'ExtrinsicSuccess'
+  );
+
+  const partialFee = getPartialFee(rawExtrinsic, rawEventsForExtrinsic,calcFee);
 
   return {
     extrinsicIndex: index,
@@ -14,21 +18,37 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEvents) => {
     method: rawExtrinsic.toHuman().method.method.toString(),
     section: rawExtrinsic.toHuman().method.section.toString(),
     args: rawExtrinsic.method.args.toString(),
-    isSuccess: success,
+    isSuccess: !!successEvent,
+    partialFee: partialFee,
+    tip: rawExtrinsic.tip,
   };
 }
 
-function getSuccess(rawEvents, index) {
-  let success = false;
-  for (let rawEvent of rawEvents) {
-    const event = eventMappers.toPb(rawEvent);
+const getPartialFee = (rawExtrinsic, rawEventsForExtrinsic, calcFee) => {
+  var fee;
 
-    if (event.extrinsicIndex === index && event.section === 'system' && event.method === 'ExtrinsicSuccess') {
-      success = true;
-      break;
-    }
+  // Polkadot doesn't charge a fee for unsigned transactions https://wiki.polkadot.network/docs/en/learn-transaction-fees
+  if (!rawExtrinsic.toHuman().isSigned) {
+    return
   }
-  return success;
+
+  const completedRawEvent =  rawEventsForExtrinsic.find(({ event }) =>
+    event.section == 'system' && (event.method === 'ExtrinsicSuccess' || event.method === 'ExtrinsicFailure')
+  );
+
+  if (calcFee && completedRawEvent) {
+    const completedEvent =  eventMappers.toPb(completedRawEvent);
+    const weightInfo = completedEvent.data.find(({name}) => name == 'DispatchInfo')
+    const weight = JSON.parse(weightInfo.value).weight;
+    const partialFee = calcFee.calc_fee(
+      BigInt(weight.toString()),
+      rawExtrinsic.encodedLength
+    );
+
+    fee = partialFee
+  }
+
+  return fee
 }
 
 module.exports = {
