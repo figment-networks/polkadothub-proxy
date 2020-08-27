@@ -1,8 +1,9 @@
 const transactionMappers = require('../transaction/transaction_mappers');
 
-const toPb = (rawBlock, rawTimestamp, rawEvents) => {
+const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents) => {
   return {
     block: {
+      blockHash: blockHash.toString(),
       header: {
         time: {seconds: rawTimestamp.toNumber() / 1000, nanos: 0},
         parentHash: rawBlock.header.parentHash.toString(),

@@ -27,16 +27,6 @@ function main() {
   //   }
   // });
 
-  // Block
-  // client = new blockProto.BlockService(proxyUrl, grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   if (err) {
-  //     console.error(err)
-  //   } else {
-  //     console.log('block: ', response);
-  //   }
-  // });
-
   // Chain
   // client = new chainProto.ChainService(proxyUrl, grpc.credentials.createInsecure());
   // client.getHead({}, function(err, response) {
@@ -44,6 +34,14 @@ function main() {
   //     console.error(err)
   //   } else {
   //     console.log('head: ', response);
+  //   }
+  // });
+
+  // client.getStatus({}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('status: ', response);
   //   }
   // });
 

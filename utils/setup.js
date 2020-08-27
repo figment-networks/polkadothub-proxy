@@ -11,10 +11,12 @@ Since Polkadot uses WebAssembly, metadata and types can be different at differen
 We need to inject appropriate metadata and types to make sure that they are valid for given height.
  */
 const fetchMetadataAtHeight = async (api, height) => {
-  const blockHash = await api.rpc.chain.getBlockHash(height);
+  const blockHash = await getBlockHash(api, height);
   const runtimeVersionAt = await api.rpc.state.getRuntimeVersion(blockHash);
 
-  if (!metadataCache.items[runtimeVersionAt.specVersion]) {
+  if (metadataCache.items[runtimeVersionAt.specVersion]) {
+    console.log(`Cache hit for specVersion=${runtimeVersionAt.specVersion}.`)
+  } else {
     console.log(`Cache missed. Getting metadata for ${runtimeVersionAt.specVersion}.`)
 
     const metadata = await api.rpc.state.getMetadata(blockHash);
@@ -29,23 +31,34 @@ const fetchMetadataAtHeight = async (api, height) => {
     metadataCache.items[runtimeVersionAt.specVersion] = {
       chain,
       specVersion: runtimeVersionAt.specVersion,
-      height,
-      blockHash,
+      startedAtHeight: height,
+      startedAtBlockHash: blockHash,
       metadata,
       types,
     };
     metadataCache.itemIds.push(runtimeVersionAt.specVersion);
-  } else {
-    console.log(`Cache hit for ${runtimeVersionAt.specVersion}.`)
   }
 
-  return metadataCache.items[runtimeVersionAt.specVersion];
+  return {
+    height,
+    blockHash,
+    ...metadataCache.items[runtimeVersionAt.specVersion]
+  };
+}
+
+// Return
+const getBlockHash = async (api, height) => {
+  if (height) {
+    return await api.rpc.chain.getBlockHash(height);
+  } else {
+    return await api.rpc.chain.getFinalizedHead();
+  }
 }
 
 const injectMetadata = (api, data) => {
-  const {metadata, types, chain, specVersion, height} = data;
+  const {metadata, types, chain, specVersion, startedAtHeight} = data;
 
-  console.log(`Injecting metadata [chain=${chain}] [specVersion=${specVersion}] [height=${height}]`);
+  console.log(`Injecting metadata [chain=${chain}] [specVersion=${specVersion}] [startedAtHeight=${startedAtHeight}]`);
 
   api.injectMetadata(metadata);
   api.registerTypes(types);

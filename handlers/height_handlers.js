@@ -16,21 +16,20 @@ const getAll = async (api, call, context) => {
   context.currHeightMetadata = await fetchMetadataAtHeight(api, height);
   context.prevHeightMetadata = await fetchMetadataAtHeight(api, height - 1);
 
-  const chainResp = await chainHandlers.getMetaByHeight(api, call, context);
-  const blockResp = await blockHandlers.getByHeight(api, call, context);
-  const eventResp = await eventHandlers.getByHeight(api, call, context);
+  const [chainResp, blockResp, eventResp] = await Promise.all([
+    chainHandlers.getMetaByHeight(api, call, context),
+    blockHandlers.getByHeight(api, call, context),
+    eventHandlers.getByHeight(api, call, context),
+  ]);
 
   let stakingResp;
+  if (chainResp.lastInEra) {
+    stakingResp = await getStakingData(api, call, context);
+  }
+
   let validatorPerformanceResp;
-  try {
-    stakingResp = await stakingHandlers.getByHeight(api, call, context);
-    validatorPerformanceResp = await validatorPerformanceHandlers.getByHeight(api, call, context);
-  } catch (err) {
-    if (err instanceof InvalidArgumentError) {
-      // Data not available for given height, do nothing
-    } else {
-      throw err;
-    }
+  if (chainResp.lastInSession) {
+    validatorPerformanceResp = await getValidatorPerformanceData(api, call, context);
   }
 
   return {
@@ -41,6 +40,32 @@ const getAll = async (api, call, context) => {
     event: eventResp,
   };
 };
+
+const getStakingData = async (api, call, context) => {
+  try {
+    return await stakingHandlers.getByHeight(api, call, context);
+  } catch (err) {
+    if (err instanceof InvalidArgumentError) {
+      // Data not available for given height, do nothing
+      return null;
+    } else {
+      throw err;
+    }
+  }
+}
+
+const getValidatorPerformanceData = async (api, call, context) => {
+  try {
+    return await validatorPerformanceHandlers.getByHeight(api, call, context);
+  } catch (err) {
+    if (err instanceof InvalidArgumentError) {
+      // Data not available for given height, do nothing
+      return null;
+    } else {
+      throw err;
+    }
+  }
+}
 
 module.exports = {
   getAll,

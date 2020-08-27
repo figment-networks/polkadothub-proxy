@@ -7,11 +7,10 @@ option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/block/bl
 
 message Header {
   google.protobuf.Timestamp time = 1;
-  string block_hash = 2;
-  string parent_hash = 3;
-  int64  height = 4;
-  string state_root = 5;
-  string extrinsics_root = 6;
+  string parent_hash = 2;
+  int64  height = 3;
+  string state_root = 4;
+  string extrinsics_root = 5;
 }
 
 message Extrinsic {
@@ -29,6 +28,7 @@ message Extrinsic {
 }
 
 message Block {
+  string block_hash = 1;
   Header header = 2;
   repeated Extrinsic extrinsics = 3;
 }
@@ -38,12 +38,7 @@ message GetByHeightRequest {
 }
 
 message GetByHeightResponse {
-  int64 era = 1;
-  int64 session = 2;
-  string chain = 3;
-  string spec_version = 4;
-  string block_hash = 5;
-  Block block = 6;
+  Block block = 1;
 }
 
 service BlockService {

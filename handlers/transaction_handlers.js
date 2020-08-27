@@ -4,7 +4,7 @@ const transactionMappers = require('../mappers/transaction/transaction_mappers')
 /**
  * Get signed transactions by height
  */
-const getByHeight = async (api, call, context) => {
+const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
 
   const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);

@@ -5,7 +5,7 @@ const accountMappers = require('../mappers/account/account_mappers');
 /**
  * Get identity by address
  */
-const getIdentity = async (api, call, context) => {
+const getIdentity = async (api, call, context = {}) => {
   const address = call.request.address;
 
   const rawIdentity = await api.query.identity.identityOf(address);
@@ -16,7 +16,7 @@ const getIdentity = async (api, call, context) => {
 /**
  * Get account by height
  */
-const getByHeight = async (api, call, context) => {
+const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
   const address = call.request.address;
 
