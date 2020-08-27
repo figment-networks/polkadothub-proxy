@@ -5,7 +5,7 @@ const stakingMappers = require('../mappers/staking/staking_mappers');
 /**
  * Get staking information by height
  */
-const getByHeight = async (api, call, context) => {
+const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
 
   const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);

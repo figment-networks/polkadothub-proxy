@@ -3,6 +3,7 @@
 exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "block": Object {
+    "blockHash": "0x4d45265d2a20e0038cc1f5892502a699f09cc0123fc8303b2229eab27cb7e5c0",
     "extrinsics": Array [
       Object {
         "args": "1587626346000",
@@ -80,10 +81,5 @@ Object {
       },
     },
   },
-  "blockHash": "0x4d45265d2a20e0038cc1f5892502a699f09cc0123fc8303b2229eab27cb7e5c0",
-  "chain": "Kusama",
-  "era": 701,
-  "session": 3517,
-  "specVersion": "1055",
 }
 `;

@@ -8,7 +8,7 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
 /**
  * Get validator performance information by height
  */
-const getByHeight = async (api, call, context) => {
+const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
 
   const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
