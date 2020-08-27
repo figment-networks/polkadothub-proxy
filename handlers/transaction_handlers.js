@@ -25,7 +25,7 @@ const getByHeight = async (api, call, context = {}) => {
   const transactions = [];
 
   rawBlockAt.extrinsics.forEach(async (rawExtrinsic, index) => {
-    if (!rawExtrinsic.toHuman().isSigned) {
+    if (rawExtrinsic.toHuman().isSigned) {
       const rawEventsForExtrinsic = rawEventsAt.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
       transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, calcFee));
     }
