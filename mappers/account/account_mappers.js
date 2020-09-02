@@ -1,6 +1,4 @@
 const toPb = (rawAccount, rawLedger) => {
-  console.log("RAW", rawAccount);
-
   return {
     account: {
       nonce: rawAccount.nonce.toNumber(),
