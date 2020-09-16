@@ -1,5 +1,7 @@
 const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const {createCalcFee} = require("../utils/calc");
+const {rollbar} = require('../utils/rollbar');
+const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
 
 /**
@@ -17,10 +19,17 @@ const getByHeight = async (api, call, context = {}) => {
     api.rpc.chain.getBlock(blockHash),
     api.query.timestamp.now.at(blockHash),
     api.query.system.events.at(blockHash),
-  ]); 
+  ]);
 
   const rawBlockAt = blockResp.block;
-  const calcFee = await createCalcFee(api, rawBlockAt.header.parentHash);
+
+  let calcFee;
+  try {
+    calcFee = await createCalcFee(api, rawBlockAt.header.parentHash, rawBlockAt);
+  } catch(err) {
+    rollbar.error(err, {call});
+    throw new UnavailableError('could not calculate fee');
+  }
 
   return blockMappers.toPb(blockHash, rawBlockAt, rawTimestampAt, rawEventsAt, calcFee);
 };

@@ -7,9 +7,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export VENDOR_DIR="$SCRIPT_DIR/vendor/"
 export TARGET="$VENDOR_DIR/polkadot-calc"
 export TMPDIR="$SCRIPT_DIR/tmp/build-polkadot-calc"
-export VERSION=0.14.0
+export VERSION=0.17.0
 
-rm -rf "$TMPDIR" 
+rm -rf "$TMPDIR"
 rm -rf "$TARGET"
 
 mkdir -p "$TMPDIR"

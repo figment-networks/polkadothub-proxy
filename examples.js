@@ -13,7 +13,7 @@ const {
 
 function main() {
   const proxyUrl = process.env.PROXY_URL || 'localhost:50051';
-  const height = 2278812;
+  const height = 590;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
   let client;
 

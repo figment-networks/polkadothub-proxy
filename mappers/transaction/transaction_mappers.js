@@ -28,7 +28,7 @@ const getPartialFee = (rawExtrinsic, rawEventsForExtrinsic, calcFee) => {
   var fee;
 
   // Polkadot doesn't charge a fee for unsigned transactions https://wiki.polkadot.network/docs/en/learn-transaction-fees
-  if (!rawExtrinsic.toHuman().isSigned) {
+  if (!rawExtrinsic.paysFee || !rawExtrinsic.isSigned) {
     return
   }
 
@@ -36,10 +36,13 @@ const getPartialFee = (rawExtrinsic, rawEventsForExtrinsic, calcFee) => {
     event.section == 'system' && (event.method === 'ExtrinsicSuccess' || event.method === 'ExtrinsicFailure')
   );
 
-  if (calcFee && completedRawEvent) {
+  if (calcFee && completedRawEvent && completedRawEvent.data) {
     const completedEvent =  eventMappers.toPb(completedRawEvent);
-    const weightInfo = completedEvent.data.find(({name}) => name == 'DispatchInfo')
+    const weightInfo = completedEvent.data.find(({name}) => name == 'DispatchInfo');
     const weight = JSON.parse(weightInfo.value).weight;
+    if (!weight) {
+      return
+    }
     const partialFee = calcFee.calc_fee(
       BigInt(weight.toString()),
       rawExtrinsic.encodedLength
