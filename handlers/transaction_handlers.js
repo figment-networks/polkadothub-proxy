@@ -1,5 +1,6 @@
 const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const {createCalcFee} = require("../utils/calc");
+const {UnavailableError} = require('../utils/errors');
 const transactionMappers = require('../mappers/transaction/transaction_mappers');
 
 /**
@@ -16,11 +17,18 @@ const getByHeight = async (api, call, context = {}) => {
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;
 
-  const [rawTimestampAt, rawEventsAt, calcFee] = await Promise.all([
+  const [rawTimestampAt, rawEventsAt] = await Promise.all([
     api.query.timestamp.now.at(blockHash),
     api.query.system.events.at(blockHash),
-    createCalcFee(api, rawBlockAt.header.parentHash),
   ]);
+
+  let calcFee;
+  try {
+    calcFee = await createCalcFee(api, rawBlockAt.header.parentHash, rawBlockAt);
+  } catch(err) {
+    rollbar.error(err, {call});
+    throw new UnavailableError('could not calculate fee');
+  }
 
   const transactions = [];
 

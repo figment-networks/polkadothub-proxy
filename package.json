@@ -1,6 +1,6 @@
 {
   "name": "polkadothub-proxy",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A proxy for Polkadot node",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "@polkadot/api": "^1.31.1",
     "@polkadot/types-known": "^1.31.1",
     "@polkadot/util": "^2.18.1",
-    "@substrate/calc": "file:./vendor/polkadot-calc",
+    "@substrate/calc": "file:vendor/polkadot-calc",
     "google-protobuf": "^3.11.4",
     "grpc": "^1.24.2",
     "grpc-tools": "^1.8.1",

@@ -15,6 +15,14 @@ class InvalidArgumentError extends ProxyBaseError {
   }
 }
 
+class UnavailableError extends ProxyBaseError {
+  constructor(message) {
+    super(message);
+    this.code = grpc.status.UNAVAILABLE;
+  }
+}
+
 module.exports = {
-  InvalidArgumentError
+  InvalidArgumentError,
+  UnavailableError,
 }
