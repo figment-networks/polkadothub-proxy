@@ -1,7 +1,0 @@
-.env*
-.github
-.git
-**/target
-node_modules
-.vscode
-yarn-error.log
