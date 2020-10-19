@@ -2,7 +2,7 @@ const chainHandlers = require('./chain_handlers');
 const blockHandlers = require('./block_handlers');
 const stakingHandlers = require('./staking_handlers');
 const validatorPerformanceHandlers = require('./validator_performance_handlers');
-const eventHandlers = require('./event_handlers');
+const transactionHandlers = require('./transaction_handlers');
 const {InvalidArgumentError} = require('../utils/errors');
 const {fetchMetadataAtHeight} = require('../utils/setup');
 
@@ -16,10 +16,10 @@ const getAll = async (api, call, context) => {
   context.currHeightMetadata = await fetchMetadataAtHeight(api, height);
   context.prevHeightMetadata = await fetchMetadataAtHeight(api, height - 1);
 
-  const [chainResp, blockResp, eventResp] = await Promise.all([
+  const [chainResp, blockResp, transactionResp] = await Promise.all([
     chainHandlers.getMetaByHeight(api, call, context),
     blockHandlers.getByHeight(api, call, context),
-    eventHandlers.getByHeight(api, call, context),
+    transactionHandlers.getByHeight(api, call, context),
   ]);
 
   let stakingResp;
@@ -37,7 +37,7 @@ const getAll = async (api, call, context) => {
     block: blockResp,
     staking: stakingResp,
     validatorPerformance: validatorPerformanceResp,
-    event: eventResp,
+    transaction: transactionResp,
   };
 };
 
