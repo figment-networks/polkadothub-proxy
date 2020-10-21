@@ -33,7 +33,7 @@ const getPartialFee = (rawExtrinsic, events, calcFee) => {
   }
 
   const completedEvent =  events.find(({ section, method }) =>
-    section == 'system' && (method === 'ExtrinsicSuccess' || method === 'ExtrinsicFailure')
+    section == 'system' && (method === 'ExtrinsicSuccess' || method === 'ExtrinsicFailed')
   );
 
   const dispatchInfo = completedEvent && completedEvent.data && completedEvent.data.find(({name}) => name == 'DispatchInfo');
