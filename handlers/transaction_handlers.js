@@ -42,6 +42,33 @@ const getByHeight = async (api, call, context = {}) => {
   return {transactions};
 };
 
+
+const getAnnotatedByHeight = async (api, call, context = {}) => {
+  const height = call.request.height;
+
+  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
+  injectMetadata(api, currHeightMetadata);
+
+  const {blockHash} = currHeightMetadata;
+
+  const resp = await api.rpc.chain.getBlock(blockHash);
+  const rawBlockAt = resp.block;
+
+  const transactions = rawBlockAt.extrinsics.map((rawExtrinsic, index) => {
+    return {
+      extrinsicIndex: index,
+      hash: rawExtrinsic.hash.toString(),
+      isSigned: rawExtrinsic.toHuman().isSigned,
+      method: rawExtrinsic.toHuman().method.method.toString(),
+      section: rawExtrinsic.toHuman().method.section.toString(),
+    }
+  });
+
+  return {transactions};
+};
+
+
 module.exports = {
   getByHeight,
+  getAnnotatedByHeight,
 };

@@ -68,6 +68,8 @@ async function init() {
   });
   server.addService(transactionProto.TransactionService.service, {
     getByHeight: wrapHandler(transactionHandlers.getByHeight, api),
+    getAnnotatedByHeight: wrapHandler(transactionHandlers.getAnnotatedByHeight, api),
+
   });
   server.addService(eventProto.EventService.service, {
     getByHeight: wrapHandler(eventHandlers.getByHeight, api),

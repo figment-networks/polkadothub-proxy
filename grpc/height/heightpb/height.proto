@@ -7,16 +7,19 @@ import "grpc/chain/chainpb/chain.proto";
 import "grpc/block/blockpb/block.proto";
 import "grpc/staking/stakingpb/staking.proto";
 import "grpc/validatorperformance/validatorperformancepb/validator_performance.proto";
+import "grpc/event/eventpb/event.proto";
 import "grpc/transaction/transactionpb/transaction.proto";
+
 
 message GetAllRequest { int64 height = 1; }
 
 message GetAllResponse {
   chain.GetMetaByHeightResponse chain = 1;
   block.GetByHeightResponse block = 2;
+  event.GetByHeightResponse event = 4;
   staking.GetByHeightResponse staking = 3;
-  transaction.GetByHeightResponse transaction = 4;
-  validatorPerformance.GetByHeightResponse validator_performance = 5;
+  transaction.GetAnnotatedByHeightResponse transaction = 5;
+  validatorPerformance.GetByHeightResponse validator_performance = 6;
 }
 
 service HeightService {
