@@ -5,7 +5,8 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
     event.section === 'system' && event.method === 'ExtrinsicSuccess'
   );
 
-  const partialFee = getPartialFee(rawExtrinsic, rawEventsForExtrinsic,calcFee);
+  const events = rawEventsForExtrinsic.map((rawEvent, index) => ({index, ...eventMappers.toPb(rawEvent)}));
+  const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
 
   return {
     extrinsicIndex: index,
@@ -24,34 +25,32 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
   };
 }
 
-const getPartialFee = (rawExtrinsic, rawEventsForExtrinsic, calcFee) => {
-  var fee;
-
+const getPartialFee = (rawExtrinsic, events, calcFee) => {
   // Polkadot doesn't charge a fee for unsigned transactions https://wiki.polkadot.network/docs/en/learn-transaction-fees
-  if (!rawExtrinsic.paysFee || !rawExtrinsic.isSigned) {
+  if (!rawExtrinsic.isSigned || !calcFee) {
     return
   }
 
-  const completedRawEvent =  rawEventsForExtrinsic.find(({ event }) =>
-    event.section == 'system' && (event.method === 'ExtrinsicSuccess' || event.method === 'ExtrinsicFailure')
+  const completedEvent =  events.find(({ section, method }) =>
+    section == 'system' && (method === 'ExtrinsicSuccess' || method === 'ExtrinsicFailed')
   );
 
-  if (calcFee && completedRawEvent && completedRawEvent.data) {
-    const completedEvent =  eventMappers.toPb(completedRawEvent);
-    const weightInfo = completedEvent.data.find(({name}) => name == 'DispatchInfo');
-    const weight = JSON.parse(weightInfo.value).weight;
-    if (!weight) {
-      return
-    }
-    const partialFee = calcFee.calc_fee(
-      BigInt(weight.toString()),
-      rawExtrinsic.encodedLength
-    );
-
-    fee = partialFee
+  const dispatchInfo = completedEvent && completedEvent.data && completedEvent.data.find(({name}) => name == 'DispatchInfo');
+  if (!dispatchInfo) {
+    return
   }
 
-  return fee
+  const paysFee = JSON.parse(dispatchInfo.value).paysFee;
+  const weight = JSON.parse(dispatchInfo.value).weight;
+
+  if (!weight || !(paysFee === "Yes" || paysFee === true )) {
+    return
+  }
+
+  return calcFee.calc_fee(
+    BigInt(weight.toString()),
+    rawExtrinsic.encodedLength
+  );
 }
 
 module.exports = {

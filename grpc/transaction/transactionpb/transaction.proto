@@ -9,7 +9,7 @@ message Transaction {
   string time = 3;
   string signature = 4;
   string signer = 5;
-  int64  nonce = 6;
+  int64 nonce = 6;
   string method = 7;
   string section = 8;
   string args = 9;
@@ -18,15 +18,21 @@ message Transaction {
   string tip = 12;
 }
 
-message GetByHeightRequest {
-  int64 height = 1;
+message Annotated {
+  int64 extrinsic_index = 1;
+  string hash = 2;
+  string method = 3;
+  string section = 4;
+  bool is_signed = 5;
 }
 
-message GetByHeightResponse {
-  repeated Transaction transactions = 1;
-}
+message GetByHeightRequest { int64 height = 1; }
+message GetByHeightResponse { repeated Transaction transactions = 1; }
+
+message GetAnnotatedByHeightRequest { int64 height = 1; }
+message GetAnnotatedByHeightResponse { repeated Annotated transactions = 1; }
 
 service TransactionService {
-  rpc GetByHeight (GetByHeightRequest) returns (GetByHeightResponse) {}
+  rpc GetByHeight(GetByHeightRequest) returns (GetByHeightResponse) {}
+  rpc GetAnnotatedByHeight(GetAnnotatedByHeightRequest) returns (GetAnnotatedByHeightResponse) {}
 }
-

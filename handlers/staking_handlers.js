@@ -1,6 +1,5 @@
 const {InvalidArgumentError} = require('../utils/errors');
 const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
-const stakingMappers = require('../mappers/staking/staking_mappers');
 
 /**
  * Get staking information by height
@@ -22,10 +21,10 @@ const getByHeight = async (api, call, context = {}) => {
   injectMetadata(api, currHeightMetadata);
 
   const eraAtRaw = await api.query.staking.activeEra.at(blockHash);
-  if (!eraAtRaw.isSome) {
+  if (eraAtRaw.isNone) {
     throw new InvalidArgumentError('active era not found.')
   }
-  const eraAt = eraAtRaw.unwrap().index;
+  const eraAt = eraAtRaw.unwrap().index.toNumber();
 
   // ERA QUERIES
   const erasRewardPoints = await api.query.staking.erasRewardPoints.at(blockHash, eraAt);
@@ -41,9 +40,9 @@ const getByHeight = async (api, call, context = {}) => {
   // https://github.com/polkadot-js/api/blob/master/packages/api-derive/src/staking/query.ts#L108
   // https://github.com/polkadot-js/api/issues/2288
   const queuedKeys = await api.query.session.queuedKeys.at(blockHash);
-
   const validatorsAt = await api.query.session.validators.at(blockHash);
-  const validatorsData = [];
+
+  const promises = [];
   for (const rawValidator of validatorsAt) {
     const validatorStashAccount = rawValidator.toString();
     const validator = {
@@ -52,48 +51,20 @@ const getByHeight = async (api, call, context = {}) => {
       stakers: [],
       sessionKeys: validatorSessionKeys(queuedKeys, validatorStashAccount)
     };
-
-    // Get validator controller account
-    const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validatorStashAccount);
-    if (!validatorControllerAccount.isEmpty) {
-      validator.controllerAccount = validatorControllerAccount.toString();
-    }
-
-    // Get stakers for validator
-    const erasStakers = await api.query.staking.erasStakers.at(blockHash, eraAt, validatorStashAccount);
-    validator.totalStake = erasStakers.total.toString();
-    validator.ownStake = erasStakers.own.toString();
-    validator.stakersStake = erasStakers.total - erasStakers.own;
-
-    for (const stake of erasStakers.others) {
-      const nominatorStashAccount = stake.who;
-
-      // Get nominator stash account
-      const nominatorControllerAccount = await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
-
-      validator.stakers.push({
-        stashAccount: nominatorStashAccount.toString(),
-        controllerAccount: nominatorControllerAccount.toString(),
-        stake: stake.value.toString(),
-      })
-    }
-
-    // Get Validator prefs (commission)
-    const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs.at(blockHash, eraAt, validatorStashAccount);
-    validator.commission = erasValidatorPrefs.commission.toString();
-
-    validatorsData.push(validator);
+    promises.push(getValidatorData(validator, api, blockHash, eraAt));
   }
+
+  const validatorsData = await Promise.all(promises)
 
   return {
     staking: {
       session: sessionAt.toString(),
       era: eraAt,
       totalStake: erasTotalStake.toString(),
-      totalRewardPayout: (erasValidatorReward.isEmpty ? '0' : erasValidatorReward).toString(),
+      totalRewardPayout: erasValidatorReward.isEmpty ? '0' : erasValidatorReward.unwrap().toString(),
       totalRewardPoints: erasRewardPoints.total.toString(),
       validators: validatorsData,
-    },
+    }
   };
 };
 
@@ -103,6 +74,38 @@ const validatorSessionKeys = (queuedKeys, validatorStashAccount) => {
     return account.toString() === validatorStashAccount;
   })
   return keysRow ? keysRow[1] : [];
+}
+
+const getValidatorData = async function(validator, api, blockHash, eraAt) {
+  // Get validator controller account
+  const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validator.stashAccount);
+  if (!validatorControllerAccount.isEmpty) {
+    validator.controllerAccount = validatorControllerAccount.toString();
+  }
+
+  // Get stakers for validator
+  const erasStakers = await api.query.staking.erasStakers.at(blockHash, eraAt, validator.stashAccount);
+  validator.totalStake = erasStakers.total.toString();
+  validator.ownStake = erasStakers.own.toString();
+  validator.stakersStake = erasStakers.total - erasStakers.own;
+
+  for (const stake of erasStakers.others) {
+    const nominatorStashAccount = stake.who;
+
+    // Get nominator stash account
+    const nominatorControllerAccount = await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
+
+    validator.stakers.push({
+      stashAccount: nominatorStashAccount.toString(),
+      controllerAccount: nominatorControllerAccount.toString(),
+      stake: stake.value.toString(),
+    })
+  }
+
+  // Get Validator prefs (commission)
+  const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs.at(blockHash, eraAt, validator.stashAccount);
+  validator.commission = erasValidatorPrefs.commission.toString();
+  return validator
 }
 
 module.exports = {
