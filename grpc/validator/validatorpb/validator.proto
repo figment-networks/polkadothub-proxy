@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package validator;
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/validator/validatorpb";
+
+
+message Validator {
+    string address = 1;
+    string balance = 2;
+    string commission = 3;
+}
+
+message GetAllByHeightRequest {
+    int64 height = 1;
+}
+
+message GetAllByHeightResponse {
+    repeated Validator validators = 1;
+}
+
+service ValidatorService {
+    rpc GetAllByHeight (GetAllByHeightRequest) returns (GetAllByHeightResponse) {};
+}
