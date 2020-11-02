@@ -22,9 +22,9 @@ const getAllByHeight = async (api, call, context = {}) => {
 
     return {
         validators: validators.map(([{ args: [address] }, data], index) => ({
-            address: address.toHuman(),
+            stashAccount: address.toHuman(),
             balance: validatorBalances[index].data.free.toString(),
-            commission: data.commission.toString(),  
+            commission: data.commission.toString(),
       })),
     }
 };

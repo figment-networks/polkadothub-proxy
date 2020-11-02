@@ -5,7 +5,7 @@ option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/validato
 
 
 message Validator {
-    string address = 1;
+    string stash_account = 1;
     string balance = 2;
     string commission = 3;
 }
