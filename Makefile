@@ -23,6 +23,9 @@ grpc-go:
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/staking/stakingpb/staking.pb.go grpc/staking/stakingpb/staking.pb.go
 	@protoc grpc/transaction/transactionpb/transaction.proto --go_out=plugins=grpc:.
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/transaction/transactionpb/transaction.pb.go grpc/transaction/transactionpb/transaction.pb.go
+	@protoc grpc/validator/validatorpb/validator.proto --go_out=plugins=grpc:.
+	@mv github.com/figment-networks/polkadothub-proxy/grpc/validator/validatorpb/validator.pb.go grpc/validator/validatorpb/validator.pb.go
 	@protoc grpc/validatorperformance/validatorperformancepb/validator_performance.proto --go_out=plugins=grpc:.
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/validatorperformance/validatorperformancepb/validator_performance.pb.go grpc/validatorperformance/validatorperformancepb/validator_performance.pb.go
 	@rm -rvf github.com
+

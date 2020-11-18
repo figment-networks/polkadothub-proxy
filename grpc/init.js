@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 
@@ -42,6 +40,11 @@ const stakingProto = grpc.loadPackageDefinition(packageDefinition).staking;
 packageDefinition = protoLoader.loadSync('./grpc/account/accountpb/account.proto', defaultOptions);
 const accountProto = grpc.loadPackageDefinition(packageDefinition).account;
 
+// Validator
+packageDefinition = protoLoader.loadSync('./grpc/validator/validatorpb/validator.proto', defaultOptions);
+const validatorProto = grpc.loadPackageDefinition(packageDefinition).validator;
+
+
 // Validator Performance
 packageDefinition = protoLoader.loadSync('./grpc/validatorperformance/validatorperformancepb/validator_performance.proto', defaultOptions);
 const validatorPerformanceProto = grpc.loadPackageDefinition(packageDefinition).validatorPerformance;
@@ -54,5 +57,6 @@ module.exports = {
   eventProto,
   stakingProto,
   accountProto,
+  validatorProto,
   validatorPerformanceProto,
 }

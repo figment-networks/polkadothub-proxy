@@ -8,6 +8,7 @@ const {
   eventProto,
   stakingProto,
   accountProto,
+  validatorProto,
   validatorPerformanceProto,
 } = require('./grpc/init');
 
@@ -137,6 +138,17 @@ function main() {
   //     console.log('validator performance: ', response);
   //   }
   // });
+
+  // Validator
+  client = new validatorProto.ValidatorService(proxyUrl, grpc.credentials.createInsecure());
+  client.getAllByHeight({height}, function(err, response) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('validators: ', JSON.stringify(response.validators));
+    }
+  });
+
 }
 
 main();

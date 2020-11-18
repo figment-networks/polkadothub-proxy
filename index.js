@@ -11,6 +11,7 @@ const {
   eventProto,
   stakingProto,
   accountProto,
+  validatorProto,
   validatorPerformanceProto,
 } = require('./grpc/init');
 
@@ -21,6 +22,7 @@ const transactionHandlers = require('./handlers/transaction_handlers');
 const eventHandlers = require('./handlers/event_handlers');
 const stakingHandlers = require('./handlers/staking_handlers');
 const accountHandlers = require('./handlers/account_handlers');
+const validatorHandlers = require('./handlers/validator_handlers');
 const validatorPerformanceHandlers = require('./handlers/validator_performance_handlers');
 
 const HOST = process.env.HOST || "0.0.0.0"
@@ -80,6 +82,9 @@ async function init() {
   server.addService(accountProto.AccountService.service, {
     getIdentity: wrapHandler(accountHandlers.getIdentity, api),
     getByHeight: wrapHandler(accountHandlers.getByHeight, api),
+  });
+  server.addService(validatorProto.ValidatorService.service, {
+    getAllByHeight: wrapHandler(validatorHandlers.getAllByHeight, api),
   });
   server.addService(validatorPerformanceProto.ValidatorPerformanceService.service, {
     getByHeight: wrapHandler(validatorPerformanceHandlers.getByHeight, api),
