@@ -1,30 +1,25 @@
-const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
-
+const {getHashForHeight} = require('../utils/block');
 
 const getAllByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
+  const blockHash = await getHashForHeight(api, height);
 
-  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
-  injectMetadata(api, currHeightMetadata);
-
-
-  const validators = await api.query.staking.validators.entries()
+  const validators = await api.query.session.validators.at(blockHash)
 
     if (!validators.length) {
         return {validators: []}
     }
 
     const validatorBalances = await Promise.all(
-        validators.map(([{ args: [address] }]) => 
-            api.query.system.account(address.toHuman())
+        validators.map((address) =>
+            api.query.system.account.at(blockHash, address)
         )
     );
 
     return {
-        validators: validators.map(([{ args: [address] }, data], index) => ({
+        validators: validators.map((address, index) => ({
             stashAccount: address.toHuman(),
             balance: validatorBalances[index].data.free.toString(),
-            commission: data.commission.toString(),
       })),
     }
 };
