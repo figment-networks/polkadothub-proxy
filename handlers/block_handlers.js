@@ -8,8 +8,7 @@ const blockMappers = require('../mappers/block/block_mappers');
  * Get block by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const height = call.request.height;
-  const blockHash = await getHashForHeight(api, height);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
 
   const [blockResp, rawTimestampAt, rawEventsAt] = await Promise.all([
     api.rpc.chain.getBlock(blockHash),

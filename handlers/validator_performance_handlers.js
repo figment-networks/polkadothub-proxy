@@ -9,7 +9,7 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
  * Get validator performance information by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const blockHash = await getHashForHeight(api, call.request.height);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
 
   const eventsAt = await api.query.system.events.at(blockHash);
 

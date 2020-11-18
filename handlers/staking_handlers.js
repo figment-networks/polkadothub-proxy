@@ -6,8 +6,8 @@ const {getHashForHeight} = require('../utils/block');
 const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
 
-  const prevBlockHashAt = await getHashForHeight(api, height-1);
-  const blockHash = await getHashForHeight(api, height);
+  const prevBlockHashAt = context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
 
   // previous height calls
   const sessionAt = await api.query.session.currentIndex.at(prevBlockHashAt);

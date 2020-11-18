@@ -62,11 +62,8 @@ const getStatus = async (api, _call, context = {}) => {
  */
 const getMetaByHeight = async (api, call, context = {}) => {
   const height = parseInt(call.request.height, 10);
-
-  const [prevBlockHash, currBlockHash] = await Promise.all([
-    getHashForHeight(api, height-1),
-    getHashForHeight(api, height),
-  ])
+  const prevBlockHash = context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
 
   const [chain, runtimeVersionAt, rawCurrentEra, rawCurrentSession, rawNextEra, rawNextSession, rawTimestampAt
   ] = await Promise.all([
@@ -76,9 +73,9 @@ const getMetaByHeight = async (api, call, context = {}) => {
     api.query.staking.currentEra.at(prevBlockHash),
     api.query.session.currentIndex.at(prevBlockHash),
   // Current height block hash gets next era and session
-    api.query.staking.currentEra.at(currBlockHash),
-    api.query.session.currentIndex.at(currBlockHash),
-    api.query.timestamp.now.at(currBlockHash),
+    api.query.staking.currentEra.at(blockHash),
+    api.query.session.currentIndex.at(blockHash),
+    api.query.timestamp.now.at(blockHash),
 
   ])
   const currentEra = parseInt(rawCurrentEra.toString(), 10);

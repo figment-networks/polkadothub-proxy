@@ -8,7 +8,7 @@ const transactionMappers = require('../mappers/transaction/transaction_mappers')
  * Get signed transactions by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const blockHash = await getHashForHeight(api, call.request.height);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
 
   const [rawBlock, rawTimestampAt, rawEventsAt] = await Promise.all([
     api.rpc.chain.getBlock(blockHash),
