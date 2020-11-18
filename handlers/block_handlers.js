@@ -1,4 +1,4 @@
-const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
+const {getHashForHeight} = require('../utils/block');
 const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
@@ -9,11 +9,7 @@ const blockMappers = require('../mappers/block/block_mappers');
  */
 const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
-
-  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
-  injectMetadata(api, currHeightMetadata);
-
-  const {blockHash} = currHeightMetadata;
+  const blockHash = await getHashForHeight(api, height);
 
   const [blockResp, rawTimestampAt, rawEventsAt] = await Promise.all([
     api.rpc.chain.getBlock(blockHash),

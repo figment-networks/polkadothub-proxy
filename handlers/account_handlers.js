@@ -1,4 +1,4 @@
-const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
+const {getHashForHeight} = require('../utils/block');
 const identityMappers = require('../mappers/account/identity_mappers');
 const accountMappers = require('../mappers/account/account_mappers');
 
@@ -19,14 +19,15 @@ const getIdentity = async (api, call, context = {}) => {
 const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
   const address = call.request.address;
+  const blockHash = await getHashForHeight(api, height);
 
-  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
-  injectMetadata(api, currHeightMetadata);
-
-  const {blockHash} = currHeightMetadata;
-
-  const accountAt = await api.query.system.account.at(blockHash, address);
-  const ledgerAt = await api.query.staking.ledger.at(blockHash, address);
+  const [
+    accountAt,
+    ledgerAt,
+  ] = await Promise.all([
+       api.query.system.account.at(blockHash, address),
+       api.query.staking.ledger.at(blockHash, address),
+  ]);
 
   return accountMappers.toPb(accountAt, ledgerAt);
 };
