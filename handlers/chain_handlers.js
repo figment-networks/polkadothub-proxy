@@ -62,8 +62,11 @@ const getStatus = async (api, _call, context = {}) => {
  */
 const getMetaByHeight = async (api, call, context = {}) => {
   const height = parseInt(call.request.height, 10);
-  const prevBlockHash = context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1);
+
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
+  const prevBlockHash = height > 1 ?
+    (context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1))
+    : blockHash
 
   const [chain, runtimeVersionAt, rawCurrentEra, rawCurrentSession, rawNextEra, rawNextSession, rawTimestampAt
   ] = await Promise.all([
