@@ -15,7 +15,7 @@ const getAll = async (api, call, context) => {
 
   // Decorate context with current and previous height data
   context.blockHash = await getHashForHeight(api, height);
-  context.prevBlockHash = await getHashForHeight(api, height -1);
+  context.prevBlockHash = height > 1 ? await getHashForHeight(api, height-1) : context.blockHash
 
   const [chainResp, blockResp, eventResp, transactionResp] = await Promise.all([
     chainHandlers.getMetaByHeight(api, call, context),
