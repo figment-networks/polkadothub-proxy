@@ -6,6 +6,6 @@ const getHashForHeight = async(api,height) => {
 }
 
 module.exports = {
-getHashForHeight
+    getHashForHeight
 };
   

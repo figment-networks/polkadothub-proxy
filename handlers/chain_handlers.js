@@ -72,7 +72,7 @@ const getMetaByHeight = async (api, call, context = {}) => {
     // To get current session and era we need to use previous block hash
     api.query.staking.currentEra.at(prevBlockHash),
     api.query.session.currentIndex.at(prevBlockHash),
-  // Current height block hash gets next era and session
+    // Current height block hash gets next era and session
     api.query.staking.currentEra.at(blockHash),
     api.query.session.currentIndex.at(blockHash),
     api.query.timestamp.now.at(blockHash),
