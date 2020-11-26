@@ -29,6 +29,7 @@ describe('integration', () => {
   });
 
   describe('getMetaByHeight', () => {
+    call = {request: {height: 2003930}};
     it('returns a result that matches snapshot', async () => {
       expect(await chainHandlers.getMetaByHeight(api, call)).toMatchSnapshot();
     });

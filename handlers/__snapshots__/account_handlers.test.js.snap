@@ -3,12 +3,12 @@
 exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "account": Object {
-    "feeFrozen": "159408040804203",
-    "free": "212082267445286",
-    "miscFrozen": "159408040804203",
-    "nonce": 37,
-    "referendumCount": 2,
-    "reserved": "10393333333332",
+    "feeFrozen": "2687821176754",
+    "free": "102614205376756",
+    "miscFrozen": "102586091137900",
+    "nonce": 60,
+    "referendumCount": 3,
+    "reserved": "0",
   },
 }
 `;
@@ -16,14 +16,13 @@ Object {
 exports[`integration getIdentity returns a result that matches snapshot 1`] = `
 Object {
   "identity": Object {
-    "deposit": "10000000000000",
-    "displayName": "DragonStake 🐲",
-    "emailName": "dragonstake@protonmail.com",
-    "legalName": "DragonStake",
-    "riotName": "@derfredy:matrix.org",
-    "twitterName": "
-@DragonStake",
-    "webName": "https://dragonstake.io",
+    "deposit": "202580000000",
+    "displayName": "polkaworld",
+    "emailName": "xiaojie.pang@fxhashbang.com",
+    "legalName": "PolkaWorld",
+    "riotName": "@polkaworld:matrix.org",
+    "twitterName": "@polkaworld_org",
+    "webName": "https://www.polkaworld.org/",
   },
 }
 `;

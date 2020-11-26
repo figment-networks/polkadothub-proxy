@@ -3,7 +3,7 @@ const {createApi} = require('../tests/shared');
 
 // These actually DO hit the API
 describe('integration', () => {
-  let call = {request: {height: 2003930}};
+  let call = {request: {height: 2197580}};
   let api;
 
   beforeAll(async (done) => {
