@@ -3,7 +3,7 @@ const {createApi} = require('../tests/shared');
 
 // These actually DO hit the API
 describe('integration', () => {
-  let call = {request: {height: 2003930, address: 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC'}};
+  let call = {request: {height: 2003930, address: '12mP4sjCfKbDyMRAEyLpkeHeoYtS5USY4x34n9NMwQrcEyoh'}};
   let api;
 
   beforeAll(async (done) => {
@@ -12,7 +12,7 @@ describe('integration', () => {
   });
 
   describe('getIdentity', () => {
-    call = {request: {address: 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC'}};
+    call = {request: {address: '12mP4sjCfKbDyMRAEyLpkeHeoYtS5USY4x34n9NMwQrcEyoh'}};
 
     it('returns a result that matches snapshot', async () => {
       expect(await accountHandlers.getIdentity(api, call)).toMatchSnapshot();

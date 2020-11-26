@@ -2,15 +2,15 @@
 
 exports[`integration getMetaByHeight returns a result that matches snapshot 1`] = `
 Object {
-  "chain": "Kusama",
-  "era": 1209,
+  "chain": "Polkadot",
+  "era": 133,
   "lastInEra": false,
   "lastInSession": false,
-  "session": 6548,
-  "specVersion": "2022",
+  "session": 838,
+  "specVersion": "24",
   "time": Object {
     "nanos": 0,
-    "seconds": 1598536728,
+    "seconds": 1602583182.026,
   },
 }
 `;
