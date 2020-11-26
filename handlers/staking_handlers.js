@@ -1,25 +1,18 @@
 const {InvalidArgumentError} = require('../utils/errors');
-const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
-
+const {getHashForHeight} = require('../utils/block');
 /**
  * Get staking information by height
  */
 const getByHeight = async (api, call, context = {}) => {
   const height = call.request.height;
 
-  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
-  const prevHeightMetadata = context.prevHeightMetadata ? context.prevHeightMetadata : await fetchMetadataAtHeight(api, height - 1);
-
-  const {blockHash} = currHeightMetadata;
-  const {blockHash: prevBlockHash} = prevHeightMetadata;
+  const prevBlockHashAt = context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1);
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
 
   // previous height calls
-  injectMetadata(api, prevHeightMetadata);
-  const sessionAt = await api.query.session.currentIndex.at(prevBlockHash);
+  const sessionAt = await api.query.session.currentIndex.at(prevBlockHashAt);
 
   // current height calls
-  injectMetadata(api, currHeightMetadata);
-
   const eraAtRaw = await api.query.staking.activeEra.at(blockHash);
   if (eraAtRaw.isNone) {
     throw new InvalidArgumentError('active era not found.')
@@ -29,7 +22,6 @@ const getByHeight = async (api, call, context = {}) => {
   // ERA QUERIES
   const erasRewardPoints = await api.query.staking.erasRewardPoints.at(blockHash, eraAt);
   const erasTotalStake = await api.query.staking.erasTotalStake.at(blockHash, eraAt);
-
   // Validator reward for era
   // The total validator era payout for the last HISTORY_DEPTH eras.
   // Eras that haven't finished yet or has been removed doesn't have reward.
@@ -61,7 +53,7 @@ const getByHeight = async (api, call, context = {}) => {
       session: sessionAt.toString(),
       era: eraAt,
       totalStake: erasTotalStake.toString(),
-      totalRewardPayout: erasValidatorReward.isEmpty ? '0' : erasValidatorReward.unwrap().toString(),
+      totalRewardPayout: erasValidatorReward.isNone ? '0' : erasValidatorReward.unwrap().toString(10),
       totalRewardPoints: erasRewardPoints.total.toString(),
       validators: validatorsData,
     }

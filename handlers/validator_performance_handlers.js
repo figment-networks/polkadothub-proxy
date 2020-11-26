@@ -1,5 +1,5 @@
-const {fetchMetadataAtHeight, injectMetadata} = require('../utils/setup');
 const {InvalidArgumentError} = require('../utils/errors');
+const {getHashForHeight} = require('../utils/block');
 
 const IM_ONLINE_SECTION = 'imOnline'
 const ALL_GOOD_EVENT_METHOD = 'AllGood'
@@ -9,12 +9,7 @@ const SOME_OFFLINE_EVENT_METHOD = 'SomeOffline'
  * Get validator performance information by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const height = call.request.height;
-
-  const currHeightMetadata = context.currHeightMetadata ? context.currHeightMetadata : await fetchMetadataAtHeight(api, height);
-  injectMetadata(api, currHeightMetadata);
-
-  const {blockHash} = currHeightMetadata;
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
 
   const eventsAt = await api.query.system.events.at(blockHash);
 

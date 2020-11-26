@@ -5,7 +5,7 @@ const validatorPerformanceHandlers = require('./validator_performance_handlers')
 const transactionHandlers = require('./transaction_handlers');
 const eventHandlers = require('./event_handlers');
 const {InvalidArgumentError} = require('../utils/errors');
-const {fetchMetadataAtHeight} = require('../utils/setup');
+const {getHashForHeight} = require('../utils/block');
 
 /**
  * Get all data by height
@@ -14,8 +14,8 @@ const getAll = async (api, call, context) => {
   const height = call.request.height;
 
   // Decorate context with current and previous height data
-  context.currHeightMetadata = await fetchMetadataAtHeight(api, height);
-  context.prevHeightMetadata = await fetchMetadataAtHeight(api, height - 1);
+  context.blockHash = await getHashForHeight(api, height);
+  context.prevBlockHash = height > 1 ? await getHashForHeight(api, height-1) : context.blockHash
 
   const [chainResp, blockResp, eventResp, transactionResp] = await Promise.all([
     chainHandlers.getMetaByHeight(api, call, context),
