@@ -19,7 +19,7 @@ const getByHeight = async (api, call, context = {}) => {
   }
   const eraAt = eraAtRaw.unwrap().index.toNumber();
 
-  const [erasRewardPoints, erasTotalStake, erasValidatorReward, queuedKeys, validatorsAt] = await Promise.all([
+  const [erasRewardPoints, erasTotalStake, erasValidatorReward, queuedKeys, eraStakers] = await Promise.all([
       // ERA QUERIES
       api.query.staking.erasRewardPoints.at(currBlockHash, eraAt),
       api.query.staking.erasTotalStake.at(currBlockHash, eraAt),
@@ -33,21 +33,25 @@ const getByHeight = async (api, call, context = {}) => {
       // https://github.com/polkadot-js/api/blob/master/packages/api-derive/src/staking/query.ts#L108
       // https://github.com/polkadot-js/api/issues/2288
       api.query.session.queuedKeys.at(blockHash),
-      api.query.session.validators.at(blockHash),
+      api.query.staking.erasStakers.entries(eraAt),
   ]);
 
   const maxNominatorRewardedPerValidator = api.consts.staking.maxNominatorRewardedPerValidator
   const promises = [];
-  for (const rawValidator of validatorsAt) {
-    const validatorStashAccount = rawValidator.toString();
+  eraStakers.forEach(([key, data]) => {
+    const validatorStashAccount = key.args[1].toHuman()
+
     const validator = {
       stashAccount: validatorStashAccount,
       rewardPoints: (erasRewardPoints.individual.toJSON()[validatorStashAccount] || '0').toString(),
       stakers: [],
-      sessionKeys: validatorSessionKeys(queuedKeys, validatorStashAccount)
+      sessionKeys: validatorSessionKeys(queuedKeys, validatorStashAccount),
+      totalStake: data.total.toString(),
+      ownStake: data.own.toString(),
+      stakersStake: data.total - data.own,
     };
-    promises.push(getValidatorData(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator));
-  }
+    promises.push(getValidatorData(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator, data.others));
+  })
 
   const validatorsData = await Promise.all(promises)
 
@@ -71,28 +75,21 @@ const validatorSessionKeys = (queuedKeys, validatorStashAccount) => {
   return keysRow ? keysRow[1] : [];
 }
 
-const getValidatorData = async function(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator) {
+const getValidatorData = async function(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator, rawStakers) {
   // Get validator controller account
   const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validator.stashAccount);
   if (!validatorControllerAccount.isEmpty) {
     validator.controllerAccount = validatorControllerAccount.toString();
   }
 
-  // Get stakers for validator
-  const erasStakers = await api.query.staking.erasStakers.at(blockHash, eraAt, validator.stashAccount);
-  validator.totalStake = erasStakers.total.toString();
-  validator.ownStake = erasStakers.own.toString();
-  validator.stakersStake = erasStakers.total - erasStakers.own;
-
-  if (erasStakers.others.length > maxNominatorRewardedPerValidator.toNumber()) {
-    // sort stakes by stake desc. Only top $maxNominatorRewardedPerValidator can receive rewards
-    erasStakers.others.sort(function (a, b) {
+  if (rawStakers.length > maxNominatorRewardedPerValidator.toNumber()) {
+    // sort stakers by stake desc. Only top $maxNominatorRewardedPerValidator can receive rewards
+    rawStakers.sort(function (a, b) {
       return  b.value.toString() - a.value.toString();
     });
   }
 
-
-  validator.stakers = await Promise.all(erasStakers.others.map(async (stake, i) =>  {
+  validator.stakers = await Promise.all(rawStakers.map(async (stake, i) =>  {
     const nominatorStashAccount = stake.who;
 
     // Get nominator stash account
