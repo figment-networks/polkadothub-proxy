@@ -1,4 +1,4 @@
-const {InvalidArgumentError} = require('../utils/errors');
+const {InvalidArgumentError, InternalServerError} = require('../utils/errors');
 const {getHashForHeight} = require('../utils/block');
 /**
  * Get staking information by height
@@ -8,16 +8,30 @@ const getByHeight = async (api, call, context = {}) => {
 
   const prevBlockHashAt = context.prevBlockHash ? context.prevBlockHash : await getHashForHeight(api, height-1);
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
-  const [sessionAt, eraAtRaw, currBlockHash] = await Promise.all([
+  const [sessionAt, eraAtRaw, currBlockHash, currentEraRaw] = await Promise.all([
     api.query.session.currentIndex.at(prevBlockHashAt),
     api.query.staking.activeEra.at(blockHash),
     api.rpc.chain.getFinalizedHead(),
+    api.query.staking.currentEra(),
   ]);
 
   if (eraAtRaw.isNone) {
     throw new InvalidArgumentError('active era not found.')
   }
   const eraAt = eraAtRaw.unwrap().index.toNumber();
+
+  if (currentEraRaw.isNone) {
+    throw new InternalServerError(
+      'CurrentEra is None when Some was expected'
+    );
+  }
+  const currentEra = currentEraRaw.unwrap().toNumber();
+
+  const historyDepth = await api.query.staking.historyDepth.at(currBlockHash)
+  const depth = (currentEra - eraAt)
+  if ( depth > historyDepth.toNumber()) {
+    throw new InvalidArgumentError('Must specify a height where era depth is less than history depth')
+  }
 
   const [erasRewardPoints, erasTotalStake, erasValidatorReward, queuedKeys, eraStakers, erasValidatorPrefs] = await Promise.all([
       // ERA QUERIES
@@ -37,22 +51,40 @@ const getByHeight = async (api, call, context = {}) => {
       api.query.staking.erasValidatorPrefs.entries(eraAt),
   ]);
 
-  const maxNominatorRewardedPerValidator = api.consts.staking.maxNominatorRewardedPerValidator
-  const promises = [];
-  eraStakers.forEach(([key, data]) => {
+  const maxNominatorRewardedPerValidator = api.consts.staking.maxNominatorRewardedPerValidator;
+  var promises = eraStakers.map(async ([key, data]) => {
     const validatorStashAccount = key.args[1].toHuman()
+    const validatorControllerAccount =  await api.query.staking.bonded.at(blockHash, validatorStashAccount);
+    
+    if (data.others.length > maxNominatorRewardedPerValidator.toNumber()) {
+      // sort stakers by stake desc. Only top $maxNominatorRewardedPerValidator can receive rewards
+      data.others.sort(function (a, b) {
+        return  b.value.toString() - a.value.toString();
+      });
+    }
 
-    const validator = {
+    var stakers = await Promise.all(data.others.map(async (stake, i) =>  {
+      const nominatorStashAccount = stake.who;
+      const nominatorControllerAccount =  await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
+      return {
+        stashAccount: nominatorStashAccount.toString(),
+        controllerAccount: (!nominatorControllerAccount.isEmpty) ? nominatorControllerAccount.toString() : null,
+        stake: stake.value.toString(),
+        isRewardEligible: i < maxNominatorRewardedPerValidator,
+      }
+    }))
+
+    return {
+      controllerAccount: (!validatorControllerAccount.isEmpty) ? validatorControllerAccount.toString() : null,
       commission: validatorCommission(erasValidatorPrefs, validatorStashAccount),
       stashAccount: validatorStashAccount,
       rewardPoints: (erasRewardPoints.individual.toJSON()[validatorStashAccount] || '0').toString(),
-      stakers: [],
+      stakers: stakers,
       sessionKeys: validatorSessionKeys(queuedKeys, validatorStashAccount),
       totalStake: data.total.toString(),
       ownStake: data.own.toString(),
       stakersStake: data.total - data.own,
     };
-    promises.push(getValidatorData(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator, data.others));
   })
 
   const validatorsData = await Promise.all(promises)
@@ -83,36 +115,6 @@ const validatorCommission = (prefs, validatorStashAccount) => {
     return account.toString() === validatorStashAccount
   })
   return keysRow ? keysRow[1].commission.toString() : null;
-}
-
-const getValidatorData = async function(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator, rawStakers) {
-  // Get validator controller account
-  const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validator.stashAccount);
-  if (!validatorControllerAccount.isEmpty) {
-    validator.controllerAccount = validatorControllerAccount.toString();
-  }
-
-  if (rawStakers.length > maxNominatorRewardedPerValidator.toNumber()) {
-    // sort stakers by stake desc. Only top $maxNominatorRewardedPerValidator can receive rewards
-    rawStakers.sort(function (a, b) {
-      return  b.value.toString() - a.value.toString();
-    });
-  }
-
-  validator.stakers = await Promise.all(rawStakers.map(async (stake, i) =>  {
-    const nominatorStashAccount = stake.who;
-
-    // Get nominator stash account
-    const nominatorControllerAccount = await api.query.staking.bonded.at(blockHash, nominatorStashAccount);
-    return {
-      stashAccount: nominatorStashAccount.toString(),
-      controllerAccount: nominatorControllerAccount.toString(),
-      stake: stake.value.toString(),
-      isRewardEligible: i < maxNominatorRewardedPerValidator,
-    }
-  }))
-
-  return validator
 }
 
 module.exports = {
