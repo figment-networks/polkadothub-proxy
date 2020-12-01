@@ -19,7 +19,7 @@ const getByHeight = async (api, call, context = {}) => {
   }
   const eraAt = eraAtRaw.unwrap().index.toNumber();
 
-  const [erasRewardPoints, erasTotalStake, erasValidatorReward, queuedKeys, eraStakers] = await Promise.all([
+  const [erasRewardPoints, erasTotalStake, erasValidatorReward, queuedKeys, eraStakers, erasValidatorPrefs] = await Promise.all([
       // ERA QUERIES
       api.query.staking.erasRewardPoints.at(currBlockHash, eraAt),
       api.query.staking.erasTotalStake.at(currBlockHash, eraAt),
@@ -34,6 +34,7 @@ const getByHeight = async (api, call, context = {}) => {
       // https://github.com/polkadot-js/api/issues/2288
       api.query.session.queuedKeys.at(blockHash),
       api.query.staking.erasStakers.entries(eraAt),
+      api.query.staking.erasValidatorPrefs.entries(eraAt),
   ]);
 
   const maxNominatorRewardedPerValidator = api.consts.staking.maxNominatorRewardedPerValidator
@@ -42,6 +43,7 @@ const getByHeight = async (api, call, context = {}) => {
     const validatorStashAccount = key.args[1].toHuman()
 
     const validator = {
+      commission: validatorCommission(erasValidatorPrefs, validatorStashAccount),
       stashAccount: validatorStashAccount,
       rewardPoints: (erasRewardPoints.individual.toJSON()[validatorStashAccount] || '0').toString(),
       stakers: [],
@@ -75,6 +77,14 @@ const validatorSessionKeys = (queuedKeys, validatorStashAccount) => {
   return keysRow ? keysRow[1] : [];
 }
 
+const validatorCommission = (prefs, validatorStashAccount) => {
+  const keysRow = prefs.find((row) => {
+    const account = row[0].args[1];
+    return account.toString() === validatorStashAccount
+  })
+  return keysRow ? keysRow[1].commission.toString() : null;
+}
+
 const getValidatorData = async function(validator, api, blockHash, eraAt, maxNominatorRewardedPerValidator, rawStakers) {
   // Get validator controller account
   const validatorControllerAccount = await api.query.staking.bonded.at(blockHash, validator.stashAccount);
@@ -102,9 +112,6 @@ const getValidatorData = async function(validator, api, blockHash, eraAt, maxNom
     }
   }))
 
-  // Get Validator prefs (commission)
-  const erasValidatorPrefs = await api.query.staking.erasValidatorPrefs.at(blockHash, eraAt, validator.stashAccount);
-  validator.commission = erasValidatorPrefs.commission.toString();
   return validator
 }
 
