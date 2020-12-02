@@ -24,6 +24,7 @@ message Annotated {
   string method = 3;
   string section = 4;
   bool is_signed = 5;
+  string args = 6;
 }
 
 message GetByHeightRequest { int64 height = 1; }
