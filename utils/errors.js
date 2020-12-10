@@ -22,7 +22,15 @@ class UnavailableError extends ProxyBaseError {
   }
 }
 
+class InternalServerError extends ProxyBaseError {
+  constructor(message) {
+    super(message);
+    this.code = grpc.status.INTERNAL;
+  }
+}
+
 module.exports = {
   InvalidArgumentError,
   UnavailableError,
+  InternalServerError,
 }
