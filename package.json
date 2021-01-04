@@ -1,6 +1,6 @@
 {
   "name": "polkadothub-proxy",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A proxy for Polkadot node",
   "main": "index.js",
   "scripts": {
