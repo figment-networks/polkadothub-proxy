@@ -17,23 +17,6 @@ npm install
 node index
 ```
 
-### Update vendor
-
-Make sure your machine has an
-[up-to-date version of `rustup`](https://www.rust-lang.org/tools/install) installed to manage Rust dependencies.
-
-Install `wasm-pack`:
-
-```bash
-cargo install wasm-pack
-```
-
-Update `VERSION` in `build-substrate-wasm` then run script:
-
-```bash
-./build-substrate-wasm
-```
-
 ## Usage (with Docker)
 
 ### Start proxy
