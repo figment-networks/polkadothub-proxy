@@ -16,7 +16,37 @@ message Transaction {
   bool is_success = 10;
   string partial_fee = 11;
   string tip = 12;
+  string raw_str = 13;
+  Raw raw = 14;
 }
+
+message Raw {
+  bool isSigned = 1;
+  Method method = 2;
+  Era era = 3;
+  string nonce = 4;
+  string signature = 5;
+  string signer = 6;
+  string tip = 7;
+}
+
+message Era {
+  MortalEra MortalEra = 1;
+  string ImmortalEra = 2;
+}
+
+message MortalEra {
+  string period = 1;
+  string phase = 2;
+}
+
+
+message Method {
+  repeated string args = 1;
+  string method = 2;
+  string section = 3;
+}
+
 
 message Annotated {
   int64 extrinsic_index = 1;

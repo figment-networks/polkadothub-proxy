@@ -14,7 +14,7 @@ const {
 
 function main() {
   const proxyUrl = process.env.PROXY_URL || 'localhost:50051';
-  const height = 590;
+  const height = 3739637;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
   let client;
 
@@ -86,19 +86,21 @@ function main() {
   //   if (err) {
   //     console.error(err)
   //   } else {
-  //     console.log('transactions: ', response);
+  //     // console.log('transactions: ', response);
+  //     console.log('transactions: ', JSON.stringify(response));
+
   //   }
   // });
 
   // Events
-  // client = new eventProto.EventService(proxyUrl, grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   if (err) {
-  //     console.error(err)
-  //   } else {
-  //     console.log('events: ', response.events);
-  //   }
-  // });
+  client = new eventProto.EventService(proxyUrl, grpc.credentials.createInsecure());
+  client.getByHeight({height: height}, function(err, response) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('events: ', JSON.stringify(response.events));
+    }
+  });
 
   // Staking
   // client = new stakingProto.StakingService(proxyUrl, grpc.credentials.createInsecure());
@@ -140,14 +142,14 @@ function main() {
   // });
 
   // Validator
-  client = new validatorProto.ValidatorService(proxyUrl, grpc.credentials.createInsecure());
-  client.getAllByHeight({height}, function(err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('validators: ', JSON.stringify(response.validators));
-    }
-  });
+  // client = new validatorProto.ValidatorService(proxyUrl, grpc.credentials.createInsecure());
+  // client.getAllByHeight({height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('validators: ', JSON.stringify(response.validators));
+  //   }
+  // });
 
 }
 
