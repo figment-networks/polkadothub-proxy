@@ -81,26 +81,26 @@ function main() {
   // });
 
   // Transactions
-  // client = new transactionProto.TransactionService(proxyUrl, grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   if (err) {
-  //     console.error(err)
-  //   } else {
-  //     // console.log('transactions: ', response);
-  //     console.log('transactions: ', JSON.stringify(response));
-
-  //   }
-  // });
-
-  // Events
-  client = new eventProto.EventService(proxyUrl, grpc.credentials.createInsecure());
+  client = new transactionProto.TransactionService(proxyUrl, grpc.credentials.createInsecure());
   client.getByHeight({height: height}, function(err, response) {
     if (err) {
       console.error(err)
     } else {
-      console.log('events: ', JSON.stringify(response.events));
+      // console.log('transactions: ', response);
+      console.log('transactions: ', JSON.stringify(response));
+
     }
   });
+
+  // Events
+  // client = new eventProto.EventService(proxyUrl, grpc.credentials.createInsecure());
+  // client.getByHeight({height: height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('events: ', JSON.stringify(response.events));
+  //   }
+  // });
 
   // Staking
   // client = new stakingProto.StakingService(proxyUrl, grpc.credentials.createInsecure());
