@@ -22,6 +22,7 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
         isSuccess: !!successEvent,
         partialFee: partialFee,
         tip: rawExtrinsic.tip,
+        raw: JSON.stringify(rawExtrinsic.toHuman()),
     };
 }
 
