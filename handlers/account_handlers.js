@@ -23,13 +23,11 @@ const getByHeight = async (api, call, context = {}) => {
 
   const [
     accountAt,
-    ledgerAt,
   ] = await Promise.all([
        api.query.system.account.at(blockHash, address),
-       api.query.staking.ledger.at(blockHash, address),
   ]);
 
-  return accountMappers.toPb(accountAt, ledgerAt);
+  return accountMappers.toPb(accountAt);
 };
 
 module.exports = {
