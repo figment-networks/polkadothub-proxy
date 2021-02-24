@@ -5,11 +5,10 @@ option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/account/
 
 message Account {
   int64 nonce = 1;
-  int64 referendum_count = 2;
-  string free = 3;
-  string reserved = 4;
-  string misc_frozen = 5;
-  string fee_frozen = 6;
+  string free = 2;
+  string reserved = 3;
+  string misc_frozen = 4;
+  string fee_frozen = 5;
 }
 
 message AccountIdentity {
