@@ -16,6 +16,7 @@ message Event {
   string section = 5;
   string description = 6;
   int64 extrinsicIndex = 7;
+  string error = 8;
 }
 
 message GetByHeightRequest {
