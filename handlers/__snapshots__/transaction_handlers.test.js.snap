@@ -6,6 +6,76 @@ Object {
     Object {
       "args": "15kUt2i86LHRWCkE3D9Bg1HZAoc2smhn1fwPzDERTb1BXAkX,33079844000000",
       "callArgs": Array [],
+      "events": Array [
+        Object {
+          "data": Array [
+            Object {
+              "name": "AccountId",
+              "value": "1rvXMZpAj9nKLQkPFCymyH7Fg3ZyKJhJbrc7UtHbTVhJm1A",
+            },
+            Object {
+              "name": "AccountId",
+              "value": "15kUt2i86LHRWCkE3D9Bg1HZAoc2smhn1fwPzDERTb1BXAkX",
+            },
+            Object {
+              "name": "Balance",
+              "value": "33079844000000",
+            },
+          ],
+          "description": "[ Transfer succeeded. \\\\[from, to, value\\\\]]",
+          "extrinsicIndex": 2,
+          "index": 0,
+          "method": "Transfer",
+          "phase": "applyExtrinsic",
+          "section": "balances",
+        },
+        Object {
+          "data": Array [
+            Object {
+              "name": "Balance",
+              "value": "124800000",
+            },
+          ],
+          "description": "[ Some funds have been deposited. \\\\[deposit\\\\]]",
+          "extrinsicIndex": 2,
+          "index": 1,
+          "method": "Deposit",
+          "phase": "applyExtrinsic",
+          "section": "treasury",
+        },
+        Object {
+          "data": Array [
+            Object {
+              "name": "AccountId",
+              "value": "12BJ7EMWbr7fGVu2DspPtGbxCCdJUfAMVbJtCm6xPEf4WGiS",
+            },
+            Object {
+              "name": "Balance",
+              "value": "31200000",
+            },
+          ],
+          "description": "[ Some amount was deposited (e.g. for transaction fees). \\\\[who, deposit\\\\]]",
+          "extrinsicIndex": 2,
+          "index": 2,
+          "method": "Deposit",
+          "phase": "applyExtrinsic",
+          "section": "balances",
+        },
+        Object {
+          "data": Array [
+            Object {
+              "name": "DispatchInfo",
+              "value": "{\\"weight\\":188272000,\\"class\\":\\"Normal\\",\\"paysFee\\":\\"Yes\\"}",
+            },
+          ],
+          "description": "[ An extrinsic completed successfully. \\\\[info\\\\]]",
+          "extrinsicIndex": 2,
+          "index": 3,
+          "method": "ExtrinsicSuccess",
+          "phase": "applyExtrinsic",
+          "section": "system",
+        },
+      ],
       "extrinsicIndex": 2,
       "hash": "0x1b736127348120b5ebf5569b41c9bfa5c1958c30b5c0ae0858b9c73b23729124",
       "isSignedTransaction": true,

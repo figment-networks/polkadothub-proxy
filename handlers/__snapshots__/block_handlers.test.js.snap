@@ -8,6 +8,22 @@ Object {
       Object {
         "args": "1602583182026",
         "callArgs": Array [],
+        "events": Array [
+          Object {
+            "data": Array [
+              Object {
+                "name": "DispatchInfo",
+                "value": "{\\"weight\\":159133000,\\"class\\":\\"Mandatory\\",\\"paysFee\\":\\"Yes\\"}",
+              },
+            ],
+            "description": "[ An extrinsic completed successfully. \\\\[info\\\\]]",
+            "extrinsicIndex": 0,
+            "index": 0,
+            "method": "ExtrinsicSuccess",
+            "phase": "applyExtrinsic",
+            "section": "system",
+          },
+        ],
         "extrinsicIndex": 0,
         "hash": "0xfcdde1d7bee4f932819428de5458dad2e2be1a47d098492f40e72b161cf1165b",
         "isSignedTransaction": false,
@@ -25,6 +41,108 @@ Object {
       Object {
         "args": "13myyNpFTbmaDPh59EaBpQ4efodWk3GKKq5edK72dC9puFmH,10000000000",
         "callArgs": Array [],
+        "events": Array [
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "13myyNpFTbmaDPh59EaBpQ4efodWk3GKKq5edK72dC9puFmH",
+              },
+            ],
+            "description": "[ A new \\\\[account\\\\] was created.]",
+            "extrinsicIndex": 1,
+            "index": 0,
+            "method": "NewAccount",
+            "phase": "applyExtrinsic",
+            "section": "system",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "13myyNpFTbmaDPh59EaBpQ4efodWk3GKKq5edK72dC9puFmH",
+              },
+              Object {
+                "name": "Balance",
+                "value": "10000000000",
+              },
+            ],
+            "description": "[ An account was created with some free balance. \\\\[account, free_balance\\\\]]",
+            "extrinsicIndex": 1,
+            "index": 1,
+            "method": "Endowed",
+            "phase": "applyExtrinsic",
+            "section": "balances",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "14bC1hoCjkorMX6Ztv2rdezfafvo5aMkAcKf2PG3ZT7sr8yd",
+              },
+              Object {
+                "name": "AccountId",
+                "value": "13myyNpFTbmaDPh59EaBpQ4efodWk3GKKq5edK72dC9puFmH",
+              },
+              Object {
+                "name": "Balance",
+                "value": "10000000000",
+              },
+            ],
+            "description": "[ Transfer succeeded. \\\\[from, to, value\\\\]]",
+            "extrinsicIndex": 1,
+            "index": 2,
+            "method": "Transfer",
+            "phase": "applyExtrinsic",
+            "section": "balances",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "Balance",
+                "value": "123200000",
+              },
+            ],
+            "description": "[ Some funds have been deposited. \\\\[deposit\\\\]]",
+            "extrinsicIndex": 1,
+            "index": 3,
+            "method": "Deposit",
+            "phase": "applyExtrinsic",
+            "section": "treasury",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "1nTfEEWASm1x6D16FPLLjPFC42Fb7Q5zLovrxQpPQe6j86s",
+              },
+              Object {
+                "name": "Balance",
+                "value": "30800000",
+              },
+            ],
+            "description": "[ Some amount was deposited (e.g. for transaction fees). \\\\[who, deposit\\\\]]",
+            "extrinsicIndex": 1,
+            "index": 4,
+            "method": "Deposit",
+            "phase": "applyExtrinsic",
+            "section": "balances",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "DispatchInfo",
+                "value": "{\\"weight\\":190949000,\\"class\\":\\"Normal\\",\\"paysFee\\":\\"Yes\\"}",
+              },
+            ],
+            "description": "[ An extrinsic completed successfully. \\\\[info\\\\]]",
+            "extrinsicIndex": 1,
+            "index": 5,
+            "method": "ExtrinsicSuccess",
+            "phase": "applyExtrinsic",
+            "section": "system",
+          },
+        ],
         "extrinsicIndex": 1,
         "hash": "0x5c0e80118e6558b333a744913b237e95e92b97db03dd5fbc3640bd566d3f94b1",
         "isSignedTransaction": true,
@@ -51,6 +169,81 @@ Object {
             "method": "nominate",
             "section": "staking",
             "value": "[1REAJ1k691g5Eqqg9gL7vvZCBG7FCCZ8zgQkZWd4va5ESih, 15oKi7HoBQbwwdQc47k71q4sJJWnu5opn1pqoGx4NAEYZSHs]",
+          },
+        ],
+        "events": Array [
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "13Dr9u4sxkCgsNnStVmuuJAwrNw3yHHb9TfwAKVLkKjp8H47",
+              },
+              Object {
+                "name": "Balance",
+                "value": "20000000000000",
+              },
+            ],
+            "description": "[ An account has bonded this amount. \\\\[stash, amount\\\\], ,  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,,  it will not be emitted for staking rewards when they are added to stake.]",
+            "extrinsicIndex": 2,
+            "index": 0,
+            "method": "Bonded",
+            "phase": "applyExtrinsic",
+            "section": "staking",
+          },
+          Object {
+            "data": Array [],
+            "description": "[ Batch of dispatches completed fully with no error.]",
+            "extrinsicIndex": 2,
+            "index": 1,
+            "method": "BatchCompleted",
+            "phase": "applyExtrinsic",
+            "section": "utility",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "Balance",
+                "value": "180800000",
+              },
+            ],
+            "description": "[ Some funds have been deposited. \\\\[deposit\\\\]]",
+            "extrinsicIndex": 2,
+            "index": 2,
+            "method": "Deposit",
+            "phase": "applyExtrinsic",
+            "section": "treasury",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "AccountId",
+                "value": "1nTfEEWASm1x6D16FPLLjPFC42Fb7Q5zLovrxQpPQe6j86s",
+              },
+              Object {
+                "name": "Balance",
+                "value": "45200000",
+              },
+            ],
+            "description": "[ Some amount was deposited (e.g. for transaction fees). \\\\[who, deposit\\\\]]",
+            "extrinsicIndex": 2,
+            "index": 3,
+            "method": "Deposit",
+            "phase": "applyExtrinsic",
+            "section": "balances",
+          },
+          Object {
+            "data": Array [
+              Object {
+                "name": "DispatchInfo",
+                "value": "{\\"weight\\":1013915000,\\"class\\":\\"Normal\\",\\"paysFee\\":\\"Yes\\"}",
+              },
+            ],
+            "description": "[ An extrinsic completed successfully. \\\\[info\\\\]]",
+            "extrinsicIndex": 2,
+            "index": 4,
+            "method": "ExtrinsicSuccess",
+            "phase": "applyExtrinsic",
+            "section": "system",
           },
         ],
         "extrinsicIndex": 2,

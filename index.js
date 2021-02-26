@@ -2,6 +2,7 @@ const {ApiPromise, WsProvider} = require('@polkadot/api');
 const grpc = require('grpc');
 
 const {rollbar} = require('./utils/rollbar');
+const upgradeAlert = require('./utils/upgrade_alert');
 
 const {
   heightProto,
@@ -53,6 +54,8 @@ const wrapHandler = (fn, api) => {
  * Starts an RPC server
  */
 async function init() {
+  upgradeAlert.runCheckForUpdates();
+  
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
 
