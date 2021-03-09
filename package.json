@@ -19,7 +19,8 @@
     "google-protobuf": "^3.11.4",
     "grpc": "^1.24.2",
     "grpc-tools": "^1.8.1",
-    "rollbar": "^2.16.2"
+    "rollbar": "^2.16.2",
+    "supervisor": "^0.12.0"
   },
   "devDependencies": {
     "jest": "^25.5.4",
