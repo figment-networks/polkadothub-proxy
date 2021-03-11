@@ -7,7 +7,9 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
 
     const events = rawEventsForExtrinsic.map((rawEvent, index) => ({index, ...eventMappers.toPb(rawEvent)}));
     const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
-    
+
+    var callArgs = getCallArgs(rawExtrinsic.method.args)
+
     return {
         extrinsicIndex: index,
         hash: rawExtrinsic.hash.toString(),
@@ -19,6 +21,7 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
         method: rawExtrinsic.toHuman().method.method.toString(),
         section: rawExtrinsic.toHuman().method.section.toString(),
         args: rawExtrinsic.method.args.toString(),
+        callArgs: callArgs,
         isSuccess: !!successEvent,
         partialFee: partialFee,
         tip: rawExtrinsic.tip,
@@ -26,6 +29,45 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
         events: events,
     };
 }
+
+// const toAnnotatedPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee) => {
+//     var callArgs = getCallArgs(rawExtrinsic.method.args)
+
+//     return {
+//       extrinsicIndex: index,
+//       hash: rawExtrinsic.hash.toString(),
+//       isSigned: rawExtrinsic.toHuman().isSigned,
+//       method: rawExtrinsic.toHuman().method.method.toString(),
+//       args: JSON.stringify(rawExtrinsic.toHuman().method.args),
+//       section: rawExtrinsic.toHuman().method.section.toString(),
+//       callArgs,
+//     }
+// }
+
+
+const getCallArgs = (args)  => {
+    let callArgs = [];
+    args.forEach((data) => {
+        if (data.isEmpty) {
+            return
+        }
+        if (Array.isArray(data)) {
+            callArgs = getCallArgs(data)
+            return
+        }
+
+        var method = data.method
+        var section = data.section
+        var value = data.args && data.args.toString()
+
+        if (!method && !value && !section) {
+        return
+        }
+        callArgs.push({value, method, section})
+    })
+    return callArgs;
+}
+
 
 const getPartialFee = (rawExtrinsic, events, calcFee) => {
     // Polkadot doesn't charge a fee for unsigned transactions https://wiki.polkadot.network/docs/en/learn-transaction-fees
