@@ -5,9 +5,9 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
         event.section === 'system' && event.method === 'ExtrinsicSuccess'
     );
 
-    const events = rawEventsForExtrinsic.map((rawEvent, index) => ({ index, ...eventMappers.toPb(rawEvent) }));
+    const events = rawEventsForExtrinsic.map((rawEvent, index) => ({index, ...eventMappers.toPb(rawEvent)}));
     const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
-
+    
     return {
         extrinsicIndex: index,
         hash: rawExtrinsic.hash.toString(),
@@ -23,6 +23,7 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
         partialFee: partialFee,
         tip: rawExtrinsic.tip,
         raw: JSON.stringify(rawExtrinsic.toHuman()),
+        events: events,
     };
 }
 
