@@ -14,28 +14,6 @@ message Header {
   string extrinsics_root = 5;
 }
 
-// message TxData {
-//   string name = 1;
-//   string value = 2;
-// }
-
-// message Extrinsic {
-//   int64 extrinsic_index = 1;
-//   string hash = 2;
-//   string time = 3;
-//   bool is_signed_transaction = 4;
-//   string signature = 5;
-//   string signer = 6;
-//   int64  nonce = 7;
-//   string method = 8;
-//   string section = 9;
-//   string args = 10;
-//   bool is_success = 11;
-//   string partial_fee = 12;
-//   string tip = 13;
-//   // repeated TxData data = 14;
-// }
-
 message Block {
   string block_hash = 1;
   Header header = 2;

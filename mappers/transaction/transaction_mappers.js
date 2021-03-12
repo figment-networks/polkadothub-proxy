@@ -30,22 +30,8 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
     };
 }
 
-// const toAnnotatedPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee) => {
-//     var callArgs = getCallArgs(rawExtrinsic.method.args)
-
-//     return {
-//       extrinsicIndex: index,
-//       hash: rawExtrinsic.hash.toString(),
-//       isSigned: rawExtrinsic.toHuman().isSigned,
-//       method: rawExtrinsic.toHuman().method.method.toString(),
-//       args: JSON.stringify(rawExtrinsic.toHuman().method.args),
-//       section: rawExtrinsic.toHuman().method.section.toString(),
-//       callArgs,
-//     }
-// }
-
-
 const getCallArgs = (args)  => {
+
     let callArgs = [];
     args.forEach((data) => {
         if (data.isEmpty) {
