@@ -1,9 +1,9 @@
 const stakingHandlers = require('./staking_handlers');
 const {createApi} = require('../tests/shared');
 
-// These actually DO hit the API
+// These actually DO hit tI
 describe('integration', () => {
-  let call = {request: {height:  2635651}};
+  let call = {request: {height:  4128758}};
 
   describe('getByHeight', () => {
     it('returns a result that matches snapshot', async () => {

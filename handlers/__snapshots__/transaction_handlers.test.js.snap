@@ -5,6 +5,7 @@ Object {
   "transactions": Array [
     Object {
       "args": "15kUt2i86LHRWCkE3D9Bg1HZAoc2smhn1fwPzDERTb1BXAkX,33079844000000",
+      "callArgs": Array [],
       "extrinsicIndex": 2,
       "hash": "0x1b736127348120b5ebf5569b41c9bfa5c1958c30b5c0ae0858b9c73b23729124",
       "isSignedTransaction": true,
@@ -12,13 +13,11 @@ Object {
       "method": "transferKeepAlive",
       "nonce": 416,
       "partialFee": "156000000",
+      "raw": "{\\"isSigned\\":true,\\"method\\":{\\"args\\":[\\"15kUt2i86LHRWCkE3D9Bg1HZAoc2smhn1fwPzDERTb1BXAkX\\",\\"33.0798 DOT (old)\\"],\\"method\\":\\"transferKeepAlive\\",\\"section\\":\\"balances\\"},\\"era\\":{\\"MortalEra\\":{\\"period\\":\\"1,024\\",\\"phase\\":\\"69\\"}},\\"nonce\\":\\"416\\",\\"signature\\":\\"0x47e60a83e7b3c95615cb9918768a4d8426f2c532de51beeb80af10ff5c3c4a553456accf68d68d112ffb3102da14b2acea3612706152e20f204a5799402a1306\\",\\"signer\\":\\"1rvXMZpAj9nKLQkPFCymyH7Fg3ZyKJhJbrc7UtHbTVhJm1A\\",\\"tip\\":\\"0\\"}",
       "section": "balances",
       "signature": "0x47e60a83e7b3c95615cb9918768a4d8426f2c532de51beeb80af10ff5c3c4a553456accf68d68d112ffb3102da14b2acea3612706152e20f204a5799402a1306",
       "signer": "1rvXMZpAj9nKLQkPFCymyH7Fg3ZyKJhJbrc7UtHbTVhJm1A",
-      "time": Object {
-        "nanos": 0,
-        "seconds": 1603749174,
-      },
+      "time": 1603749174,
       "tip": 0,
     },
   ],
