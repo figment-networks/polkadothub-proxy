@@ -1,7 +1,7 @@
 const stakingHandlers = require('./staking_handlers');
 const {createApi} = require('../tests/shared');
 
-// These actually DO hit tI
+// These actually DO hit the API
 describe('integration', () => {
   let call = {request: {height:  4128758}};
 
