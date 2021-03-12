@@ -31,7 +31,6 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
 }
 
 const getCallArgs = (args)  => {
-
     let callArgs = [];
     args.forEach((data) => {
         if (data.isEmpty) {
@@ -44,11 +43,14 @@ const getCallArgs = (args)  => {
 
         var method = data.method
         var section = data.section
+
+        if (method == 'batch' || method == 'batchAll' || method == 'batch_all') {
+            callArgs = getCallArgs(data.args)
+            return
+        }
+
         var value = data.args && data.args.toString()
 
-        if (!method && !value && !section) {
-        return
-        }
         callArgs.push({value, method, section})
     })
     return callArgs;
