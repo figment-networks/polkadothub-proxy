@@ -4,10 +4,9 @@ exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "account": Object {
     "feeFrozen": "2687821176754",
-    "free": "102614205376756",
-    "miscFrozen": "102586091137900",
-    "nonce": 60,
-    "referendumCount": 3,
+    "free": "80479702376756",
+    "miscFrozen": "80474588396860",
+    "nonce": 107,
     "reserved": "0",
   },
 }
@@ -18,11 +17,9 @@ Object {
   "identity": Object {
     "deposit": "202580000000",
     "displayName": "polkaworld",
-    "emailName": "xiaojie.pang@fxhashbang.com",
-    "legalName": "PolkaWorld",
+    "emailName": "xiaojie@polkaworld.org",
     "riotName": "@polkaworld:matrix.org",
     "twitterName": "@polkaworld_org",
-    "webName": "https://www.polkaworld.org/",
   },
 }
 `;

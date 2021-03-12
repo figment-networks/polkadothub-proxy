@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "grpc/transaction/transactionpb/transaction.proto";
 
 package block;
 option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/block/blockpb";
@@ -13,26 +14,10 @@ message Header {
   string extrinsics_root = 5;
 }
 
-message Extrinsic {
-  int64 extrinsic_index = 1;
-  string hash = 2;
-  string time = 3;
-  bool is_signed_transaction = 4;
-  string signature = 5;
-  string signer = 6;
-  int64  nonce = 7;
-  string method = 8;
-  string section = 9;
-  string args = 10;
-  bool is_success = 11;
-  string partial_fee = 12;
-  string tip = 13;
-}
-
 message Block {
   string block_hash = 1;
   Header header = 2;
-  repeated Extrinsic extrinsics = 3;
+  repeated transaction.Transaction extrinsics = 3;
 }
 
 message GetByHeightRequest {
