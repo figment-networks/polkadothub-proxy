@@ -51,6 +51,10 @@ const getCallArgs = (args)  => {
 
         var value = data.args && data.args.toString()
 
+        if (!value || !method || !section) {
+            return
+        }
+
         callArgs.push({value, method, section})
     })
     return callArgs;
