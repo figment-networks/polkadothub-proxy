@@ -25,7 +25,7 @@ const getAll = async (api, call, context) => {
   ]);
 
   let stakingResp;
-  if (chainResp.lastInEra) {
+  if (chainResp.lastInEra || chainResp.lastInActiveEra) {
     stakingResp = await getStakingData(api, call, context);
   }
 

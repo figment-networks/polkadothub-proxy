@@ -66,14 +66,16 @@ const getMetaByHeight = async (api, call, context = {}) => {
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
   const prevBlockHash = context.prevBlockHash ? context.prevBlockHash : (height > 1 ? await getHashForHeight(api, height-1) : blockHash)
 
-  const [chain, runtimeVersionAt, rawCurrentEra, rawCurrentSession, rawNextEra, rawNextSession, rawTimestampAt
-  ] = await Promise.all([
+  const [chain, runtimeVersionAt, rawCurrentActiveEra, rawCurrentEra, rawCurrentSession, rawNextActiveEra, rawNextEra, rawNextSession, rawTimestampAt
+] = await Promise.all([
     api.rpc.system.chain(),
     api.rpc.state.getRuntimeVersion(prevBlockHash),
     // To get current session and era we need to use previous block hash
+    api.query.staking.activeEra.at(prevBlockHash),
     api.query.staking.currentEra.at(prevBlockHash),
     api.query.session.currentIndex.at(prevBlockHash),
     // Current height block hash gets next era and session
+    api.query.staking.activeEra.at(blockHash),
     api.query.staking.currentEra.at(blockHash),
     api.query.session.currentIndex.at(blockHash),
     api.query.timestamp.now.at(blockHash),
@@ -84,6 +86,9 @@ const getMetaByHeight = async (api, call, context = {}) => {
   const nextEra = parseInt(rawNextEra.toString(), 10);
   const nextSession = parseInt(rawNextSession.toString(), 10);
 
+  const currentActiveEra = rawCurrentActiveEra.unwrap().index.toNumber();
+  const nextActiveEra = rawNextActiveEra.unwrap().index.toNumber();
+
   return {
     time: {seconds: rawTimestampAt.toNumber() / 1000, nanos: 0},
     era: currentEra,
@@ -92,6 +97,8 @@ const getMetaByHeight = async (api, call, context = {}) => {
     lastInSession: nextSession !== currentSession,
     chain: chain.toString(),
     specVersion: runtimeVersionAt.specVersion.toString(),
+    lastInActiveEra: currentActiveEra != nextActiveEra,
+    activeEra: currentActiveEra,
   };
 };
 
