@@ -5,25 +5,23 @@ const {rollbar} = require('./rollbar');
 require('dotenv').config(); 
 
 const runCheckForUpdates = async() => {
-    if (process.env.UPDATE_PACKAGES) {
-        console.log("Running check for packages update with interval", process.env.UPDATE_INTERVAL)
-        setInterval(
+    const updateInterval = process.env.UPDATE_INTERVAL;
+    if (updateInterval) {
+        console.log("Running check for packages update with interval", updateInterval)
+        await checkForUpdates();
+        setInterval(function (){
             checkForUpdates()
-        , process.env.UPDATE_INTERVAL);
+        }, updateInterval);
     }
 }
 
 const checkForUpdates = async() => {
-    const filter = process.env.UPDATE_FILTER;
-
     const upgraded = await ncu.run({
         packageFile: 'package.json',
         jsonUpgraded: true,
         silent: true,
-        filter: filter
+        filter: '@polkadot/api @polkadot/types-known @polkadot/util',
     })
-
-    console.log("upgraded", upgraded)
 
     if (JSON.stringify(upgraded) !== "{}") {
         rollbar.error(`You need to update these packages ${upgraded}`)
