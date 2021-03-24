@@ -4,10 +4,10 @@ exports[`integration getByHeight returns a result that matches snapshot 1`] = `
 Object {
   "account": Object {
     "feeFrozen": "2687821176754",
-    "free": "80479702376756",
-    "miscFrozen": "80474588396860",
-    "nonce": 107,
-    "reserved": "0",
+    "free": "79479268376756",
+    "miscFrozen": "78099142135120",
+    "nonce": 110,
+    "reserved": "1000000000000",
   },
 }
 `;
