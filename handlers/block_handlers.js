@@ -1,15 +1,20 @@
+
 const {getHashForHeight} = require('../utils/block');
 const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
+var {callDurationHistogram,calculateTime} = require('./metrics')
 
 /**
  * Get block by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
 
+
+  const hrstart = process.hrtime()
+  const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, call.request.height);
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
   const [blockResp, rawTimestampAt, rawEventsAt] = await Promise.all([
     api.rpc.chain.getBlock(blockHash),
     api.query.timestamp.now.at(blockHash),
