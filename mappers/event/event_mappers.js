@@ -7,6 +7,7 @@ const toPb = (rawEvent) => {
     method: rawEvent.event.method,
     section: rawEvent.event.section,
     description: rawEvent.event.meta.documentation.toString(),
+    raw: JSON.stringify(rawEvent.toHuman()),
   }
 
   if (rawEvent.phase.isApplyExtrinsic) {
