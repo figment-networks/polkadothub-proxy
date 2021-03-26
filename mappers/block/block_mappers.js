@@ -1,6 +1,7 @@
 const transactionMappers = require('../transaction/transaction_mappers');
 
 const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents, rawCurrentEra, calcFee) => {
+  rawEvents.forEach((ev, i) => ev.index = i);
   const currentEra = rawCurrentEra.toString()
 
   return {
