@@ -28,6 +28,7 @@ message Transaction {
   repeated event.Event events = 14;
   bool is_signed_transaction = 15;
   repeated CallArg callArgs = 16;
+  string epoch = 17;
 }
 
 message Annotated {
