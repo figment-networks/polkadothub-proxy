@@ -1,7 +1,8 @@
 const transactionMappers = require('../transaction/transaction_mappers');
 
-const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents, calcFee) => {
+const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents, rawCurrentEra, calcFee) => {
   rawEvents.forEach((ev, i) => ev.index = i);
+  const currentEra = rawCurrentEra.toString()
 
   return {
     block: {
@@ -15,7 +16,7 @@ const toPb = (blockHash, rawBlock, rawTimestamp, rawEvents, calcFee) => {
       },
       extrinsics: rawBlock.extrinsics.map((rawExtrinsic, index) => {
         const rawEventsForExtrinsic = rawEvents.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
-        return transactionMappers.toPb(index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee)
+        return transactionMappers.toPb(index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee, currentEra)
       }),
     }
   };

@@ -4,7 +4,7 @@ const { expandMetadata } = require('@polkadot/metadata/decorate');
 
 // createCalcFee follows what parity does
 // https://github.com/paritytech/substrate-api-sidecar/blob/6507ce70ff458281d1a2e31b58716e20ad8183dc/src/services/blocks/BlocksService.ts#L412
-const createCalcFee = async(api, parentHash, block) => {
+const createCalcFee = async(api, metadata, version, multiplier) => {
   const perByte = api.consts.transactionPayment?.transactionByteFee;
   const extrinsicBaseWeightExists =
     api.consts.system.extrinsicBaseWeight ||
@@ -18,19 +18,6 @@ const createCalcFee = async(api, parentHash, block) => {
   ) {
     return { calc_fee: () => null };
   }
-
-  let parentParentHash;
-  if (block.header.number.toNumber() > 1) {
-    parentParentHash = (await api.rpc.chain.getHeader(parentHash))
-      .parentHash;
-  } else {
-    parentParentHash = parentHash;
-  }
-
-  const [version, multiplier] = await Promise.all([
-    api.rpc.state.getRuntimeVersion(parentParentHash),
-    api.query.transactionPayment.nextFeeMultiplier.at(parentHash),
-  ]);
 
   const specName = version.specName.toString();
   const specVersion = version.specVersion.toNumber();
@@ -51,9 +38,6 @@ const createCalcFee = async(api, parentHash, block) => {
     specName !== api.runtimeVersion.specName.toString() ||
     specVersion !== api.runtimeVersion.specVersion.toNumber()
   ) {
-    const metadata = await api.rpc.state.getMetadata(
-      parentParentHash
-    );
     const decorated = expandMetadata(api.registry, metadata);
 
     extrinsicBaseWeight =
