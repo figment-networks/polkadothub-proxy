@@ -1,17 +1,17 @@
 const eventMappers = require('../event/event_mappers');
 
-const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee) => {
+const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee, currentEra) => {
     const successEvent = rawEventsForExtrinsic.find(({ event }) =>
         event.section === 'system' && event.method === 'ExtrinsicSuccess'
     );
 
     const events = rawEventsForExtrinsic.map((rawEvent, index) => ({index, ...eventMappers.toPb(rawEvent)}));
     const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
-
-    var callArgs = getCallArgs(rawExtrinsic.method.args)
+    var callArgs = getCallArgs(rawExtrinsic.method.args);
 
     return {
         extrinsicIndex: index,
+        epoch: currentEra,
         hash: rawExtrinsic.hash.toString(),
         time: rawTimestamp.toNumber() / 1000,
         isSignedTransaction: rawExtrinsic.toHuman().isSigned,
