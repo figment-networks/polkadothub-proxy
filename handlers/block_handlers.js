@@ -1,15 +1,20 @@
+
 const {getHashForHeight} = require('../utils/block');
 const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
+var {callDurationHistogram,calculateTime} = require('./metrics')
 
 /**
  * Get block by height
  */
 const getByHeight = async (api, call, context = {}) => {
+  const hrstart = process.hrtime()
   const height = parseInt(call.request.height, 10);
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
+
   const prevBlockHash = context.prevBlockHash ? context.prevBlockHash : (height > 1 ? await getHashForHeight(api, height-1) : blockHash);
   let parentParentHash = prevBlockHash;
   if (height > 1) {

@@ -35,7 +35,7 @@ function getError(api, call, rawEvent) {
         rollbar.error(error, {call})
         if (moduleHasIndexAndError(module)) {
           errMsg = `{"index":${data.asModule.index.words[0]},"error":${data.asModule.error.words[0]}}`;
-        } 
+        }
       }
     }
   })

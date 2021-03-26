@@ -2,6 +2,7 @@ FROM node:14-alpine AS appbuild
 WORKDIR /usr/src/app
 COPY package*.json ./
 COPY index.js ./
+COPY cluster.js ./
 COPY grpc  ./grpc/
 COPY handlers ./handlers/
 COPY mappers ./mappers/
@@ -12,4 +13,4 @@ FROM node:14-alpine
 WORKDIR /usr/src/app
 COPY --from=appbuild /usr/src/app/ ./
 EXPOSE 50051
-CMD [ "node", "index.js" ]
+CMD [ "node", "cluster.js" ]

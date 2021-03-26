@@ -4,12 +4,16 @@ const {UnavailableError} = require('../utils/errors');
 const {rollbar} = require('../utils/rollbar');
 const transactionMappers = require('../mappers/transaction/transaction_mappers');
 
+var {callDurationHistogram,calculateTime} = require('./metrics')
+
 /**
  * Get signed transactions by height
  */
 const getByHeight = async (api, call, context = {}) => {
+  const hrstart = process.hrtime()
   const height = parseInt(call.request.height, 10);
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
   const prevBlockHash = context.prevBlockHash ? context.prevBlockHash : (height > 1 ? await getHashForHeight(api, height-1) : blockHash);
   let parentParentHash = prevBlockHash;
   if (height > 1) {
@@ -50,7 +54,10 @@ const getByHeight = async (api, call, context = {}) => {
 
 
 const getAnnotatedByHeight = async (api, call, context = {}) => {
+
+  const hrstart = process.hrtime()
   const blockHash = await getHashForHeight(api, call.request.height);
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
 
   const resp = await api.rpc.chain.getBlock(blockHash);
   const rawBlockAt = resp.block;

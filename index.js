@@ -1,6 +1,9 @@
 const {ApiPromise, WsProvider} = require('@polkadot/api');
 const grpc = require('grpc');
 
+
+const promClient = require('prom-client')
+const promRegister = new promClient.Registry()
 const {rollbar} = require('./utils/rollbar');
 const upgradeAlert = require('./utils/upgrade_alert');
 
@@ -54,8 +57,12 @@ const wrapHandler = (fn, api) => {
  * Starts an RPC server
  */
 async function init() {
+  promClient.collectDefaultMetrics({
+    timeout: 10000,
+    gcDurationBuckets: [0.001, 0.01, 0.1, 1, 2, 5], // These are the default buckets.
+  });
   upgradeAlert.runCheckForUpdates();
-  
+
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
 
@@ -92,12 +99,13 @@ async function init() {
   server.addService(validatorPerformanceProto.ValidatorPerformanceService.service, {
     getByHeight: wrapHandler(validatorPerformanceHandlers.getByHeight, api),
   });
-  server.bind(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure());
-  server.start();
+  server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
+    server.start();
+  });
 }
 
 init().then(resp => {
-  console.log(`Server started at ${HOST}:${PORT}`);
+  console.log(`GRPC Server started at ${HOST}:${PORT}`);
 }).catch(err => {
   console.log('ERR:', err);
 });

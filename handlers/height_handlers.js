@@ -1,3 +1,5 @@
+
+
 const chainHandlers = require('./chain_handlers');
 const blockHandlers = require('./block_handlers');
 const stakingHandlers = require('./staking_handlers');
@@ -7,6 +9,8 @@ const eventHandlers = require('./event_handlers');
 const {InvalidArgumentError} = require('../utils/errors');
 const {getHashForHeight} = require('../utils/block');
 
+const {callDurationHistogram,calculateTime} = require('./metrics')
+
 /**
  * Get all data by height
  */
@@ -14,8 +18,14 @@ const getAll = async (api, call, context) => {
   const height = call.request.height;
 
   // Decorate context with current and previous height data
+
+  const hrstart = process.hrtime()
   context.blockHash = await getHashForHeight(api, height);
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
+
+  const hrstart2 = process.hrtime()
   context.prevBlockHash = height > 1 ? await getHashForHeight(api, height-1) : context.blockHash
+  callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart2));
 
   const [chainResp, blockResp, eventResp, transactionResp] = await Promise.all([
     chainHandlers.getMetaByHeight(api, call, context),
