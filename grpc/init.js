@@ -24,6 +24,10 @@ const chainProto = grpc.loadPackageDefinition(packageDefinition).chain;
 packageDefinition = protoLoader.loadSync('./grpc/block/blockpb/block.proto', defaultOptions);
 const blockProto = grpc.loadPackageDefinition(packageDefinition).block;
 
+// Decode
+packageDefinition = protoLoader.loadSync('./grpc/decode/decodepb/decode.proto', defaultOptions);
+const decodeProto = grpc.loadPackageDefinition(packageDefinition).decode;
+
 // Transactions
 packageDefinition = protoLoader.loadSync('./grpc/transaction/transactionpb/transaction.proto', defaultOptions);
 const transactionProto = grpc.loadPackageDefinition(packageDefinition).transaction;
@@ -53,6 +57,7 @@ module.exports = {
   heightProto,
   chainProto,
   blockProto,
+  decodeProto,
   transactionProto,
   eventProto,
   stakingProto,

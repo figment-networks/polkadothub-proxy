@@ -15,6 +15,8 @@ grpc-go:
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/account/accountpb/account.pb.go grpc/account/accountpb/account.pb.go
 	@protoc grpc/chain/chainpb/chain.proto --go_out=plugins=grpc:.
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/chain/chainpb/chain.pb.go grpc/chain/chainpb/chain.pb.go
+	@protoc grpc/decode/decodepb/decode.proto --go_out=plugins=grpc:.
+	@mv github.com/figment-networks/polkadothub-proxy/grpc/decode/decodepb/decode.pb.go grpc/decode/decodepb/decode.pb.go
 	@protoc grpc/block/blockpb/block.proto --go_out=plugins=grpc:.
 	@mv github.com/figment-networks/polkadothub-proxy/grpc/block/blockpb/block.pb.go grpc/block/blockpb/block.pb.go
 	@protoc grpc/event/eventpb/event.proto --go_out=plugins=grpc:.

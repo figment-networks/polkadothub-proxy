@@ -14,7 +14,7 @@ const {
 
 function main() {
   const proxyUrl = process.env.PROXY_URL || 'localhost:50051';
-  const height = 590;
+  const height = 4355552;
   const address = 'DSpbbk6HKKyS78c4KDLSxCetqbwnsemv2iocVXwNe2FAvWC';
   let client;
 
@@ -71,24 +71,24 @@ function main() {
   // });
 
   // Block
-  // client = new blockProto.BlockService(proxyUrl, grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   if (err) {
-  //     console.error(err)
-  //   } else {
-  //     console.log('block: ', response);
-  //   }
-  // });
+  client = new blockProto.BlockService(proxyUrl, grpc.credentials.createInsecure());
+  client.getByHeight({height: height}, function(err, response) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('block: ', response);
+    }
+  });
 
   // Transactions
-  // client = new transactionProto.TransactionService(proxyUrl, grpc.credentials.createInsecure());
-  // client.getByHeight({height: height}, function(err, response) {
-  //   if (err) {
-  //     console.error(err)
-  //   } else {
-  //     console.log('transactions: ', response);
-  //   }
-  // });
+  client = new transactionProto.TransactionService(proxyUrl, grpc.credentials.createInsecure());
+  client.getByHeight({height: height}, function(err, response) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('transactions: ', response);
+    }
+  });
 
   // Events
   // client = new eventProto.EventService(proxyUrl, grpc.credentials.createInsecure());
@@ -140,14 +140,14 @@ function main() {
   // });
 
   // Validator
-  client = new validatorProto.ValidatorService(proxyUrl, grpc.credentials.createInsecure());
-  client.getAllByHeight({height}, function(err, response) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log('validators: ', JSON.stringify(response.validators));
-    }
-  });
+  // client = new validatorProto.ValidatorService(proxyUrl, grpc.credentials.createInsecure());
+  // client.getAllByHeight({height}, function(err, response) {
+  //   if (err) {
+  //     console.error(err)
+  //   } else {
+  //     console.log('validators: ', JSON.stringify(response.validators));
+  //   }
+  // });
 
 }
 

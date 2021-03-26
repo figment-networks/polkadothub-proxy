@@ -31,6 +31,7 @@ const getByHeight = async (api, call, context = {}) => {
     api.query.transactionPayment.nextFeeMultiplier.at(prevBlockHash),
   ]);
 
+  console.log("blockResp", blockResp)
   const rawBlockAt = blockResp.block;
 
   let calcFee;
