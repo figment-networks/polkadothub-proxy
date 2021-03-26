@@ -1,47 +1,47 @@
-const {getHashForHeight} = require('../utils/block');
 const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
-const {GenericBlock} = require('@polkadot/types/generic');
-const { Metadata } = require('@polkadot/metadata');
-const { expandMetadata } = require('@polkadot/metadata/decorate');
-
-
-
-
+const {Json} = require('@polkadot/types');
 
 /**
  * decode a block
  */
-const decode = async (api, call, context = {}) => {
-
-    const blockString  = new Buffer(call.request.block).toString('ascii');
-    const bjson = JSON.parse(blockString)
-
-    const rawBlock = new GenericBlock(api.registry, bjson.block)
-
-    const metadataString  = new Buffer(call.request.events).toString('ascii');
-    const metadata = new Metadata(api.registry, metadataString);
-    const decoratedMeta = expandMetadata(api.registry, metadata);
-
-    const [rawTimestampAt, rawEventsAt] = await Promise.all([
-         api.query.timestamp.now.at("0x8036e20c9452ddfb8c9c615cc1cdced79408fab6dff3346818f0fefae1bfda15"),
-         api.query.system.events.at("0x8036e20c9452ddfb8c9c615cc1cdced79408fab6dff3346818f0fefae1bfda15"),
+const decode = async (api, call = {}) => {
+    var blockHash = call.request.block_hash;
+    var parentHash = call.request.parent_hash;
+    const [decodedBlock, decodedEvents, decodedTimestamp, decodedMetadataParent, decodedVersion, decodedMultiplier] = await Promise.all([
+        decodeByteJson(api.registry, call.request.block),
+        decodeByteJson(api.registry, call.request.events),
+        decodeByteJson(api.registry, call.request.timestamp),
+        decodeByteJson(api.registry, call.request.metadata_parent),
+        decodeByteJson(api.registry, call.request.runtime_parent),
     ]);
 
-    // let calcFee;
-    // try {
-    //     calcFee = await createCalcFee(api, rawBlock.header.parentHash, rawBlock);
-    // } catch(err) {
-    //     rollbar.error(err, {call});
-    //     throw new UnavailableError('could not calculate fee');
-    // }
+    var rawBlock = decodedBlock.block;
+    var rawEvents = decodedEvents.events;
+    var rawMetadata = decodedMetadataParent.metadata;
+    var rawMultiplier = decodedMultiplier.multiplier;
+    var rawTimestamp = decodedTimestamp.timestamp;
+    var rawVersion = decodedVersion.runtime;
+    
+    let calcFee;
+    try {
+        calcFee = await createCalcFee(api, rawMetadata, rawVersion, rawMultiplier);
+    } catch(err) {
+        rollbar.error(err, {call});
+        throw new UnavailableError('could not calculate fee');
+    }
 
     return {
-        block: blockMappers.toPb("0x8036e20c9452ddfb8c9c615cc1cdced79408fab6dff3346818f0fefae1bfda15", rawBlock, rawTimestampAt, rawEventsAt,undefined)
+        block: blockMappers.toPb(blockHash, rawBlock, rawTimestamp, rawEvents, calcFee)
     }
 };
+
+const decodeByteJson = async(registry, byte) => {
+    const json = JSON.parse(byte.toString());
+    return new Json(registry, json);
+}
 
 module.exports = {
     decode,

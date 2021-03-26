@@ -7,8 +7,12 @@ import "grpc/block/blockpb/block.proto";
 
 message DecodeRequest {
   bytes block = 1;
-  bytes events = 2;
-  bytes systemStorage = 3;
+  string block_hash = 2;
+  bytes events = 3;
+  bytes timestamp = 4;
+  string parent_hash = 5;
+  bytes metadata_parent = 6; // porzedni blok 
+  bytes runtime_parent = 7; // porzedni blok 
 }
 
 message DecodeResponse {
