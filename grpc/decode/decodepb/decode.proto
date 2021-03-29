@@ -10,12 +10,15 @@ message DecodeRequest {
   string block_hash = 2;
   bytes events = 3;
   bytes timestamp = 4;
-  bytes metadata_parent = 5; 
-  bytes runtime_parent = 6; 
+  bytes metadata_parent = 5;
+  bytes runtime_parent = 6;
+  bytes next_fee_multiplier_parent = 7;
+  bytes current_era_parent = 8;
 }
 
 message DecodeResponse {
-  block.GetByHeightResponse block = 1; 
+  block.GetByHeightResponse block = 1;
+  string era = 2;
 }
 
 service DecodeService {
