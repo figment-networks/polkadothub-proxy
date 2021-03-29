@@ -9,7 +9,6 @@ const {Json} = require('@polkadot/types');
  */
 const decode = async (api, call = {}) => {
     var blockHash = call.request.block_hash;
-    var parentHash = call.request.parent_hash;
     const [decodedBlock, decodedEvents, decodedTimestamp, decodedMetadataParent, decodedVersion, decodedMultiplier] = await Promise.all([
         decodeByteJson(api.registry, call.request.block),
         decodeByteJson(api.registry, call.request.events),

@@ -10,9 +10,8 @@ message DecodeRequest {
   string block_hash = 2;
   bytes events = 3;
   bytes timestamp = 4;
-  string parent_hash = 5;
-  bytes metadata_parent = 6; // porzedni blok 
-  bytes runtime_parent = 7; // porzedni blok 
+  bytes metadata_parent = 5; 
+  bytes runtime_parent = 6; 
 }
 
 message DecodeResponse {
