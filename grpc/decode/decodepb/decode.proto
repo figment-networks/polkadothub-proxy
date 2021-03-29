@@ -18,7 +18,7 @@ message DecodeRequest {
 
 message DecodeResponse {
   block.GetByHeightResponse block = 1;
-  string era = 2;
+  string epoch = 2;
 }
 
 service DecodeService {

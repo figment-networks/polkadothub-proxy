@@ -9,7 +9,7 @@ const toPb = (rawIdentity) => {
 
   const identity = {
     deposit: unwrappedIdentity.deposit.toString(),
-  }
+  };
 
   if (unwrappedIdentity.info.display.isRaw) {
     identity.displayName = hexToString(unwrappedIdentity.info.display.toHex());
@@ -40,8 +40,8 @@ const toPb = (rawIdentity) => {
   }
 
   return {identity};
-}
+};
 
 module.exports = {
   toPb,
-}
+};

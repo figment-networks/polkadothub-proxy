@@ -2,45 +2,75 @@ const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
-const {Json} = require('@polkadot/types');
+const { Metadata } = require('@polkadot/metadata');
+const {Compact, Json} = require('@polkadot/types');
+const {Vec } = require('@polkadot/types/codec');
+const { hexToBn, hexToU8a } = require("@polkadot/util");
 
 /**
  * decode a block
  */
 const decode = async (api, call = {}) => {
-    var blockHash = call.request.block_hash;
-    const [decodedBlock, decodedEvents, decodedTimestamp, decodedMetadataParent, decodedVersion, decodedMultiplier] = await Promise.all([
-        decodeByteJson(api.registry, call.request.block),
-        decodeByteJson(api.registry, call.request.events),
-        decodeByteJson(api.registry, call.request.timestamp),
-        decodeByteJson(api.registry, call.request.metadata_parent),
-        decodeByteJson(api.registry, call.request.runtime_parent),
+    const registry = api.registry;
+
+    const [decodedBlock, rawCurrentEraParent, rawRuntimeParent, rawMetadataParent, rawMultiplier, rawTimestamp] = await Promise.all([
+        parseByteJson(registry, call.request.block),
+        decodeHexToBN(call.request.currentEraParent),
+        parseByteJson(api.runtimeParent, call.request.runtimeParent),
+        decodeMetadata(registry, call.request.metadataParent),
+        decodeHexToBN(call.request.nextFeeMultiplierParent),
+        decodeHexToBN(call.request.timestamp),
     ]);
 
-    var rawBlock = decodedBlock.block;
-    var rawEvents = decodedEvents.events;
-    var rawMetadata = decodedMetadataParent.metadata;
-    var rawMultiplier = decodedMultiplier.multiplier;
-    var rawTimestamp = decodedTimestamp.timestamp;
-    var rawVersion = decodedVersion.runtime;
-    
+    const blockHash = call.request.blockHash;
+    const rawBlock = decodedBlock.block;
+    const metaRegistry = rawMetadataParent.registry;
+
+    const [decodedHeight, rawExtrinsics, rawEvents] = await Promise.all([
+        decodeHeight(metaRegistry, rawBlock.header.number),
+        decodeVec(metaRegistry, 'Extrinsic' , decodedBlock.block.extrinsics),
+        decodeVec(metaRegistry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
+    ]);
+
     let calcFee;
     try {
-        calcFee = await createCalcFee(api, rawMetadata, rawVersion, rawMultiplier);
+        calcFee = await createCalcFee(api, rawMetadataParent, rawRuntimeParent, rawMultiplier);
     } catch(err) {
         rollbar.error(err, {call});
         throw new UnavailableError('could not calculate fee');
     }
 
     return {
-        block: blockMappers.toPb(blockHash, rawBlock, rawTimestamp, rawEvents, calcFee)
-    }
+        block: blockMappers.toPb(blockHash, decodedHeight, rawBlock.header, rawExtrinsics, rawTimestamp, rawEvents, rawCurrentEraParent, calcFee),
+        epoch: rawCurrentEraParent.toString(),
+    };
 };
 
-const decodeByteJson = async(registry, byte) => {
-    const json = JSON.parse(byte.toString());
+const decodeHeight = async (registry, height) => {
+    return new Compact(registry, 'BlockNumber', height).toNumber();
+};
+
+const decodeHexToBN = async (value) => {
+    return hexToBn(newBuffer(value), { isLe: true });
+};
+
+const decodeMetadata = async (registry, metadata) => {
+    return new Metadata(registry, newBuffer(metadata));
+};
+
+const decodeVec = async (registry, type, value) => {
+    return new Vec(registry, type, value);
+};
+
+const newBuffer = (buffer) => {
+    return new Buffer.from(buffer).toString('ascii');
+};
+
+const parseByteJson = async (registry, byte) => {
+    const jsonStr = `{${byte.toString()}}`;
+    const json = JSON.parse(jsonStr);
     return new Json(registry, json);
-}
+};
 
 module.exports = {
     decode,

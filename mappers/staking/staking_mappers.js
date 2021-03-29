@@ -5,7 +5,7 @@ const toPb = (rawEvents, rewardPoints, erasValidatorReward) => {
       individualRewardPoints.push({
         stash: key.toString(),
         amount: rewardPoints.individual[key].toString(),
-      })
+      });
     }
   }
 
@@ -19,8 +19,8 @@ const toPb = (rawEvents, rewardPoints, erasValidatorReward) => {
       validatorReward: erasValidatorReward,
     }
   };
-}
+};
 
 module.exports = {
   toPb,
-}
+};
