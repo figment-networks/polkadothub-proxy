@@ -10,7 +10,7 @@ const getByHeight = async (api, call, context = {}) => {
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
   const [sessionAt, eraAtRaw, currBlockHash, currentEraRaw] = await Promise.all([
     api.query.session.currentIndex.at(prevBlockHashAt),
-    api.query.staking.activeEra.at(blockHash),
+    api.query.staking.activeEra.at(prevBlockHashAt),
     api.rpc.chain.getFinalizedHead(),
     api.query.staking.currentEra(),
   ]);

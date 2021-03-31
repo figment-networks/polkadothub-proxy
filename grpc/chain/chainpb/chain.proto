@@ -41,6 +41,8 @@ message GetMetaByHeightResponse {
   bool last_in_era = 5;
   string chain = 6;
   string spec_version = 7;
+  bool lastInActiveEra = 8;
+  int64 activeEra = 9;
 }
 
 service ChainService {
