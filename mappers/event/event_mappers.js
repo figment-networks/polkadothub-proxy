@@ -8,7 +8,7 @@ const toPb = (rawEvent) => {
     section: rawEvent.event.section,
     description: rawEvent.event.meta.documentation.toString(),
     raw: JSON.stringify(rawEvent.toHuman()),
-  }
+  };
 
   if (rawEvent.phase.isApplyExtrinsic) {
     event.phase = 'applyExtrinsic';
@@ -22,7 +22,7 @@ const toPb = (rawEvent) => {
   }
 
   return event;
-}
+};
 
 function getEventData(rawEvent, types) {
   const eventData = [];
@@ -30,11 +30,11 @@ function getEventData(rawEvent, types) {
     eventData.push({
       name: types[index].type,
       value: data.toString(),
-    })
+    });
   });
   return eventData;
 }
 
 module.exports = {
   toPb,
-}
+};

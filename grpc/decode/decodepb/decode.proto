@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package decode;
+option go_package = "github.com/figment-networks/polkadothub-proxy/grpc/decode/decodepb";
+
+import "grpc/block/blockpb/block.proto";
+
+message DecodeRequest {
+  bytes block = 1;
+  string block_hash = 2;
+  bytes events = 3;
+  bytes timestamp = 4;
+  bytes metadata_parent = 5;
+  bytes runtime_parent = 6;
+  bytes next_fee_multiplier_parent = 7;
+  bytes current_era_parent = 8;
+}
+
+message DecodeResponse {
+  block.GetByHeightResponse block = 1;
+  string epoch = 2;
+}
+
+service DecodeService {
+  rpc Decode(DecodeRequest) returns (DecodeResponse) {}
+}

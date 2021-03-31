@@ -10,6 +10,7 @@ const upgradeAlert = require('./utils/upgrade_alert');
 const {
   heightProto,
   chainProto,
+  decodeProto,
   blockProto,
   transactionProto,
   eventProto,
@@ -22,6 +23,7 @@ const {
 const heightHandlers = require('./handlers/height_handlers');
 const chainHandlers = require('./handlers/chain_handlers');
 const blockHandlers = require('./handlers/block_handlers');
+const decodeHandlers = require('./handlers/decode_handlers');
 const transactionHandlers = require('./handlers/transaction_handlers');
 const eventHandlers = require('./handlers/event_handlers');
 const stakingHandlers = require('./handlers/staking_handlers');
@@ -75,13 +77,15 @@ async function init() {
     getStatus: wrapHandler(chainHandlers.getStatus, api),
     getMetaByHeight: wrapHandler(chainHandlers.getMetaByHeight, api),
   });
+  server.addService(decodeProto.DecodeService.service, {
+    decode: wrapHandler(decodeHandlers.decode, api),
+  });
   server.addService(blockProto.BlockService.service, {
     getByHeight: wrapHandler(blockHandlers.getByHeight, api),
   });
   server.addService(transactionProto.TransactionService.service, {
     getByHeight: wrapHandler(transactionHandlers.getByHeight, api),
     getAnnotatedByHeight: wrapHandler(transactionHandlers.getAnnotatedByHeight, api),
-
   });
   server.addService(eventProto.EventService.service, {
     getByHeight: wrapHandler(eventHandlers.getByHeight, api),

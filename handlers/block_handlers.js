@@ -4,13 +4,13 @@ const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
-var {callDurationHistogram,calculateTime} = require('./metrics')
+var {callDurationHistogram,calculateTime} = require('./metrics');
 
 /**
  * Get block by height
  */
 const getByHeight = async (api, call, context = {}) => {
-  const hrstart = process.hrtime()
+  const hrstart = process.hrtime();
   const height = parseInt(call.request.height, 10);
   const blockHash = context.blockHash ? context.blockHash : await getHashForHeight(api, height);
   callDurationHistogram.labels('getHashForHeight').observe(calculateTime(hrstart));
@@ -31,7 +31,9 @@ const getByHeight = async (api, call, context = {}) => {
     api.query.transactionPayment.nextFeeMultiplier.at(prevBlockHash),
   ]);
 
-  const rawBlockAt = blockResp.block;
+  const rawExtrinsics = blockResp.block.extrinsics;
+  const rawHeader = blockResp.block.header;
+  const blockHeight = rawHeader.number.toNumber();
 
   let calcFee;
   try {
@@ -41,7 +43,7 @@ const getByHeight = async (api, call, context = {}) => {
     throw new UnavailableError('could not calculate fee');
   }
 
-  return blockMappers.toPb(blockHash, rawBlockAt, rawTimestampAt, rawEventsAt, rawCurrentEra, calcFee);
+  return blockMappers.toPb(blockHash, blockHeight, rawHeader, rawExtrinsics, rawTimestampAt, rawEventsAt, rawCurrentEra, calcFee);
 };
 
 module.exports = {

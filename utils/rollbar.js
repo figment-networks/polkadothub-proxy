@@ -9,4 +9,4 @@ var rollbar = new Rollbar({
 
 module.exports = {
   rollbar
-}
+};

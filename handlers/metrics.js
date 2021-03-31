@@ -10,9 +10,9 @@ const callDurationHistogram = new Histogram({
 
 
 const calculateTime = function(startTime) {
-    const end = process.hrtime(startTime)
-    return(end[0]* 1000000000 + end[1]) / 1000000000
-  }
+    const end = process.hrtime(startTime);
+    return(end[0]* 1000000000 + end[1]) / 1000000000;
+  };
 
 module.exports = {
     callDurationHistogram, calculateTime

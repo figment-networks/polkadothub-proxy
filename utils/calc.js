@@ -20,7 +20,7 @@ const createCalcFee = async(api, metadata, version, multiplier) => {
   }
 
   const specName = version.specName.toString();
-  const specVersion = version.specVersion.toNumber();
+  const specVersion = version.specVersion;
   const coefficients = api.consts.transactionPayment.weightToFee.map(
     (c) => {
       return {

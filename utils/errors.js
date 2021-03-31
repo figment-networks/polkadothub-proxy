@@ -33,4 +33,4 @@ module.exports = {
   InvalidArgumentError,
   UnavailableError,
   InternalServerError,
-}
+};

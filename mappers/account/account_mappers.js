@@ -9,8 +9,8 @@ const toPb = (rawAccount) => {
       feeFrozen: rawAccount.data.feeFrozen.toString(),
     },
   };
-}
+};
 
 module.exports = {
   toPb,
-}
+};
