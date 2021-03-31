@@ -2,11 +2,10 @@ const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
-const { Metadata } = require('@polkadot/metadata');
+const {Metadata} = require('@polkadot/metadata');
 const {Compact, Json} = require('@polkadot/types');
-const {Vec } = require('@polkadot/types/codec');
-const { hexToBn, hexToU8a } = require("@polkadot/util");
-
+const {Vec} = require('@polkadot/types/codec');
+const {hexToBn, hexToU8a} = require("@polkadot/util");
 /**
  * decode a block
  */
