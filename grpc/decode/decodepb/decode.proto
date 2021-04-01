@@ -14,6 +14,7 @@ message DecodeRequest {
   bytes runtime_parent = 6;
   bytes next_fee_multiplier_parent = 7;
   bytes current_era_parent = 8;
+  string chain = 9;
 }
 
 message DecodeResponse {
