@@ -6,6 +6,8 @@ const {Metadata} = require('@polkadot/metadata');
 const {Compact, Json} = require('@polkadot/types');
 const {Vec} = require('@polkadot/types/codec');
 const {hexToBn, hexToU8a} = require("@polkadot/util");
+const {getSpecTypes} = require('@polkadot/types-known');
+
 /**
  * decode a block
  */
@@ -15,7 +17,7 @@ const decode = async (api, call = {}) => {
     const [decodedBlock, rawCurrentEraParent, rawRuntimeParent, rawMetadataParent, rawMultiplier, rawTimestamp] = await Promise.all([
         parseByteJson(registry, call.request.block),
         decodeHexToBN(call.request.currentEraParent),
-        parseByteJson(api.runtimeParent, call.request.runtimeParent),
+        parseByteJson(registry, call.request.runtimeParent),
         decodeMetadata(registry, call.request.metadataParent),
         decodeHexToBN(call.request.nextFeeMultiplierParent),
         decodeHexToBN(call.request.timestamp),
@@ -24,6 +26,10 @@ const decode = async (api, call = {}) => {
     const blockHash = call.request.blockHash;
     const rawBlock = decodedBlock.block;
     const metaRegistry = rawMetadataParent.registry;
+
+    const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
+    api.registerTypes(types);
+
 
     const [decodedHeight, rawExtrinsics, rawEvents] = await Promise.all([
         decodeHeight(metaRegistry, rawBlock.header.number),
