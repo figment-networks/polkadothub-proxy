@@ -14,27 +14,31 @@ const {getSpecTypes} = require('@polkadot/types-known');
 const decode = async (api, call = {}) => {
     const registry = api.registry;
 
-    const [decodedBlock, rawCurrentEraParent, rawRuntimeParent, rawMetadataParent, rawMultiplier, rawTimestamp] = await Promise.all([
-        parseByteJson(registry, call.request.block),
+    const rawRuntimeParent = await parseByteJson(registry, call.request.runtimeParent);
+    const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
+    api.registerTypes(types);
+
+
+    const rawMetadataParent = new Metadata(registry, newBuffer( call.request.metadataParent));
+    const metaRegistry = rawMetadataParent.registry;
+    registry.setMetadata(rawMetadataParent);
+
+
+    const [decodedBlock, rawCurrentEraParent,  rawMultiplier, rawTimestamp] = await Promise.all([
+        parseByteJson(metaRegistry, call.request.block),
         decodeHexToBN(call.request.currentEraParent),
-        parseByteJson(registry, call.request.runtimeParent),
-        decodeMetadata(registry, call.request.metadataParent),
         decodeHexToBN(call.request.nextFeeMultiplierParent),
         decodeHexToBN(call.request.timestamp),
     ]);
 
     const blockHash = call.request.blockHash;
     const rawBlock = decodedBlock.block;
-    const metaRegistry = rawMetadataParent.registry;
-
-    const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
-    api.registerTypes(types);
 
 
     const [decodedHeight, rawExtrinsics, rawEvents] = await Promise.all([
-        decodeHeight(metaRegistry, rawBlock.header.number),
-        decodeVec(metaRegistry, 'Extrinsic' , decodedBlock.block.extrinsics),
-        decodeVec(metaRegistry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
+        decodeHeight(registry, rawBlock.header.number),
+        decodeVec(registry, 'Extrinsic' , decodedBlock.block.extrinsics),
+        decodeVec(registry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
     ]);
 
     rawEvents.forEach((rawEvent,i) => {
