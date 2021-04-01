@@ -37,6 +37,10 @@ const decode = async (api, call = {}) => {
         decodeVec(metaRegistry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
     ]);
 
+    rawEvents.forEach((rawEvent,i) => {
+        rawEvents[i].error = getError(api, call, rawEvent);
+    });
+
     let calcFee;
     try {
         calcFee = await createCalcFee(api, rawMetadataParent, rawRuntimeParent, rawMultiplier);
@@ -76,6 +80,33 @@ const parseByteJson = async (registry, byte) => {
     const json = JSON.parse(jsonStr);
     return new Json(registry, json);
 };
+
+
+function getError(api, call, rawEvents) {
+    let errMsg;
+    if ( rawEvents.event === undefined || rawEvents.event.data === undefined ) {
+        return
+    }
+    rawEvents.event.data.forEach((data) => {
+        if (data.isModule) {
+            const module = data.asModule;
+            try {
+              const { documentation } = api.registry.findMetaError(module);
+              if ( Array.isArray(documentation) && documentation.length > 0) {
+                errMsg = documentation[0];
+              }
+            } catch (error) {
+              rollbar.error(error, {call})
+              if (moduleHasIndexAndError(module)) {
+                errMsg = `{"index":${data.asModule.index.words[0]},"error":${data.asModule.error.words[0]}}`;
+              }
+            }
+          }
+    });
+
+    return errMsg;
+  }
+
 
 module.exports = {
     decode,
