@@ -3,12 +3,11 @@ const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
 const {Metadata} = require('@polkadot/metadata');
-const {Compact, Json} = require('@polkadot/types');
+const {Compact, Json,Int} = require('@polkadot/types');
 const {Vec} = require('@polkadot/types/codec');
 const {hexToBn, hexToU8a} = require("@polkadot/util");
 const {getSpecTypes,getSpecHasher,getSpecExtensions,getSpecAlias} = require('@polkadot/types-known');
 const {TypeRegistry } = require("@polkadot/types/create");
-
 
 
 /**
@@ -32,20 +31,17 @@ const decode = async (api, call = {}) => {
     const rawMetadataParent = new Metadata(registry, newBuffer( call.request.metadataParent));
     registry.setMetadata(rawMetadataParent, undefined, getSpecExtensions(registry,call.request.chain, rawRuntimeParent.specName));
 
+
     const [decodedBlock, rawCurrentEraParent,  rawMultiplier, rawTimestamp, rawEvents] = await Promise.all([
         parseByteJson(registry, call.request.block),
-        decodeHexToBN(call.request.currentEraParent),
-        decodeHexToBN(call.request.nextFeeMultiplierParent),
-        decodeHexToBN(call.request.timestamp),
+        decodeHexToBN(call.request.currentEraParent,{ isLe: true}),
+        decodeHexToBN(call.request.nextFeeMultiplierParent,{ isLe: true, isNegative: true }),
+        decodeHexToBN(call.request.timestamp,{ isLe: true }),
         decodeVec(registry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
     ]);
 
-    const blockHash = call.request.blockHash;
-    const rawBlock = decodedBlock.block;
-
-
     const [decodedHeight, rawExtrinsics] = await Promise.all([
-        decodeHeight(registry, rawBlock.header.number),
+        decodeHeight(registry, decodedBlock.block.header.number),
         decodeVec(registry, 'Extrinsic' , decodedBlock.block.extrinsics),
     ]);
 
@@ -62,7 +58,7 @@ const decode = async (api, call = {}) => {
     }
 
     return {
-        block: blockMappers.toPb(blockHash, decodedHeight, rawBlock.header, rawExtrinsics, rawTimestamp, rawEvents, rawCurrentEraParent, calcFee),
+        block: blockMappers.toPb(call.request.blockHash, decodedHeight, decodedBlock.block.header, rawExtrinsics, rawTimestamp, rawEvents, rawCurrentEraParent, calcFee),
         epoch: rawCurrentEraParent.toString(),
     };
 };
@@ -71,8 +67,8 @@ const decodeHeight = async (registry, height) => {
     return new Compact(registry, 'BlockNumber', height).toNumber();
 };
 
-const decodeHexToBN = async (value) => {
-    return hexToBn(newBuffer(value), { isLe: true });
+const decodeHexToBN = async (value, options) => {
+    return hexToBn(newBuffer(value), options);
 };
 
 const decodeVec = async (registry, type, value) => {
