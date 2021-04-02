@@ -145,5 +145,5 @@ const createCalcFee2 = async(api,registry,  metadata, version, multiplier) => {
 
 
 module.exports = {
-  createCalcFee2,
+  createCalcFee, createCalcFee2,
 }
