@@ -1,9 +1,9 @@
-const {createCalcFee2} = require("../utils/calc");
+const {createCalcFee} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
 const {Metadata} = require('@polkadot/metadata');
-const {Compact, Json,Int} = require('@polkadot/types');
+const {Compact, Json} = require('@polkadot/types');
 const {Vec} = require('@polkadot/types/codec');
 const {hexToBn, hexToU8a} = require("@polkadot/util");
 const {getSpecTypes,getSpecHasher,getSpecExtensions,getSpecAlias} = require('@polkadot/types-known');
@@ -51,7 +51,7 @@ const decode = async (api, call = {}) => {
 
     let calcFee;
     try {
-        calcFee = await createCalcFee2(api, registry, rawMetadataParent, rawRuntimeParent, rawMultiplier);
+        calcFee = await createCalcFee(api, registry, rawMetadataParent, rawRuntimeParent, rawMultiplier);
     } catch(err) {
         rollbar.error(err, {call});
         throw new UnavailableError('could not calculate fee');
