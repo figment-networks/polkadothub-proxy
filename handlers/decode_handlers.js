@@ -6,26 +6,47 @@ const {Metadata} = require('@polkadot/metadata');
 const {Compact, Json} = require('@polkadot/types');
 const {Vec} = require('@polkadot/types/codec');
 const {hexToBn, hexToU8a} = require("@polkadot/util");
-const {getSpecTypes} = require('@polkadot/types-known');
+const {getSpecTypes,getSpecHasher,getSpecExtensions} = require('@polkadot/types-known');
+
+
+
+var _create = require("@polkadot/types/create");
+
+
 
 /**
  * decode a block
  */
 const decode = async (api, call = {}) => {
-    const registry = api.registry;
+    //const registry = api.registry;
+
+    const registry = new _create.TypeRegistry()
+
+    registry.setChainProperties(api.registry.getChainProperties())
+
 
     const rawRuntimeParent = await parseByteJson(registry, call.request.runtimeParent);
     const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
-    api.registerTypes(types);
+    registry.setKnownTypes(types);
+    //api.registerTypes(types);
 
+    registry.register(types);
+
+    const hasher = getSpecHasher(registry,call.request.chain, rawRuntimeParent.specName);
+    registry.setHasher(hasher);
+
+
+    const extensions = getSpecExtensions(registry,call.request.chain, rawRuntimeParent.specName);
 
     const rawMetadataParent = new Metadata(registry, newBuffer( call.request.metadataParent));
-    const metaRegistry = rawMetadataParent.registry;
-    registry.setMetadata(rawMetadataParent);
+    //const metaRegistry = rawMetadataParent.registry;
+    registry.setMetadata(rawMetadataParent, undefined, extensions);
 
 
     const [decodedBlock, rawCurrentEraParent,  rawMultiplier, rawTimestamp] = await Promise.all([
-        parseByteJson(metaRegistry, call.request.block),
+      //  parseByteJson(metaRegistry, call.request.block),
+        parseByteJson(registry, call.request.block),
+
         decodeHexToBN(call.request.currentEraParent),
         decodeHexToBN(call.request.nextFeeMultiplierParent),
         decodeHexToBN(call.request.timestamp),
