@@ -5,7 +5,11 @@ const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee,
         event.section === 'system' && event.method === 'ExtrinsicSuccess'
     );
 
-    const events = rawEventsForExtrinsic.map((rawEvent) => ({index: rawEvent.index, ...eventMappers.toPb(rawEvent)}));
+    const events = rawEventsForExtrinsic.map((rawEvent) => ({
+            index: rawEvent.index,
+            error: rawEvent.error,
+            ...eventMappers.toPb(rawEvent)
+        }));
     const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
     var callArgs = getCallArgs(rawExtrinsic.method.args);
 

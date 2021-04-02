@@ -4,7 +4,7 @@ const { expandMetadata } = require('@polkadot/metadata/decorate');
 
 // createCalcFee follows what parity does
 // https://github.com/paritytech/substrate-api-sidecar/blob/6507ce70ff458281d1a2e31b58716e20ad8183dc/src/services/blocks/BlocksService.ts#L412
-const createCalcFee = async(api, metadata, version, multiplier) => {
+const createCalcFee = async(api, registry, metadata, version, multiplier) => {
   const perByte = api.consts.transactionPayment?.transactionByteFee;
   const extrinsicBaseWeightExists =
     api.consts.system.extrinsicBaseWeight ||
@@ -38,7 +38,7 @@ const createCalcFee = async(api, metadata, version, multiplier) => {
     specName !== api.runtimeVersion.specName.toString() ||
     specVersion !== api.runtimeVersion.specVersion.toNumber()
   ) {
-    const decorated = expandMetadata(api.registry, metadata);
+    const decorated = expandMetadata(registry, metadata);
 
     extrinsicBaseWeight =
       (decorated.consts.system
@@ -59,6 +59,7 @@ const createCalcFee = async(api, metadata, version, multiplier) => {
     );
   }
 
+
   return CalcFee.from_params(
     coefficients,
     extrinsicBaseWeight.toBigInt(),
@@ -69,6 +70,9 @@ const createCalcFee = async(api, metadata, version, multiplier) => {
   );
 }
 
+
+
+
 module.exports = {
-  createCalcFee,
+  createCalcFee
 }
