@@ -9,41 +9,49 @@ const {hexToBn, hexToU8a} = require("@polkadot/util");
 const {getSpecTypes,getSpecHasher,getSpecExtensions,getSpecAlias} = require('@polkadot/types-known');
 const {TypeRegistry } = require("@polkadot/types/create");
 
+const {RegistryCache } = require("../utils/registry_cache");
+
+
 
 /**
  * decode a block
  */
 const decode = async (api, call = {}) => {
-    const registry = new TypeRegistry()
-    registry.setChainProperties(api.registry.getChainProperties())
 
+
+    let registry = new TypeRegistry();
+    registry.setChainProperties(api.registry.getChainProperties())
     const rawRuntimeParent = await parseByteJson(registry, call.request.runtimeParent);
-    const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
-    registry.setKnownTypes(types);
-    registry.register(types);
-    if (registry.knownTypes.typesBundle) {
-        registry.knownTypes.typesAlias =  getSpecAlias(registry, call.request.chain, rawRuntimeParent.specName);
+    let rawMetadataParent;
+    const key = call.request.chain + "-"+ rawRuntimeParent.specName + "-" + rawRuntimeParent.specVersion
+    if (!RegistryCache.has(key)) {
+        const types = getSpecTypes(registry, call.request.chain, rawRuntimeParent.specName, rawRuntimeParent.specVersion);
+        registry.setKnownTypes(types);
+        registry.register(types);
+        if (registry.knownTypes.typesBundle) {
+            registry.knownTypes.typesAlias =  getSpecAlias(registry, call.request.chain, rawRuntimeParent.specName);
+        }
+
+        const hasher = getSpecHasher(registry,call.request.chain, rawRuntimeParent.specName);
+        registry.setHasher(hasher);
+
+        rawMetadataParent = new Metadata(registry, newBuffer( call.request.metadataParent));
+        registry.setMetadata(rawMetadataParent, undefined, getSpecExtensions(registry,call.request.chain, rawRuntimeParent.specName));
+        RegistryCache.set(key+"-metadata", rawMetadataParent)
+        RegistryCache.set(key, registry)
+    } else {
+        registry = RegistryCache.get(key)
+        rawMetadataParent =  RegistryCache.get(key+"-metadata")
     }
 
-    const hasher = getSpecHasher(registry,call.request.chain, rawRuntimeParent.specName);
-    registry.setHasher(hasher);
+    const rawEvents = new Vec(registry, 'EventRecord' , hexToU8a(newBuffer(call.request.events)));
+    const rawCurrentEraParent = hexToBn(newBuffer(call.request.currentEraParent),{ isLe: true});
+    const rawMultiplier = hexToBn(newBuffer(call.request.nextFeeMultiplierParent),{ isLe: true, isNegative: true });
+    const rawTimestamp = hexToBn(newBuffer(call.request.timestamp),{ isLe: true });
 
-    const rawMetadataParent = new Metadata(registry, newBuffer( call.request.metadataParent));
-    registry.setMetadata(rawMetadataParent, undefined, getSpecExtensions(registry,call.request.chain, rawRuntimeParent.specName));
-
-
-    const [decodedBlock, rawCurrentEraParent,  rawMultiplier, rawTimestamp, rawEvents] = await Promise.all([
-        parseByteJson(registry, call.request.block),
-        decodeHexToBN(call.request.currentEraParent,{ isLe: true}),
-        decodeHexToBN(call.request.nextFeeMultiplierParent,{ isLe: true, isNegative: true }),
-        decodeHexToBN(call.request.timestamp,{ isLe: true }),
-        decodeVec(registry, 'EventRecord', hexToU8a(newBuffer(call.request.events))),
-    ]);
-
-    const [decodedHeight, rawExtrinsics] = await Promise.all([
-        decodeHeight(registry, decodedBlock.block.header.number),
-        decodeVec(registry, 'Extrinsic' , decodedBlock.block.extrinsics),
-    ]);
+    const decodedBlock = await parseByteJson(registry, call.request.block);
+    const decodedHeight =  new Compact(registry, 'BlockNumber', decodedBlock.block.header.number).toNumber();
+    const rawExtrinsics = new Vec(registry, 'Extrinsic' , decodedBlock.block.extrinsics);
 
     rawEvents.forEach((rawEvent,i) => {
         rawEvents[i].error = getError(registry, call, rawEvent);
@@ -63,17 +71,6 @@ const decode = async (api, call = {}) => {
     };
 };
 
-const decodeHeight = async (registry, height) => {
-    return new Compact(registry, 'BlockNumber', height).toNumber();
-};
-
-const decodeHexToBN = async (value, options) => {
-    return hexToBn(newBuffer(value), options);
-};
-
-const decodeVec = async (registry, type, value) => {
-    return new Vec(registry, type, value);
-};
 
 const newBuffer = (buffer) => {
     return new Buffer.from(buffer).toString('ascii');
