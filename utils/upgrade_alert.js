@@ -23,8 +23,9 @@ const checkForUpdates = async() => {
         filter: '@polkadot/api @polkadot/types-known @polkadot/util',
     })
 
-    if (JSON.stringify(upgraded) !== "{}") {
-        rollbar.error(`You need to update these packages ${upgraded}`)
+    const upgradedStr = JSON.stringify(upgraded);
+    if (upgradedStr !== "{}") {
+        rollbar.error(`You need to update these packages ${upgradedStr}`)
     } 
 }
 
