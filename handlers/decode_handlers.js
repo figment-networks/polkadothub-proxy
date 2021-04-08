@@ -9,6 +9,9 @@ const {hexToBn, hexToU8a} = require("@polkadot/util");
 const {getSpecTypes,getSpecHasher,getSpecExtensions,getSpecAlias} = require('@polkadot/types-known');
 const {TypeRegistry } = require("@polkadot/types/create");
 
+
+const {moduleHasIndexAndError} =  require("./event_handlers");
+
 const {RegistryCache } = require("../utils/registry_cache");
 
 
@@ -99,7 +102,7 @@ function getError(registry, call, rawEvents) {
             } catch (error) {
               rollbar.error(error, {call})
               if (moduleHasIndexAndError(module)) {
-                errMsg = `{"index":${data.asModule.index.words[0]},"error":${data.asModule.error.words[0]}}`;
+                errMsg = `{"index":${module.index.words[0]},"error":${module.error.words[0]}}`;
               }
             }
           }
