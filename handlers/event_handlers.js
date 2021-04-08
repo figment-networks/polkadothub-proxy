@@ -48,5 +48,5 @@ function moduleHasIndexAndError(module) {
 }
 
 module.exports = {
-  getByHeight,
+  getByHeight, moduleHasIndexAndError
 };
