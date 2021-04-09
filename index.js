@@ -67,8 +67,12 @@ async function init() {
 
   const wsProvider = new WsProvider(NODE_URL);
   const api = await ApiPromise.create({provider: wsProvider});
-
-  const server = new grpc.Server();
+  const grpcOptions = {
+    'grpc.default_compression_level': 3,
+    'grpc.default_compression_algorithm': 2,
+    'grpc.max_recv_message_length': 1024 * 1024 * 1024,
+  };
+  const server = new grpc.Server(grpcOptions);
   server.addService(heightProto.HeightService.service, {
     getAll: wrapHandler(heightHandlers.getAll, api),
   });
