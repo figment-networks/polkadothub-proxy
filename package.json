@@ -1,6 +1,6 @@
 {
   "name": "polkadothub-proxy",
-  "version": "0.7.10",
+  "version": "0.7.12",
   "description": "A proxy for Polkadot node",
   "main": "cluster.js",
   "scripts": {
