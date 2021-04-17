@@ -47,6 +47,7 @@ npm run test:all
 - `PORT` - API port [default: 50051]
 - `NODE_URL` - Polkadot node URL [default: ws://localhost:9944]
 - `ROLLBAR_TOKEN` - Rollbar token for error reporting
+- `MIN_CALCFEE_RUNTIME` - min runtime version where fee calcs are supported
 
 ## Endpoints
 | Service                     | Method          | Description                                                   | Params                                                                  |

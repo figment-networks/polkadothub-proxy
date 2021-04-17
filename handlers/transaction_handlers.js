@@ -35,7 +35,7 @@ const getByHeight = async (api, call, context = {}) => {
 
   let calcFee;
   try {
-    calcFee = await createCalcFee(api,api.registry, rawMetadata, rawVersion, rawMultiplier);
+    calcFee = await createCalcFee(api, api.registry, rawMetadata, rawVersion, rawMultiplier);
   } catch(err) {
     rollbar.error(err, {call});
     throw new UnavailableError('could not calculate fee');
