@@ -1,17 +1,9 @@
-const eventMappers = require('../event/event_mappers');
 
-const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, calcFee, currentEra) => {
+const toPb = (index, rawExtrinsic, rawTimestamp, rawEventsForExtrinsic, partialFee, currentEra, events) => {
     const successEvent = rawEventsForExtrinsic.find(({ event }) =>
         event.section === 'system' && event.method === 'ExtrinsicSuccess'
     );
-
-    const events = rawEventsForExtrinsic.map((rawEvent) => ({
-            index: rawEvent.index,
-            error: rawEvent.error,
-            ...eventMappers.toPb(rawEvent)
-        }));
-    const partialFee = getPartialFee(rawExtrinsic, events, calcFee);
-    var callArgs = getCallArgs(rawExtrinsic.method.args);
+   var callArgs = getCallArgs(rawExtrinsic.method.args);
 
     return {
         extrinsicIndex: index,
@@ -62,35 +54,6 @@ const getCallArgs = (args)  => {
         callArgs.push({value, method, section})
     })
     return callArgs;
-}
-
-
-const getPartialFee = (rawExtrinsic, events, calcFee) => {
-    // Polkadot doesn't charge a fee for unsigned transactions https://wiki.polkadot.network/docs/en/learn-transaction-fees
-    if (!rawExtrinsic.isSigned || !calcFee) {
-        return
-    }
-
-    const completedEvent = events.find(({ section, method }) =>
-        section == 'system' && (method === 'ExtrinsicSuccess' || method === 'ExtrinsicFailed')
-    );
-
-    const dispatchInfo = completedEvent && completedEvent.data && completedEvent.data.find(({ name }) => name == 'DispatchInfo');
-    if (!dispatchInfo) {
-        return
-    }
-
-    const paysFee = JSON.parse(dispatchInfo.value).paysFee;
-    const weight = JSON.parse(dispatchInfo.value).weight;
-
-    if (!weight || !(paysFee === "Yes" || paysFee === true)) {
-        return
-    }
-
-    return calcFee.calc_fee(
-        BigInt(weight.toString()),
-        rawExtrinsic.encodedLength
-    );
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 const {getHashForHeight} = require('../utils/block');
-const {createCalcFee} = require("../utils/calc");
+const {createCalcFee, getExtrinsicBaseWeight} = require("../utils/calc");
 const {UnavailableError} = require('../utils/errors');
 const {rollbar} = require('../utils/rollbar');
 const transactionMappers = require('../mappers/transaction/transaction_mappers');
@@ -33,9 +33,11 @@ const getByHeight = async (api, call, context = {}) => {
   const currentEra = rawCurrentEra.toString();
   const rawBlockAt = rawBlock.block;
 
+  let baseWeight;
   let calcFee;
   try {
     calcFee = await createCalcFee(api, api.registry, rawMetadata, rawVersion, rawMultiplier);
+    baseWeight = getExtrinsicBaseWeight(api, api.registry, rawMetadata, rawVersion);
   } catch(err) {
     rollbar.error(err, {call});
     throw new UnavailableError('could not calculate fee');
@@ -45,7 +47,13 @@ const getByHeight = async (api, call, context = {}) => {
   rawBlockAt.extrinsics.forEach(async (rawExtrinsic, index) => {
     if (rawExtrinsic.toHuman().isSigned) {
       const rawEventsForExtrinsic = rawEventsAt.filter((ev) => ev.phase.isApplyExtrinsic && ev.phase.asApplyExtrinsic.toNumber() === index);
-      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, calcFee, currentEra));
+      const events = rawEventsForExtrinsic.map((rawEvent) => ({
+        index: rawEvent.index,
+        error: rawEvent.error,
+        ...eventMappers.toPb(rawEvent)
+       }));
+       const partialFee = getPartialFee(rawExtrinsic, events, calcFee, baseWeight);
+      transactions.push(transactionMappers.toPb(index, rawExtrinsic, rawTimestampAt, rawEventsForExtrinsic, partialFee, currentEra, events));
     }
   });
 

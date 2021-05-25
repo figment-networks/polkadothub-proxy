@@ -1,6 +1,6 @@
 
 const {getHashForHeight} = require('../utils/block');
-const {createCalcFee} = require("../utils/calc");
+const {createCalcFee, getExtrinsicBaseWeight} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
@@ -36,14 +36,16 @@ const getByHeight = async (api, call, context = {}) => {
   const blockHeight = rawHeader.number.toNumber();
 
   let calcFee;
+  let baseWeight;
   try {
-    calcFee = await createCalcFee(api, api.registry, rawMetadata, rawVersion, rawMultiplier);
+    calcFee = await createCalcFee(api, rawVersion, rawMultiplier);
+    baseWeight = getExtrinsicBaseWeight(api, api.registry, rawMetadata, rawVersion);
   } catch(err) {
     rollbar.error(err, {call});
     throw new UnavailableError('could not calculate fee');
   }
 
-  return blockMappers.toPb(blockHash, blockHeight, rawHeader, rawExtrinsics, rawTimestampAt, rawEventsAt, rawCurrentEra, calcFee);
+  return blockMappers.toPb(blockHash, blockHeight, rawHeader, rawExtrinsics, rawTimestampAt, rawEventsAt, rawCurrentEra, calcFee, baseWeight);
 };
 
 module.exports = {
