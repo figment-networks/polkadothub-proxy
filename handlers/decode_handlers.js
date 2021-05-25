@@ -1,4 +1,4 @@
-const {createCalcFee} = require("../utils/calc");
+const {createCalcFee, getExtrinsicBaseWeight} = require("../utils/calc");
 const {rollbar} = require('../utils/rollbar');
 const {UnavailableError} = require('../utils/errors');
 const blockMappers = require('../mappers/block/block_mappers');
@@ -20,7 +20,6 @@ const {RegistryCache } = require("../utils/registry_cache");
  * decode a block
  */
 const decode = async (api, call = {}) => {
-
 
     let registry = new TypeRegistry();
     registry.setChainProperties(api.registry.getChainProperties())
@@ -61,15 +60,17 @@ const decode = async (api, call = {}) => {
     });
 
     let calcFee;
+    let baseWeight;
     try {
-        calcFee = await createCalcFee(api, registry, rawMetadataParent, rawRuntimeParent, rawMultiplier);
+        calcFee = await createCalcFee(api, rawRuntimeParent, rawMultiplier);
+        baseWeight = getExtrinsicBaseWeight(api, registry, rawMetadataParent, rawRuntimeParent);
     } catch(err) {
         rollbar.error(err, {call});
-        throw new UnavailableError('could not calculate fee');
+        throw new UnavailableError('could not calculate fee: '+ err.message);
     }
 
     return {
-        block: blockMappers.toPb(call.request.blockHash, decodedHeight, decodedBlock.block.header, rawExtrinsics, rawTimestamp, rawEvents, rawCurrentEraParent, calcFee),
+        block: blockMappers.toPb(call.request.blockHash, decodedHeight, decodedBlock.block.header, rawExtrinsics, rawTimestamp, rawEvents, rawCurrentEraParent, calcFee, baseWeight),
         epoch: rawCurrentEraParent.toString(),
     };
 };
