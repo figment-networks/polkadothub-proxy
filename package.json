@@ -1,6 +1,6 @@
 {
   "name": "polkadothub-proxy",
-  "version": "0.7.16",
+  "version": "0.7.17",
   "description": "A proxy for Polkadot node",
   "main": "cluster.js",
   "scripts": {
@@ -12,9 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.4",
-    "@polkadot/api": "^4.11.2",
-    "@polkadot/types-known": "^4.11.2",
-    "@polkadot/util": "^6.5.1",
+    "@polkadot/api": "^4.13.1",
+    "@polkadot/types-known": "^4.13.1",
+    "@polkadot/util": "^6.7.1",
     "@substrate/calc": "^0.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
